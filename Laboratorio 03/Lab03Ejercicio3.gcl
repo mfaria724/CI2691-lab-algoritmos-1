@@ -1,0 +1,41 @@
+{ 
+  Lab03Ejercicio3.gcl
+
+  DESCRIPCION: Programa que dado un entero positivo n, determina si n
+  es perfecto.
+
+  Autor: 
+ 	  Manuel Faria
+
+}
+
+[
+  CONST 
+    n: int;
+
+  VAR
+    i: int;
+    k: int;
+    esPrimo: int;
+
+  { n>0 }
+
+    i,k:=1,0
+
+  { inv P: n>=i }
+  { cota t: n-i }
+
+  do n > i -> 
+    if n mod i == 0 -> k:=k+i
+    [] n mod i != 0 -> skip
+    fi
+    ;i:=i+1
+  od
+
+  if n==k -> esPerfecto:=true
+  [] n=!k -> esPerfecto:=false
+  fi
+
+  { (n!=k \/ esPerfecto==true) /\ (n==k \/ esPerfecto==false) }
+
+]

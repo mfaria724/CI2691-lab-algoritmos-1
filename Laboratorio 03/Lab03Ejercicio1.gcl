@@ -1,0 +1,50 @@
+{ 
+  Lab03Ejercicio1.gcl
+
+  DESCRIPCION: Programa que presenta un menú con 3 opciones: 
+    1. Superficie de una habitacion: Se solicita el largo y ancho de una
+       habitación y muestra la superficie de la habitación con 4 decimales.
+    2. Área de una circunferencia: Se solicita el radio de la circunferencia
+       y muestra el el área de la misma.
+    3. Suma de cuadrados: Se solicita un número n y se muestra la sumatoria de 
+       todos los cuadrados entre 1 y n.
+
+  Autor: 
+ 	  Manuel Faria
+
+}
+
+[
+  CONST 
+    largo: float;
+    ancho: float;
+    radio: float;
+    n: int;
+
+  VAR
+    menu: int;
+    superficie: bool;
+    area: bool;
+    suma: int;
+    k: int;
+    i: int;
+
+  { largo>0 /\ ancho>0  /\ r>0 /\ n>0 /\ 1<=menu<=3 }
+
+    i:=0  
+    superficie,area,suma:=0,0,0
+
+  { inv P: 0<=i<=3 }
+  { cota t: 3-i }
+
+  do 3 > i -> 
+    if menu == 1 -> superficie:=ancho*alto
+    [] menu == 2 -> area:=3.1415*r^2
+    [] menu == 3 -> suma:= (%sigma i: 1<=i<=n: i^2 )
+    fi
+    ;i:=i+1
+  od
+
+  { 0<=i<=3 }
+
+]

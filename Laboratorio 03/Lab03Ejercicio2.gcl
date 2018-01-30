@@ -1,0 +1,36 @@
+{ 
+  Lab03Ejercicio2.gcl
+
+  DESCRIPCION: Programa que dado un entero positivo n, determina si n
+  es primo. El programa imprime los divisores de n que son distintos de 1 y n.
+
+  Autor: 
+ 	  Manuel Faria
+
+}
+
+[
+  CONST 
+    n: int;
+
+  VAR
+    i: int;
+    esPrimo: int;
+
+  { n>0 }
+
+    i,esPrimo:=1,true
+
+  { inv P: 1<=i<=n }
+  { cota t: n-i }
+
+  do i!=n -> 
+    if n mod i == 0 /\ i!=1 -> esPrimo:=false  
+    [] n mod i != 0 \/ i==1 -> skip
+    fi
+    ;i:=i+1
+  od
+
+  { 1<=i<=n }
+
+]

@@ -1,0 +1,37 @@
+{ 
+  Quiz11510463.gcl
+
+  DESCRIPCION: Programa que dados los valores del centro y radio de una 
+  circunferencia y un punto (x1,y1) de coordenadas enteras, se desea 
+  saber si el punto se encuentra dentro o fuera de dicha circunferencia. 
+  El resultado se almacenara en la variable "resultado".
+
+  Autor: 
+ 	Manuel Faria
+
+}
+[
+  CONST 
+    a: int;
+    b: int;
+    r: int;
+    x1: int;
+    y1: int;
+
+  VAR
+    resultado: bool;
+
+  { a>=r /\ b>=r /\ r>=0 }
+
+  if ((x1-a)^2 + (y1-b)^2) =< r^2 ->
+     resultado:= true
+  [] ((x1-a)^2 + (y1-b)^2) > r^2 ->
+     resultado:= false
+  fi
+   
+  { 
+    (((x1-a)^2 + (y1-b)^2) > r^2 \/ resultado=true) /\
+    (((x1-a)^2 + (y1-b)^2) =< r^2 \/ resultado=false)
+  }
+
+]
