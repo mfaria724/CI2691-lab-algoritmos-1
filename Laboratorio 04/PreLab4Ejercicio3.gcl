@@ -1,0 +1,31 @@
+{ 
+  PreLab4Ejercicio1.gcl
+
+  DESCRIPCION: Programa que dado arreglo A de N enteros calcula la suma
+  de los elementos del arreglo.
+
+  Autor: 
+ 	  Manuel Faria
+
+}
+
+[
+  CONST 
+    N: int;
+    A: array[0,N) of int;
+
+  VAR
+    suma: int;
+    i: int;
+
+  { N>0 }
+
+    { Inv P: 0<=i<=N }
+    { Cota t: N-i }
+    do i<N -> 
+      suma = suma + A[i]
+    od
+
+  { suma == (%sigma i: 0<=i<N: A[i]) }
+
+]
