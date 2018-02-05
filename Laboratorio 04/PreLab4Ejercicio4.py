@@ -18,11 +18,17 @@
 diagonal=True
 M = [ [int(input("M["+str(i)+","+str(j)+"]=")) for i in range(3)] for j in range(3)]
 
+# Precondición
+assert(True)
+
 # Calculos:
 for i in range(3):
 	for j in range(3):
 		if i!=j and M[i][j]!=0:
 			diagonal=False
+
+		assert(True)
+	assert(True)
 			
 # Postcondicion:
 assert( diagonal == all (all (M[x][y]==0 for x in range(3) if x!=y) for y in range(3)) )

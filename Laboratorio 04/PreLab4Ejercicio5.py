@@ -28,24 +28,28 @@ promedioEdad = 0.0
 # Precondición:
 assert( N>0 )
 
+# Invariante:
+assert( N>0 )
 # Calculos:
 for i in range(N):
 	grupo[i].edad = int(input("Ingrese la edad del estudiante " + str(i) + ": "))
 	grupo[i].nombre = str(input("Ingrese el nombre del estudiante "+ str(i) + ': '))
 	grupo[i].indice = float(input("Ingrese el índice académcico del estudiante " + str(i) + ': '))
 
+	promedioEdad = promedioEdad + grupo[i].edad 
+	promedioIndice = promedioIndice + grupo[i].indice 
+
 	# Postcondicion:
 	assert( grupo[i].edad > 0 and len(grupo[i].nombre) > 0  and 1<=grupo[i].indice<=5)
 
-for j in range(N):
-	promedioEdad = promedioEdad + grupo[j].edad 
-
+	# Invariante:
+	assert( N>0 )
+	
 promedioEdad = promedioEdad / N
-
-for k in range(N):
-	promedioIndice = promedioIndice + grupo[k].indice 
-
 promedioIndice = promedioIndice / N
+
+# Postcondicion:
+assert(promedioIndice == (sum (grupo[i].indice for i in range(0,N))/N) and promedioEdad == (sum (grupo[i].edad for i in range(0,N))/N))
 
 # Salida:
 

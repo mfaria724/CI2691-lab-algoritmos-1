@@ -1,8 +1,8 @@
 { 
-  PreLab4Ejercicio3.gcl
+  PreLab4Ejercicio1.gcl
 
-  DESCRIPCION: Programa que dada una matriz cuadrada NxN calcula si la matriz 
-  es diaagonal. 
+  DESCRIPCION: Programa que dado arreglo A de N enteros calcula la suma
+  de los elementos del arreglo.
 
   Autor: 
  	  Manuel Faria
@@ -12,30 +12,23 @@
 [
   CONST 
     N: int;
-    A: array[0,N)[0,N) of int;
+    A: array[0,N) of int;
 
   VAR
-    diagonal: bool;
+    suma: int;
     i: int;
 
   { N>0 }
 
-    diagonal:=true
+    suma,i:=0,0
 
     { Inv P: 0<=i<=N }
     { Cota t: N-i }
-    
     do i<N -> 
-
-      { Inv P1: 0<=j<=N }
-      { Cota t1: N-j }
-      
-      do j<N ->
-        if i!=j /\ M[i][j]!=0 -> diagonal:=false fi
-      od
-
+      suma = suma + A[i]
+      i:=i+1
     od
 
-  { diagonal == (%forall i,j: 0<=i<N /\ 0<=j<N /\ i!=j: M[i][j]=0) }
+  { suma == (%sigma i: 0<=i<N: A[i]) }
 
 ]

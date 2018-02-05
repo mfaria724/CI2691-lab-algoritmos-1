@@ -19,9 +19,18 @@ i,suma=0,0
 N = int(input("Ingrese el número de elementos que tendrá el arreglo: "))
 A = [ int(input( "A[" + str(i) + "]=")) for i in range(N) ]
 
+# Precondición:
+assert( N > 0 )
+
+# Cota: N-i
+# Invariante: 
+assert ( 0<=i<=N )
+
 # Calculos:
 for i in range(N):
 	suma = suma + A[i]
+
+	assert( 0<=i<=N )
 
 # Postcondicion:
 assert( suma == sum (A[x] for x in range(N)) )
