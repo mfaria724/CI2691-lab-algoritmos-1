@@ -1,0 +1,41 @@
+{ 
+  Quiz21510463.gcl
+
+  DESCRIPCION: Programa que dado un número N calcula aproximadamente el 
+  valor de la constante e mediante el método de limitar por iteraciones.
+
+  Autor: 
+ 	  Manuel Faria
+
+}
+
+[
+  CONST 
+    N: int;
+
+  VAR
+    i: int;
+    e: float;
+    fact: int,
+    
+  { N > 0 }
+
+  e,i,fact:=1,1,1
+
+  { e == (%sigma k: 0<k<=i: 1/(%pi h: 1<=h<=k: (h)) ) }
+  { Cota t: N-i }
+
+  do i <= N -> 
+
+    { fact == (%pi h: 1<=h<=i: h) }
+    { Cota t1: N-j } 
+
+    fact:=fact*i
+    e:=e+(1/fact)
+    ;i:=i+1
+
+  od
+
+  { e == (%sigma k: 0<k<=i: 1/(%pi h: 1<=h<=k: (h)) ) }
+
+]
