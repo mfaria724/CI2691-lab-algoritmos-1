@@ -9,21 +9,21 @@
 #	Manuel Faria
 
 # Variables:
-# grupo: array[0,10) of Estudiante()// ENTRADA: Arreglo que contiene a todos los
-#										estudiantes.
-# edades: array[0,10) of int    	// ENTRADA: Arreglo de las edades.
-# nombres: array[0,10) of string    // ENTRADA: Arreglo de los nombres. 
-# indices: array[0,10) of float     // ENTRADA: Arreglo de los indices. 
+# grupo: array[0,10) of Estudiante()     // ENTRADA: Arreglo que contiene a todos los
+#  					 estudiantes.
+# edades: array[0,10) of int           	 // ENTRADA: Arreglo de las edades.
+# nombres: array[0,10) of string         // ENTRADA: Arreglo de los nombres. 
+# indices: array[0,10) of float     	 // ENTRADA: Arreglo de los indices. 
 # parciales: array[0,4)[0,10) of float   // ENTRADA: Matriz que contiene las notas
-#										de todos los parciales para todos los estudiantes. 
-# promedioIndice: float    			// SALIDA: Variable donde se almacena el 
-#										promedio de los indices. 
-# promedioEdad: float    			// SALIDA: Variable donde se almacena el
-#										promedio de las edades. 
-# promedios: array[0,4) of float    // SALIDA: Arreglo donde se almacenan los
-#										promedios de los parciales.  
-# sumaParciales: float    			// SALIDA: Variable donde se almacena la nota
-#										sobre 100 de cada estudiante. 
+#						 de todos los parciales para todos los estudiantes. 
+# promedioIndice: float    	 	 // SALIDA: Variable donde se almacena el 
+#						promedio de los indices. 
+# promedioEdad: float    		 // SALIDA: Variable donde se almacena el
+#						promedio de las edades. 
+# promedios: array[0,4) of float    	 // SALIDA: Arreglo donde se almacenan los
+#						promedios de los parciales.  
+# sumaParciales: float    		 // SALIDA: Variable donde se almacena la nota
+#						sobre 100 de cada estudiante. 
 
 # Valores Iniciales:
 class Estudiante:

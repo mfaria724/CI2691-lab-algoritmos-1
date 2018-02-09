@@ -10,7 +10,7 @@
 #	Manuel Faria
 
 # Variables:
-# M: int 			// ENTRADA: Grado máximo del polinomio.
+# M: int 	    // ENTRADA: Grado máximo del polinomio.
 # A: array[0,M+1)   // ENTRADA: Arreglo que contiene los coeficientes.
 
 # Valores Iniciales:
@@ -28,6 +28,7 @@ assert(True)
 for i in range(0,M+1):
 	A[i]=int(input("Ingrese el valor del coeficiente C" + str(i) + ": "))
 
+	# Invariante:
 	assert(True)
 
 print("Grado del polinomio:" + str(M))
@@ -43,6 +44,7 @@ for j in range(0,M+1):
 		if j!=M and A[i]!=0:
 			print("+", end='')
 
+	# Invariante:
 	assert(True)
 
 print("")
