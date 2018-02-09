@@ -1,0 +1,47 @@
+{ 
+  Lab04Ejercicio2.gcl
+
+  DESCRIPCION: Programa que dada una matriz NxM caalcula la suma de todos
+  sus elementos.
+
+  Autor: 
+ 	  Manuel Faria
+
+}
+
+[
+  CONST 
+    N: int;
+    M: int;
+    A: array [0,N)x[0,M) of float;
+
+  VAR
+    j: int;
+    i: int;
+    suma: float;
+
+  { N>0 /\ M>0 }
+
+    i,suma:=0,0.0
+
+  { Inv P: i<=N }
+  { Cota t: (N-i) }
+
+    do i!=N -> 
+
+      j:=0;
+      
+      { Inv P1: j<=M }
+      { Cota t1: M-j }
+      
+      do j!=M -> 
+        suma:=suma + M[i][j]
+        ;j:=j+1
+      od
+
+      ;i:=i+1
+    od
+
+  { suma == (%sigma k: 0<=k<N: (%sigma h: 0<=h<M: A[k][h] ) ) }
+
+]

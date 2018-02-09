@@ -40,7 +40,7 @@ assert(True)
 for j in range(0,M+1):
 	if A[j]!=0:
 		print(str(A[j]) + "x^" + str(j), end='')
-		if j!=M:
+		if j!=M and A[i]!=0:
 			print("+", end='')
 
 	assert(True)
