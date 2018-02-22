@@ -1,5 +1,5 @@
 #
-# Lab05Ejercicio2r.py
+# Lab05Ejercicio2c.py
 #
 # DESCRIPCIÓN: Programa que dado un número natural N determina la 
 # cantidad de intentos que se deben hacer para llegar al número 4 
@@ -26,15 +26,15 @@ import sys    # Se importa la libreria sys para poder utilizar sys.exit()
 #	N: int 			// ENTRADA: Valor del elemento de la secuencia que ingresa el usuario.
 
 # Verificación del valor de entrada de por parte del usuario.
-while(True):
-	try:
-		N = int(input('Ingrese un número natural: '))
-		assert(N>0)
-		break
+try:
+	N = int(input('Ingrese un número natural: '))
+	assert(N>0)
 
-	except:
-		print("Debe ingresar un número natural")
-		print("Introduzca otro valor")
+except:
+	print("Debe ingresar un número natural")
+	sys.exit() # Se aborta el programa, pues no cumple el invariante
+
+
 
 # Valores iniciales
 i,intentos=N,0

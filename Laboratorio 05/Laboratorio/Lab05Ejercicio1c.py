@@ -1,5 +1,5 @@
 #
-# Lab05Ejercicio1r.py
+# Lab05Ejercicio1c.py
 #
 # DESCRIPCION: Programa que dada una secuencia de enteros no negativos 
 # provista por el usuario, verifica si dicha secuencia está ordenada.
@@ -49,49 +49,40 @@ except:
 
 while (cantidad<100):
 	if cantidad==0: # Verificación de que no sea nulo
-		while True:
-			try:
-				N = int(input("Indique el próximo número, si desea terminar ingrese 0: "))
-				
-				assert(N>0)
-				break
-			except: # Si es nula, reinicia el ciclo.
-				print('Solo se admiten números no negativos')
-				print('La secuencia no puede ser nula')
-				print('Ingrese una nueva secuencia')
+		try:
+			N = int(input("Indique el próximo número, si desea terminar ingrese 0: "))
+			assert(N>0)
+		except: # Si es nula, reinicia el ciclo.
+			print('Solo se admiten números no negativos')
+			print('La secuencia no puede ser nula')
+			sys.exit() # Se aborta el programa, pues no cumple la condición.
 
 	elif cantidad==1: # Verificación de que no sea unitaria
-		while True:
-			try:
-				N = int(input("Indique el próximo número, si desea terminar ingrese 0: "))
-				
-				assert(N>0)
-				break
-			except: # Si es unitaria, inicia el ciclo nuevamente.
-				print('Solo se admiten números no negativos')
-				print('La secuencia no puede ser unitaria')
-				print('Ingrese una nueva secuencia')
-				cantidad=-1
-				cota=100
-				break
+		try:
+			N = int(input("Indique el próximo número, si desea terminar ingrese 0: "))
+			
+			assert(N>0)
+		except: # Si es unitaria, inicia el ciclo nuevamente.
+			print('Solo se admiten números no negativos')
+			print('La secuencia no puede ser unitaria')
+			sys.exit() # Se aborta el programa, pues no cumple la condición.
+
 	else:
-		while True: # Ingresa todos los demás números y si son validos los compara.
 			try:
 				N = int(input("Indique el próximo número, si desea terminar ingrese 0: "))
 				
 				assert(N>=0)
+				
+				if anterior>=N:
+					ordenado=False
 
 				if N==0: # Si es cero sale del ciclo.
 					break
 
-				if anterior>=N:
-					ordenado=False
-				break
 			except: # Vuelve a pedir un número hasta que ingrese uno válido.
 				print('Solo se admiten números no negativos')
+				sys.exit() # Se aborta el programa, pues no cumple la condición.
 
-		if N==0: # Si es cero termina el programa.
-			break	
 
 	cantidad+=1
 	anterior=N
