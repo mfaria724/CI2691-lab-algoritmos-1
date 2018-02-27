@@ -1,0 +1,44 @@
+#
+# Lab04Ejercicio2.gcl
+#
+# DESCRIPCION: Algoritmo que calcula la suma de todos los elementos
+# de una matriz NxM.
+#
+# Autores: 
+#	Saul Hidalgo y Rosseline Rodriguez
+#
+# Ultima modificacion: 16/02/2018
+
+[
+  CONST
+    N: int;                             // ENTRADA: primera dimension de la matriz
+    M: int;                             // ENTRADA: segunda dimension de la matriz
+    matriz: array [0..N)x[0..M) of int; // ENTRADA: coeficientes de la matriz
+  VAR
+    suma: int;                          // SALIDA: Suma de los elementos
+    f: int;                             // Variable de control del ciclo externo
+    c: int;                             // Variable de control del ciclo interno
+
+  { M > 0 /\ N > 0 }
+
+  suma,f := 0,0;
+  
+  inv { 0 <=f<= N /\ suma = (%sigma i : 0<=i<f : (%sigma j: 0<=j<=M : matriz[i][j]) }
+  { Cota: N-f}
+
+  do f < N ->
+
+    c := 0;
+    { 0<=f<=M /\ 0<=c<=M /\ suma = (%sigma i : 0<=i<f : (%sigma j: 0<=j<=M : matriz[i][j]) + (%sigma j: 0<=j<c : matriz[i][j]) }
+    { Cota: N-c } 
+
+	do c < M ->
+      suma := suma + matriz[f][c];
+      c := c+1  
+	od;
+	f := f+1
+  od
+
+  { suma = (%sigma i : 0<=i<N : (%sigma j: 0<=j<=M : matriz[i][j]) }
+
+]

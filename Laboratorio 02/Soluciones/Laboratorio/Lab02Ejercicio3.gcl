@@ -1,0 +1,29 @@
+#
+# Lab02Ejercicio3.gcl
+#
+# DESCRIPCION: Dados tres valores enteros A, B y C con valores diferentes, 
+# determinar el valor máximo de ellos.
+
+# Autor: 
+#	Rosseline Rodriguez
+
+[
+   CONST 
+     A: int;
+     B: int;
+     C: int;
+   VAR
+     maximo: int;
+
+   { a != b /\ b != c /\ a != c }
+
+   if a > b /\ a > c ->
+      maximo := a
+   [] b > a /\ b > c ->
+      maximo := b
+   [] c > a /\ c > b ->
+      maximo := c
+   fi
+   
+   { (a > b /\ a > c /\ maximo = a) \/ (b > a /\ b > c /\ maximo = b) \/ (c > a /\ c > b /\ maximo = c) }
+]

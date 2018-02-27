@@ -1,0 +1,46 @@
+#
+# Lab03Ejercicio1.gcl
+#
+# DESCRIPCION: Algoritmo que dada una opcion (1-3), si la opcion vale 1, 
+# las entradas son el largo y ancho de una habitacion y devuelve su superficie. Si 
+# la opcion vale 2, la entrada es el radio de una circunferencia, y devuelve el area de 
+# la misma. Si la opcion vale 3, la entrada es un numero natural n, y devuelve el
+# valor de la suma de los cuadrados entre 1 y n. 
+#
+# Autor: 
+#	Rosseline Rodriguez
+#
+# Ultima modificacion: 03/02/2018
+
+[
+   CONST 
+	 opc: int;
+     largo: float;
+     ancho: float;
+     radio: float;
+     n: int;
+   VAR
+	 superficie: float;
+	 area: float;
+	 suma: int;
+	 k: int;
+
+   { (opc = 1 \/ opc = 2 \/ opc = 3) /\ largo >= 0 /\ ancho >= 0 /\ radio >= 0 /\ n >= 1}
+
+   if opc = 1 ->
+      superficie := largo*ancho
+   [] opc = 2 ->
+      area := 3.1416*radio^2
+   [] opc = 3 ->
+      suma,k := 0,0;
+	  
+	  {inv: 0<=k<=n+1 /\ suma = (%sigma i: 0<=i<k: i^2)}
+	  {cota n+1-k}
+	  
+	  do k<=n ->
+	     suma,k := suma + k*k, k+1
+	  od
+   fi
+   
+   { (opc = 1 /\ superficie=largo*ancho) \/ (opc = 2 /\ area=3.1416*radio*radio) \/ (opc = 3 /\ suma = (%sigma i: 0<=i<=n: i^2)) }
+]

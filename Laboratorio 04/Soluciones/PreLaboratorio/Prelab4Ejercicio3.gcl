@@ -1,0 +1,47 @@
+#
+# Prelab4Ejercicio3.gcl
+#
+# DESCRIPCION: algoritmo que dada una matriz cuadrada NxN, 
+#              calcula si la matriz es diagonal
+#
+# Autor: 
+#	Rosseline Rodriguez
+#
+# Ultima modificacion: 06/02/2018
+
+[
+   CONST 
+     N: int;
+	 M: array [0..N)x[0..N) of int;
+
+   VAR
+     diagonal: bool;
+	 f: int;
+	 c: int;
+	 
+   { N > 0 }
+
+   diagonal,f := True,0;
+	  
+   {inv: 0<=f<=N /\ diagonal == (%forall i: 0<=i<f: (%forall j: 0<=j<N /\ i≠j: M[i][j]=0))}
+   {cota N-f}
+   do f<N ->
+      c:=0;
+	  
+      {inv: 0<=f<=N /\ 0<=c<=N /\ 
+	        diagonal == (%forall i: 0<=i<f: (%forall j: 0<=j<N /\ i≠j: M[i][j]=0)) /\ (%forall j: 0<=j<c /\ j≠f: M[f][j]=0)}
+      {cota N-c}
+	  do c<N ->
+	     if f!=c /\ M[f][c]!=0 ->
+		    diagonal := False
+		 [] !(f!=c /\ M[f][c]!=0) ->
+		    skip
+		 fi;
+		 c := c+1
+	  od;
+	  f := f+1
+   od
+      
+   {diagonal == (%forall i,j: 0<=i<N /\ 0<=j<N /\ i≠j: M[i][j]=0)}
+
+]

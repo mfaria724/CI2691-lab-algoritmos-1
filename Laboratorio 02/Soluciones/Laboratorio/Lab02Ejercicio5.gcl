@@ -1,0 +1,37 @@
+#
+# Lab02Ejercicio5.py
+#
+# DESCRIPCION: Dados 2 valores enteros verifica diferentes condiciones
+
+# Autor: 
+#	Rosseline Rodriguez
+
+[
+   CONST
+      m: int;
+      n: int;
+   VAR
+	  resp: int;
+
+   { n != 0 }
+
+   if m = 10 ->
+      resp := m div n
+   [] m = 5 ->
+      resp := m * n
+   [] m = 3 ->
+      resp := m + n
+   [] m = 2 ->
+      resp := m ^ n
+   [] !( m=10 \/ m=5 \/ m=3 \/ m=2)
+      resp := m
+   fi
+
+   { (m = 10 /\ resp = m div n) \/ (m = 5 /\ resp = m * n) \/ 
+     (m = 3 /\ resp == m + n) \/ (m == 2 /\ resp == m**n) \/
+     (m != 10 /\ m != 5 /\ m != 3 /\ m != 2 /\ resp == m)
+   }
+]
+
+# Salida:
+print("El resultado es:", resp)

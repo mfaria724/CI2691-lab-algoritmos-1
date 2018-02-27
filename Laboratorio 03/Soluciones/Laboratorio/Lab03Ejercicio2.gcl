@@ -1,0 +1,35 @@
+#
+# Lab03Ejercicio2.gcl
+#
+# DESCRIPCION: Dado un entero positivo n el algoritmo dice si el entero es primo 
+#
+# Autor: 
+#	Rosseline Rodriguez
+#
+# Ultima modificacion: 03/02/2018
+
+[
+   CONST 
+     n: int;
+   VAR
+	 esPrimo: boolean;
+     k: int;
+	 
+   { n > 0}
+
+   esPrimo,k := True,2;
+	  
+   {inv: 2<=k<=n /\ esPrimo == (%all i: 2<=i<k: (n mod i != 0))}
+   {cota n-k}
+	  
+   do esPrimo /\ k<n ->
+     if n mod k == 0 ->
+	    esPrimo := false
+	 [] n mod k != 0 ->
+	    skip
+	 fi;
+	 k := k+1
+   od
+   
+   { esPrimo == (%all i: 2<=i<n: (n mod i != 0)) }
+]

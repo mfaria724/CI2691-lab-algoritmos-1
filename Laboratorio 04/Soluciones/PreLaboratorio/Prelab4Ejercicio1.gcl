@@ -1,0 +1,34 @@
+#
+# Prelab4Ejercicio1.gcl
+#
+# DESCRIPCION: algoritmo que dado un arreglo A de N enteros,
+#              calcula la suma de los elementos del arreglo
+#
+# Autor: 
+#	Rosseline Rodriguez
+#
+# Ultima modificacion: 06/02/2018
+
+[
+   CONST 
+     N: int;
+	 A: array [0..N) of int;
+
+   VAR
+     suma: int;
+	 k: int;
+	 
+   { N > 0 }
+
+   suma,k := 0,0;
+	  
+   {inv: 0<=k<=N /\ suma = (%sigma i: 0<=i<k : A[i])}
+   {cota N-k}
+	  
+   do k<N ->
+     suma,k := suma+A[k],k+1
+   od
+      
+   {suma = (%sigma i: 0<=i<N : A[i])}
+
+]

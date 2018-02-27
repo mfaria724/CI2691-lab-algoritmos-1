@@ -1,0 +1,42 @@
+#
+# Lab03Ejercicio3.gcl
+#
+# DESCRIPCION: Dado un entero positivo n el algoritmo dice si es perfecto
+#
+# Autor: 
+#	Rosseline Rodriguez
+#
+# Ultima modificacion: 03/02/2018
+
+[
+   CONST 
+     n: int;
+   VAR
+	 esPerfecto: boolean;
+     suma: int;
+	 k: int;
+	 
+   { n > 0 }
+
+   suma,k := 0,1;
+	  
+   {inv: 1<=k<=n /\ suma==(%sigma i: 1<=i<k /\ (n mod i == 0):i)}
+   {cota n-k}
+	  
+   do k<n ->
+     if n mod k == 0 ->
+	    suma := suma+k
+	 [] n mod k != 0 ->
+	    skip
+	 fi;
+	 k := k+1
+   od;
+   
+   if n == suma ->
+      esPerfecto := True
+   [] n != suma ->
+      esPerfecto := False
+   fi
+   
+   { esPerfecto == (n = (%sigma i: 1<=i<n /\ (n mod i == 0):i)) }
+]
