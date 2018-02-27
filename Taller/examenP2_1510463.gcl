@@ -1,0 +1,39 @@
+#
+# examenP2_1510463.gcl
+#
+# DESCRIPCION: Programa que calcula la cantidad de ascensos en una secuencia.
+#
+# Autor: Manuel Faria 15-10463
+#       
+#
+# Ultima modificacion: 27/02/2018
+#
+
+[
+  CONST
+	  S: secuencia de enteros; // ENTRADA: elementos de la secuencia
+  VAR
+    numasc: int;             // SALIDA: numero de ascensos
+    k: int;                  // Variable para el recorrido del ciclo
+
+  { |S|>1 }
+
+  numasc,k:=0,1
+
+  {inv: 1<=k /\ (%count x: 1<=x<k: S[i-1]<S[i]) }
+  {cota: |S|-k}
+  do k!=N ->
+    if S[k-1]<S[k] ->
+      numasc:=numasc + 1
+    [] S[k-1]>=S[k] ->
+      skip
+    fi
+    k:=k+1
+  od
+  
+  { numasc = (%count i: 1<=i<|S|: S[i-1]<S[i]) } 
+
+]
+
+
+
