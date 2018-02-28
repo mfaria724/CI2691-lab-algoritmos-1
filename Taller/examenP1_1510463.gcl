@@ -1,0 +1,55 @@
+#
+# examenP1_1510463.gcl
+#
+# DESCRIPCIÓN: Programa que calcula el máximo de las diagonales principales de una matriz.
+#
+# Autor: Manuel Faria 15-10463
+#
+# Ultima modificacion: 27/02/2018
+#
+
+[
+  CONST
+	N: int;                          // ENTRADA: dimension de la matriz
+	Mat: array [0..N)x[0..N) of int; // ENTRADA: elementos de la matriz
+  VAR
+    maxdia: int; // SALIDA: Maximo de las dos diagonales
+    md1: int;    // Maximo de la diagonal 1
+    md2: int;    // Maximo de la diagonal 2
+    k: int;      // Variable para el recorrido del ciclo
+
+  { N>=0 }
+
+  k,md1,md2,maxdia:=1,Mat[0][0],Mat[0][N],Mat[0][0]
+
+  {inv: (all x: 0<=x<k: A[x][x]<=md1) /\ 0<=k<=N /\ (all y: 0<=y<k: A[y][N-1-y]<=md2) /\ md1<=maxdia /\ md2<=maxdia }
+  {cota: N-k }
+  do k!=N ->
+    
+    # Diagonal principal
+    if Mat[k][k]>md1 ->
+      md1:= Mat[k][k]
+    [] Mat[k][k]<=md1 ->
+      skip
+    fi
+
+    # Diagonal secundaria
+    if Mat[k][N-1-k]>md2 ->
+      md2:= Mat[k][N-1-k]
+    []
+      skip
+    fi
+
+    # Compara diagonales
+    if md1>=md2 ->
+      maxdia:=md1
+    [] md2>md1 ->
+      maxdia:=md2
+    fi
+
+    k:=k+1
+  od      
+  
+  { maxdia = (max (Mat[x][x] for x in range(0,N))==md1) max (max (Mat[x][N-1-x] for x in range(0,N))==md2) } # Complete la postcondicion
+
+]
