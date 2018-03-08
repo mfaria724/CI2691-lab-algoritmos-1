@@ -1,0 +1,60 @@
+{ 
+  Lab06Ejercicio1.gcl
+
+  DESCRIPCION: Programa que dada una secuencia S de N enteros determina si está
+  ordenada de forma creciente, decreciente, o está en desorden.
+
+  Autor: 
+ 	  Manuel Faria 15-10463
+
+}
+
+[
+  CONST 
+    N: int;
+    S: array [0,N) of int;
+  VAR
+    esCreciente: boolean;
+    esDecreciente: boolean;
+    esDesordenada: boolean;
+
+  { Precondición: N>1 }
+
+  esCreciente,esDecreciente,esDesordenada:=orden(N,S)
+
+  { Postcondición: ((%forall x: 0<=x<N-1 : S[x]>S[x+1]) /\ esDecreciente==true) 
+    \/ ((%forall x: 0<=x<N-1 : S[x]<=S[x+1]) /\ esCreciente==true)
+    \/ (esDecreciente==false /\ esCreciente==false /\ esDesordenada==true) }
+]
+
+func orden(N: int, S: array [0,N) of int)
+{ Precondición: N>1 }
+{ Postcondición: ((%forall x: 0<=x<N-1 : S[x]>S[x+1]) /\ esDecreciente==true) 
+    \/ ((%forall x: 0<=x<N-1 : S[x]<=S[x+1]) /\ esCreciente==true)
+    \/ (esDecreciente==false /\ esCreciente==false /\ esDesordenada==true) }
+[
+  i:=0
+  { Cota t: N-1-i }
+  { Inv P: ((%forall x: 0<=x<i : S[x]>S[x+1]) /\ esDecreciente==true) 
+    \/ ((%forall x: 0<=x<i : S[x]<=S[x+1]) /\ esCreciente==true)
+    \/ (esDecreciente==false /\ esCreciente==false /\ esDesordenada==true) }
+  do i!=N-1 ->
+
+    if S[i]>S[i+1] ->
+      esCreciente:=false
+    [] S[i]<=S[i+1] ->
+      esDecreciente:=false
+    fi
+
+    i:=i+1
+
+  od
+
+  if esCreciente==false /\ esDecreciente==false ->
+    esDesordenada:=true
+  [] esCreciente==true \/ esDecreciente==true ->
+    esDesordenada:=false
+  fi
+
+  return esCreciente, esDecreciente, esDesordenada
+]
