@@ -1,0 +1,50 @@
+{ 
+  Lab06Ejercicio2.gcl
+
+  DESCRIPCION: Programa que dado un arreglo A de N números naturales produzca otro
+  arreglo F con el número de Fibonacci de cada uno de los valores de A.
+
+  Autor: 
+ 	  Manuel Faria 15-10463
+
+  Última modificación: 08/03/2018
+
+}
+
+[
+  CONST 
+    N: int;
+    A: array [0,N) of int;
+  VAR
+    F: array [0,N) of int
+
+  { Precondición:  }
+
+  esCreciente,esDecreciente,esDesordenada:=orden(N,S)
+
+  { Postcondición:  }
+]
+
+proc Fib(in A: array [0,N) of int, in-out N: int, out F: array [0,N) of int)
+[
+  h:=0
+  { Cota t1: }
+  { Invariante p1: }
+  do h!=N:
+
+    i,j,k:=0,0,0
+    { Cota t2: }
+    { Invariante p2: }
+    do k!=S[]:
+      t:=i+j
+      ;i:=j
+      ;j:=t
+      ;k:=k+1
+    od
+
+    ;A[h]=t
+
+    ;h:=h+1
+
+  od
+]

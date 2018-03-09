@@ -1,0 +1,35 @@
+{ 
+  Lab06Ejercicio3.gcl
+
+  DESCRIPCION: Programa que dados dos números naturales N y M, produce la
+  lista de los factores primos de M que son menores o iguales a N,
+  indicando por cada uno su exponente en la factorización de M. 
+
+  Autor: 
+ 	  Manuel Faria 15-10463
+
+  Última modificación: 08/03/2018
+
+}
+
+[
+  CONST 
+    N: int;
+    M: int;
+  VAR
+
+  { Precondición:  }
+
+  esCreciente,esDecreciente,esDesordenada:=orden(N,S)
+
+  { Postcondición:  }
+]
+
+func FactoresPrimosAcotados(N: int, M:int)
+[
+  i:=0
+  do i!=N+1:
+    if M mod i == 0 -> 
+      
+  od
+]
