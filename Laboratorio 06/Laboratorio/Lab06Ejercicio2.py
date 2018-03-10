@@ -58,21 +58,24 @@ def Fib(N: int) -> (int):
 	#	c: int    // Tercer valor.
 
 	# Valores iniciales.
-	a,b=0,1
+	c,a,b=0,1,0
 
 	# Precondición:
-	assert(a==0 and b==1 and N>1)
+	assert(a==1 and b==0 and N>-1)
 
 	# Invariante: i<N
 	# Cota: N - i
-	for i in range(N):
-		c=a+b
-		a=b
-		b=c
+	for i in range(N+1):
+		if i == 0:
+			pass
+		elif i!=0:
+			c=a+b
+			a=b
+			b=c
 
 		# Invariante y cota:
 		# Cota: N - i	
-		assert(i<N)
+		assert(i<=N)
 
 	# Postcondición:
 	assert(True) # La postcondición es una función recursiva, c==Fib(N)
