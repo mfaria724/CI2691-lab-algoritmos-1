@@ -16,20 +16,91 @@
   CONST 
     N: int;
     M: int;
+    MAX: int;
   VAR
+    divisores: array [0,MAX) of int;
+    exponentes: array [0,MAX) of int;
 
-  { Precondición:  }
+  { Precondición: MAX > 100 /\ N >= 0 /\ M >= 0}
 
-  esCreciente,esDecreciente,esDesordenada:=orden(N,S)
+  divisores,exponentes = divisoresPrimos(N, M)
 
-  { Postcondición:  }
+  { Postcondición: (%forall x : 0 <= x < N: M mod (divisores[x]**exponentes[x]) == 0) }
 ]
 
-func FactoresPrimosAcotados(N: int, M:int)
+func divisoresPrimos(N: int, M: int, MAX: int) -> (array, array)
 [
-  i:=0
-  do i!=N+1:
-    if M mod i == 0 -> 
-      
+  { Precondición: MAX > 100 /\ N >= 0 /\ M >= 0  }
+  { Postcondición: (%forall x : 0 <= x < MAX : M mod divisores[x] == 0) }
+
+  VAR
+    divisores: array [0,MAX) of int;
+    exponentes: array [0,MAX) of int;
+    i: int;
+    j: int;
+
+  i,j:=2,0
+
+  { Inv P1: N >= 0 /\ M >= 0 }
+  { Cota T1: N - i }
+  do i != N ->
+    if esPrimo(i) == true ->
+      if M mod i == 0 ->
+        divisores[j] == i
+        ;exponentes[j] == calcularExponentes(M, i)
+        ;j := j + 1
+      [] M mod i != 0 ->
+        skip
+      fi
+    [] esPrimo(i) == false ->
+      skip
+    fi
   od
+
+  >> divisores, exponentes
+]
+
+func esPrimo(i: int) -> (boolean)
+[
+  { Precondición: i > 0 }
+  { Postcondición: (%forall x : 1 < x < i : i mod x != 0 ) == esPri }
+
+  VAR
+    j: int;
+    esPri: boolean;
+
+  j,esPri := 2, true
+
+  { Inv P2: ((%forall x : 1 < x < j + 1 : j mod x != 0 ) == esPri) /\ 2 <= j < i }
+  { Cota T2: i - j }
+  do j != i ->
+    if i mod j == 0 ->
+      esPri == false
+    [] i mod j != 0 ->
+      skip
+    fi
+    j := j + 1
+  od
+
+  >> esPri
+]
+
+func calcularExponentes(M: int, i: int) -> (int)
+[
+  { Precondición: i > 0 /\ M > 0 }
+  { Postcondición: true }
+
+  VAR
+    k: int;
+
+  k:=0
+
+  { Inv P3: true }
+  { Cota T3: M - k }
+  do M mod i == 0 ->
+    M := M div i
+    ;k := k + 1
+  od 
+
+  >> k
 ]

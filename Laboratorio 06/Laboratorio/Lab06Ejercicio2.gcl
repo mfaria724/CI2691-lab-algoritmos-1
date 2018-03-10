@@ -14,35 +14,37 @@
 [
   CONST 
     N: int;
-    A: array [0,N) of int;
+    A: array [0,N) of int
   VAR
     F: array [0,N) of int
 
-  { Precondición:  }
+  { Precondición: N>-1 }
 
-  esCreciente,esDecreciente,esDesordenada:=orden(N,S)
+  Fib(A,F)
 
-  { Postcondición:  }
+  { Postcondición: true }
 ]
 
-proc Fib(in A: array [0,N) of int, in-out N: int, out F: array [0,N) of int)
+proc Fib(in A: array [0,N) of int, in N: int, out F: array [0,N) of int)
 [
+  { Precondición: N>1 }
+  { Postcondición: (%forall x: 0<=x<=N: F[x]==Fib(A[x]))}
   h:=0
-  { Cota t1: }
-  { Invariante p1: }
-  do h!=N:
+  { Cota t1: N - h }
+  { Invariante p1: (%forall x: 0<=x<h: F[x]=fib(A[x])) /\ 0<=x<=N}
+  do h!=N ->
 
-    i,j,k:=0,0,0
-    { Cota t2: }
-    { Invariante p2: }
-    do k!=S[]:
+    i,j,k:=0,1,0
+    { Cota t2: N - k }
+    { Invariante p2: (%forall x: 0<=x<k: x==Fib(x-1)+Fib(x-2)) /\ 0<=k<=N}
+    do k!=A[h]->
       t:=i+j
       ;i:=j
       ;j:=t
       ;k:=k+1
     od
 
-    ;A[h]=t
+    ;F[h]=t
 
     ;h:=h+1
 

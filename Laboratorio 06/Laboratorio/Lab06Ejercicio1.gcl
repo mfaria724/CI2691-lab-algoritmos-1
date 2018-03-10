@@ -56,5 +56,5 @@ func orden(N: int, S: array [0,N) of int)
     esDesordenada:=false
   fi
 
-  return esCreciente, esDecreciente, esDesordenada
+  >> esCreciente, esDecreciente, esDesordenada
 ]
