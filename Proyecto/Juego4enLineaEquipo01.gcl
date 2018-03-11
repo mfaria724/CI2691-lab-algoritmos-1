@@ -1,0 +1,295 @@
+{ 
+  Juego4enLineaEquipo01.gcl
+
+  DESCRIPCIÓN: 
+
+  Autores: 
+ 	  Manuel Faria 15-10463
+ 	  Juan Oropeza 15-11041
+
+}
+
+[ MAIN
+	CONST
+		filas:int;
+		columnas: int;
+	VAR
+		tablero: array [0,filas) x [0,columnas) of int;
+		dificultad: int;
+		ultimoGanador: int;
+		jugador: int;
+		numPartidas: int;
+		jugada: int;
+		continuar: boolean;
+
+	numPartidas := 0
+	; ultimoGanador := 0
+	; continuar := true
+
+	; inicializarPartida(numPartidas, ultimoGanador)
+	
+
+	{ Cota: }
+	do continuar == true ->
+		; jugada := obtenerJugada(columnas)
+
+		if validarJugada(jugada, filas, columnas, tablero) == true ->
+			reflejarJugada(jugada, jugador, filas, columnas, tablero)
+			; jugador := cambiarTurno(jugador)
+			; numJugadas := numJugadas + 1
+
+			continuar := verificar4enLinea(filas,columnas,tablero)
+			verificarTablero()
+												if numJugadas == filas * columnas ->
+													continuar := false
+												[] numJugadas != filas * columnas ->
+													skip
+												fi 
+		[] validarJugada(jugada, filas, columnas, tablero) == false ->
+			abort
+		fi
+	od
+]
+
+proc inicializarPartida(in numPartidas: int, in ultimoGanador: int, in filas: int, in columnas: int, in-out tablero: array, out jugador: int)
+{ Precondición: numPartidas >= 0 /\ 0 <= ultimoGanador <= 2 /\ filas >= 0 /\ columnas >= 0}
+{ Postcondición: (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | tablero[i][j] == 0 %) }
+[
+	inicializarTablero(filas, columnas)
+	dificultad := dificultad()
+	jugador := definirPrimero(numPartidas, ultimoGanador)
+]
+
+proc inicializarTablero(in filas: int, in columnas: int, out tablero: array)
+
+	{ Precondición: filas >= 4 /\ columnas >= 4 }
+	{ Postcondición: (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | tablero[i][j] == 0 %) /\ 0 <= dificultad <= 1 
+					 /\ (numPartidas != 0 \/ primerJugador == 1) /\ (numPartidas == 0 \/ primerJugador == ultimoGanador) }
+
+[
+	VAR
+		tablero: array [0,filas) x [0,columnas) of int;
+		i: int;
+		j: int;
+
+	i := 0
+
+	{ Cota T: filas - i }
+	do i != filas ->
+
+		j := 0
+
+		{ Cota t2: columnas - j }
+
+		do j != columnas ->
+			tablero[i][j] := 0
+
+			;j := j + 1
+		od
+
+		i := i + 1
+	od
+
+]
+
+func dificultad() -> (int)
+{ Precondición: true }
+{ Postcondición: 0 <= dificultad <= 1 }
+[
+	CONST
+		dificultad: int;
+
+	>> dificultad
+]
+
+func definirPrimero(numPartidas:int, ultimoGanador: int) -> (int)
+{ Precondición: numPartidas >= 0 /\ 0 <= ultimoGanador <= 2}
+{ Postcondición: (numPartidas != 0 \/ primerJugador == 1) /\ (numPartidas == 0 \/ primerJugador == ultimoGanador) }
+[
+	VAR 
+		primerJugador: int;
+
+	if numPartidas == 0 ->
+		primerJugador := 1
+	[] numPartidas != 0 ->
+		primerJugador := ultimoGanador
+	fi
+
+	>> primerJugador
+]
+
+func obtenerJugada(columnas: int) -> int
+{ Precondición: true }
+{ Postcondición: 0 <= jugada <= columnas }
+[
+	CONST
+		jugada: int
+
+	>> jugada
+]
+
+func validarJugada(jugada: int, filas: int, columnas: int, tablero: array) -> boolean
+{ Precondición: 0 <= jugada < columnas /\ filas >= 4 /\ columnas >= 4}
+{ Postcondición: (% exist i : int | 0 <= i <= filas | tablero[i][jugada] == 0  %) == validacion }
+[
+	VAR 
+		validacion: boolean;
+		i: int;
+
+	i := 0
+
+	; validacion := false
+	
+	{ Cota t: filas - i }
+	do i != filas ->
+		if tablero[i][jugada] == 0 ->
+			validacion := true
+		[] tablero[i][jugada] != 0 ->
+			skip
+		fi
+
+		; i := i + 1
+	od
+
+	>> validacion
+]
+
+proc reflejarJugada(in jugada: int, in jugador: int, in filas: int, in columnas:int, in-out tablero: array)
+{ Precondición: 1 <= jugador <= 2 /\ 0 <= jugada < columnas /\ filas >= 4 /\ columnas >= 4}
+{ Postcondición: (% exist i : int | 0 <= i < filas | tablero[i][jugada] == jugador %)}
+[
+	i := filas - 1
+
+	{ Cota t: i }
+	do i != -1 ->
+		if tablero[i][jugada] == 0 ->
+			tablero[i][jugada] := jugador
+		[] tablero[i][jugada] != 0 ->
+			skip
+		fi
+
+		; i := i - 1
+	od
+]
+
+func cambiarTurno(jugador) -> int
+{ Precondición: 1 <= jugador <= 2 }
+{ Postcondición: (jugador != 1 \/ jugador ==2) /\ (jugador != 2 \/ jugador == 1) }
+[
+	if jugador == 1 ->
+		jugador := 2
+	[] jugador == 2 ->
+		jugador := 1
+	fi
+
+	>> jugador
+]
+
+func verificar4enLinea(filas: int,columnas: int, tablero: array) -> boolean
+[
+	if verificarHorizontal(filas, columnas, tablero) == true \/ verificarVertical(filas, columnas, tablero) == true \/ verificarDiagonalDerecha() == true \/ verificarDiagonalIzquierda() == true ->
+		continuar := false
+	[] verificarHorizontal(filas, columnas, tablero) == false /\ verificarVertical(filas, columnas, tablero) == false /\ verificarDiagonalDerecha() == false /\ verificarDiagonalIzquierda() == false ->
+		continuar := true
+	fi
+
+	>> continuar
+]
+
+func verificarHorizontal(filas: int, columnas:int, tablero: array) -> boolean
+{ Precondición: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %)}
+{ Postcondición: (% exist i,j : int | 0 <= i < filas /\ 0 <= j < columnas - 3 | tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3] %) == hay4enLinea }
+[
+	i, hay4enLinea := 0, false
+	{ Cota t1: filas - i }
+	do i != filas ->
+		j := 0
+
+		{ Cota t2: columnas - 3 - j }
+		do j != columnas - 3 ->
+
+			if (tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3]) == true ->
+				hay4enLinea := true
+			[] (tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3]) == false ->
+				hay4enLinea := false
+			fi
+
+
+			; j := j + 1
+		od
+
+		; i := i + 1
+	od
+
+	>> hay4enLinea
+]
+
+func verificarVertical(filas: int, columnas:int, tablero: array) -> boolean
+{ Precondición: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %)}
+{ Postcondición: (% exist i,j : int | 0 <= i < columnas /\ 0 <= j < filas - 3 | tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i] %) == hay4enLinea }
+[
+	i, hay4enLinea := 0, false
+	{ Cota t1: columnas - i }
+	do i != columnas ->
+		j := 0		
+		{ Cota t2: filas - 3 - j }
+		do j != filas - 3 ->
+
+			if (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i]) == true ->
+				hay4enLinea := true
+			[] (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i]) == false ->
+				hay4enLinea := false
+			fi		
+
+			; j := j + 1
+		od
+
+		; i := i + 1
+	od
+
+	>> hay4enLinea
+]
+
+func verificarDiagonalDerecha(filas: int, columnas:int, tablero: array)
+[
+	i := 0
+	do i != filas - 3 ->
+		j := 0
+		do j != columnas - 3 ->
+			if (tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3]) == true ->
+				hay4enLinea := true
+			[] (tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3]) == false ->
+				hay4enLinea := false
+			fi
+
+			; j := j + 1
+		od
+
+		; i := i + 1
+	od
+
+	>> hay4enLinea
+]
+
+func verificarDiagonalDerecha(filas: int, columnas:int, tablero: array)
+[
+	i := 3
+	{ Cota t1: columnas - i }
+	do i != columnas ->
+		j := 0
+		{ Cota t2: filas - 3 - j }
+		do j != filas - 3 ->
+			if (tablero[j][i] == tablero[j-1][i-1] == tablero[j-2][i-2] == tablero[j-3][i-3]) == true ->
+				hay4enLinea := true
+			[] (tablero[j][i] == tablero[j-1][i-1] == tablero[j-2][i-2] == tablero[j-3][i-3]) == false ->
+				hay4enLinea := false
+			fi
+
+			; j := j + 1
+		od
+
+		; i := i + 1
+	od
+
+	>> hay4enLinea
+]

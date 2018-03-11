@@ -1,0 +1,68 @@
+#
+# Lab6Ejercicio2.gcl
+#
+# DESCRIPCION: algoritmo que dado un arreglo A de N numeros naturales 
+# produce otro arreglo F lleno con los numeros de Fibonacci de los valores de A
+#
+# Autor: 
+#	Rosseline Rodriguez
+#
+# Ultima modificacion: 10/03/2018
+
+[
+   CONST 
+     N: int;
+	 A: array [0..N) of int;
+
+   VAR
+	 F: array [0..N) of int;
+	 
+   { N > 0 /\ (%forall i: 0<=i<N : A[i] >= 0) }
+
+   llenarconFib(N,A,F)
+	  
+   { (%forall i: 0<=i<N: F[i] = fib(A[i])) }
+]
+
+func fib(n:int) -> int
+{ Pre: n >= 0 }
+{ Post:  fib devuelve el numero de fibonacci para n, no tiene forma cerrada }
+[
+   VAR
+      fk: int;   // fib(k)
+	  fk_1: int; // fib(k-1)
+	  k: int;    // variable de control del ciclo
+
+   if n = 0 -> fk := 0
+   [] n = 1 -> fk := 1
+   [] n > 1 -> 
+      k,fk,fk_1 := 1,1,0;
+
+      {inv: 1<=k<=N } // como fib no tiene forma cerrada sólo colocamos el rango en el inv
+      {cota: n-i}
+      do k < n ->
+        fk,fk_1 := fk + fk_1,fk; 
+        k := k+1
+      od	
+   fi
+   
+   >> fk
+]
+
+proc llenarconFib(in N:int; in A: array [0..N) of int; out F: array [0..N) of int)
+{ Pre: N > 0 }
+{ Post: (%forall i: 0<=i<N: F[i] = fib(A[i])) }
+[
+   VAR
+	  k: int;
+
+   k := 0;
+
+   {inv: 0<=k<=N /\ (%forall i: 0<=i<k: F[i] = fib(A[i])) }
+   {cota: N-k}
+   do k < N ->
+     F[k] := fib(A[k])
+     k := k+1
+   od	
+]
+

@@ -1,0 +1,108 @@
+#
+# Lab6Ejercicio3.gcl
+#
+# DESCRIPCION: algoritmo que dados dos numeros naturales N y M, produce la secuencia de
+# los factores primos de M que son menores o iguales a N, junto con su
+# exponente en la factorizacion de M.
+#
+# Autor: 
+#	Rosseline Rodriguez
+#
+# Ultima modificacion: 10/03/2018
+
+[
+   CONST 
+     N, M: int;   
+
+   VAR
+	 S: secuencia de enteros; // S[i] es factor primo y S[i+1] es el exponente
+	 
+   { N > 0 /\ M > 0}
+
+   producirSecuenciaFP(N,M,S)
+	  
+   { (%forall i: 0<=i<|S| /\ (i mod 2 = 0): 
+        esprimo(S[i]) /\ (S[i] < M) /\ (N mod (%pi: 0<=i<S[i+1] : S[i]) == 0) /\ S[i+1] = cuantoDivide(S[i],N)) }
+]
+
+func esprimo( n:int )->bool
+{ Pre: n > 1 }
+{ Post:  esprimo = (%forall i: 1<i<n: S[i] mod i != 0) }
+[
+   VAR
+      primo: bool;
+	  k: int;
+
+   primo,k := True,2;
+
+   {inv: 1<k<=n /\ primo = (%forall i: 1<i<k: n mod i != 0)}
+   {cota: n-k}
+   do primo /\ k < n ->
+     if n mod k != 0 ->
+	    skip
+	 [] n mod k == 0 ->
+        primo := False
+     fi;
+     k := k+1
+   od	
+    
+   >> primo
+]
+
+// Cuantas veces divide n a x
+func cuantoDivide(n:int; x: int)->int
+{ Pre: n > 1 /\ x > 1}
+{ Post: cuantoDivide = cuenta /\ (x mod (%pi: 0<=i<cuenta : n) == 0) /\ (x mod (%pi: 0<=i<cuenta+1 : n) != 0) }
+[
+   VAR
+      cuenta: int;
+	  cociente: int;
+	  
+   cociente,cuenta := x,0;
+
+   {inv: 0<=cuenta<x/n /\ x = cociente*(%pi: 0<=i<cuenta : n) }
+   {cota: x/n-cuenta}
+
+   do ( cociente mod n == 0) ->
+     cuenta := cuenta+1;
+	 cociente := cociente div n
+   od	
+    
+  >> cuenta
+]
+
+proc producirSecuenciaFP(in N:int; in M:int; out S: secuencia de enteros)
+{ Pre: N > 0 /\ M > 0 }
+{ Post: { (%forall i: 0<=i<|S| /\ (i mod 2 = 0): 
+             (S[i] < M) /\ esprimo(S[i]) /\ (N mod (S[i]^S[i+1]) == 0) /\ S[i+1] = cuantoDivide(S[i],N)) 
+}
+
+[
+   VAR
+      k: int;        // variable control del ciclo
+	  i: int;        // siguiente posicion en la secuencia
+      termine: bool; // dice si se llego al limite
+	  
+   k,i,termine := 2,0,False;
+
+   {inv: 1<k<=N+1 /\ termine = !(k < M) /\ 
+        (%forall j: 0<=j<k /\ (j mod 2 = 0): 
+             (S[j] < M) /\ esprimo(S[j]) /\ (N mod (S[j]^S[j+1]) = 0) /\ S[j+1] = cuantoDivide(S[j],N))
+   {cota: N-k}
+   do !termine /\ k <= N ->
+      if k < M ->
+         if esprimo(k) /\ (N mod k = 0) ->
+	        S[i] := k;
+            S[i+1] := cuantoDivide(k,N);
+		    i := i+2
+         [] !(esprimo(k) /\ (N mod k == 0)) ->
+            skip
+	     fi
+      [] k >= M ->
+	     termine := True
+	  fi;
+      k := k+1
+   od
+   
+]
+

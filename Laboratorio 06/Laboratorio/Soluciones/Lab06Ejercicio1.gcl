@@ -1,0 +1,99 @@
+#
+# Lab6Ejercicio1.gcl
+#
+# DESCRIPCION: algoritmo que determina si una secuencia S de N enteros 
+# esta ordenada en forma creciente, decreciente, o está en desorden
+#
+# Autor: 
+#	Rosseline Rodriguez
+#
+# Ultima modificacion: 10/03/2018
+
+[
+   CONST 
+     N: int;
+	 S: array [0..N) of int;
+
+   VAR
+     orden: int;
+	 
+   { N > 0 }
+
+   orden := verOrden(N,S)
+	  
+   { 
+     (orden = 1 /\ (%forall i: 1<=i<N: S[i-1]<=S[i])) \/ 
+     (orden = -1 /\ (%forall i: 1<=i<N: S[i-1]>=S[i])) \/ 
+	 (orden = 0 /\ !((%forall i: 1<=i<N: S[i-1]<=S[i]) \/ (%forall i: 1<=i<N: S[i-1]>=S[i])))
+   }
+]
+
+func esCreciente(N:int; S: array [0..N) of int)->bool
+{ Pre: N > 1 }
+{ Post:  esCreciente = (%forall i: 1<=i<N: S[i-1]<=S[i]) }
+[
+   VAR
+      crece: bool;
+	  k: int;
+
+   crece,k := True,1;
+
+   {inv: 1<=k<=N /\ crece = (%forall i: 1<=i<k: S[i-1]<=S[i])}
+   {cota: N-k}
+   do crece /\ k < N ->
+     if S[k-1] <= S[k] ->
+	    skip
+	 [] S[k-1] > S[k] ->
+        crece := False
+     fi;
+     k := k+1
+   od	
+    
+   >> crece
+]
+
+func esDecreciente(N:int; S: array [0..N) of int)->bool
+{ Pre: N > 1 }
+{ Post:  esDecreciente = (%forall i: 1<=i<N: S[i-1]>=S[i]) }
+[
+   VAR
+      decrece: bool;
+	  k: int;
+
+   decrece,k := True,1;
+
+   {inv: 1<=k<=N /\ decrece = (%forall i: 1<=i<k: S[i-1]>=S[i])}
+   {cota: N-k}
+   do decrece /\ k < N ->
+     if S[k-1] <= S[k] ->
+	    skip
+	 [] S[k-1] > S[k] ->
+        decrece := False
+     fi;
+     k := k+1
+   od	
+    
+  >> decrece
+]
+
+func verOrden(N:int; S: array [0..N) of int)->int
+{ Pre: N > 1 }
+{ Post:  (verOrden = 1 /\ esCreciente(N,S)) \/ (verOrden = -1 /\ esDecreciente(N,S)) \/ 
+         (verOrden = 0 /\ !esCreciente(N,S) /\ !esDecreciente(N,S))
+}
+
+[
+   VAR
+      orden: int;
+	  
+   if esCreciente(N,S) ->
+     orden := 1
+   [] esDecreciente(N,S) ->
+     orden := -1
+   [] !esCreciente(N,S) /\ !esDecreciente(N,S) ->
+     orden := 0
+   fi
+   
+   >> orden
+]
+
