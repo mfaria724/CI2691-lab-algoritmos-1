@@ -21,10 +21,18 @@
 		numPartidas: int;
 		jugada: int;
 		continuar: boolean;
+		numJugadas: int;
+		numEmpates: int;
+		partidasGanadasPersona: int;
+		partidasGanadasPC: int;
 
-	numPartidas := 0
+	numJugadas:= 0
+	;numPartidas := 0
+	; partidasGanadasPC := 0
+	; partidasGanadasPersona := 0
 	; ultimoGanador := 0
 	; continuar := true
+	; numEmpates := 0
 
 	; inicializarPartida(numPartidas, ultimoGanador)
 	
@@ -38,26 +46,48 @@
 			; jugador := cambiarTurno(jugador)
 			; numJugadas := numJugadas + 1
 
-			continuar := verificar4enLinea(filas,columnas,tablero)
-			verificarTablero()
-												if numJugadas == filas * columnas ->
-													continuar := false
-												[] numJugadas != filas * columnas ->
-													skip
-												fi 
+			continuar, ganador := verificar4enLinea(filas,columnas,tablero)
+			
+			if continuar == true ->
+				continuar := verificarTablero(numJugadas, filas, columnas)
+
+				if continuar == false ->
+					numEmpates := numEmpates +1
+				[] continuar == true ->
+					skip
+
+			[] continuar == false ->
+				if ganador == 1 ->
+					ultimoGanador := ganador
+					partidasGanadasPersona := partidasGanadasPersona + 1
+				[] ganador == 2 ->
+					ultimoGanador := ganador
+					partidasGanadasPC := partidasGanadasPC + 1
+				[] ganador != 1 /\ ganador != 2 ->
+					skip
+				fi
+				; numPartidas := numPartidas + 1
+			fi
+
 		[] validarJugada(jugada, filas, columnas, tablero) == false ->
 			abort
 		fi
 	od
+
+	Despl
+
+
+
 ]
 
-proc inicializarPartida(in numPartidas: int, in ultimoGanador: int, in filas: int, in columnas: int, in-out tablero: array, out jugador: int)
+proc inicializarPartida(in numPartidas: int, in ultimoGanador: int, in filas: int, in columnas: int, in-out tablero: array,out numJugadas: int, out jugador: int)
 { Precondición: numPartidas >= 0 /\ 0 <= ultimoGanador <= 2 /\ filas >= 0 /\ columnas >= 0}
 { Postcondición: (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | tablero[i][j] == 0 %) }
 [
 	inicializarTablero(filas, columnas)
 	dificultad := dificultad()
 	jugador := definirPrimero(numPartidas, ultimoGanador)
+	numJugadas := 0
 ]
 
 proc inicializarTablero(in filas: int, in columnas: int, out tablero: array)
@@ -118,19 +148,48 @@ func definirPrimero(numPartidas:int, ultimoGanador: int) -> (int)
 	>> primerJugador
 ]
 
-func obtenerJugada(columnas: int) -> int
-{ Precondición: true }
+func obtenerJugada(columnas: int, jugador: int, dificultad: int) -> int
+{ Precondición: columnas >= 4 /\ 1 <= jugador <= 2 /\ 0 <= dificultad <= 1 }
 { Postcondición: 0 <= jugada <= columnas }
 [
 	CONST
-		jugada: int
+		jugadaPersona: int;
+	VAR
+		jugadaPC: int;
+
+	if jugador == 2 ->
+		if dificultad == 0 ->
+			if true ->
+				jugadaPC := 0
+			[] true ->
+				jugadaPC := 1
+			[] true ->
+				jugadaPC := 2
+			[] true ->
+				jugadaPC := 3
+			[] true -> 
+				jugadaPC := 4
+			[] true ->
+				jugadaPC := 5
+			[] true ->
+				jugadaPC := 6
+			fi
+
+			; jugada:= jugadaPC
+
+		[] dificultad == 1 ->
+			jugadaDePC()
+		fi
+	[] jugador == 1 ->
+		jugada := jugadaPersona
+	fi
 
 	>> jugada
 ]
 
 func validarJugada(jugada: int, filas: int, columnas: int, tablero: array) -> boolean
 { Precondición: 0 <= jugada < columnas /\ filas >= 4 /\ columnas >= 4}
-{ Postcondición: (% exist i : int | 0 <= i <= filas | tablero[i][jugada] == 0  %) == validacion }
+{ Postcondición: (% exist i : int | 0 <= i < filas | tablero[i][jugada] == 0  %) == validacion }
 [
 	VAR 
 		validacion: boolean;
@@ -185,22 +244,36 @@ func cambiarTurno(jugador) -> int
 	>> jugador
 ]
 
-func verificar4enLinea(filas: int,columnas: int, tablero: array) -> boolean
+func verificar4enLinea(filas: int,columnas: int, tablero: array) -> (boolean, int)
+{ Precondicion: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
+{ Postcondición: (% exist i : int | 0 <= i < 4 | ganadores[i] != 0 /\ ganador == ganadores[i]  %) == (continuar == false) }
 [
-	if verificarHorizontal(filas, columnas, tablero) == true \/ verificarVertical(filas, columnas, tablero) == true \/ verificarDiagonalDerecha() == true \/ verificarDiagonalIzquierda() == true ->
-		continuar := false
-	[] verificarHorizontal(filas, columnas, tablero) == false /\ verificarVertical(filas, columnas, tablero) == false /\ verificarDiagonalDerecha() == false /\ verificarDiagonalIzquierda() == false ->
-		continuar := true
-	fi
+	VAR
+		ganador: int;
+		ganadores: array[0,4) of int;
 
-	>> continuar
+	ganadores := [verificarHorizontal(filas, columnas, tablero), verificarVertical(filas, columnas, tablero), verificarDiagonalDerecha(filas, columnas, tablero), verificarDiagonalIzquierda(filas, columnas, tablero)]
+	; i := 0
+
+	do i != 4 ->
+		if ganadores[i] != 0 ->
+			ganador := ganadores[i]
+			; continuar := false
+		[] ganadores[i] == 0 ->
+			ganador := 0	
+			; continuar := false
+		fi
+		i := i + 1
+	od
+
+	>> (continuar, ganador)
 ]
 
-func verificarHorizontal(filas: int, columnas:int, tablero: array) -> boolean
+func verificarHorizontal(filas: int, columnas:int, tablero: array) -> int
 { Precondición: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %)}
 { Postcondición: (% exist i,j : int | 0 <= i < filas /\ 0 <= j < columnas - 3 | tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3] %) == hay4enLinea }
 [
-	i, hay4enLinea := 0, false
+	i := 0
 	{ Cota t1: filas - i }
 	do i != filas ->
 		j := 0
@@ -209,9 +282,9 @@ func verificarHorizontal(filas: int, columnas:int, tablero: array) -> boolean
 		do j != columnas - 3 ->
 
 			if (tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3]) == true ->
-				hay4enLinea := true
+				ganador := tablero[i][j]
 			[] (tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3]) == false ->
-				hay4enLinea := false
+				ganador := 0
 			fi
 
 
@@ -221,14 +294,14 @@ func verificarHorizontal(filas: int, columnas:int, tablero: array) -> boolean
 		; i := i + 1
 	od
 
-	>> hay4enLinea
+	>> ganador
 ]
 
-func verificarVertical(filas: int, columnas:int, tablero: array) -> boolean
+func verificarVertical(filas: int, columnas:int, tablero: array) -> int
 { Precondición: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %)}
 { Postcondición: (% exist i,j : int | 0 <= i < columnas /\ 0 <= j < filas - 3 | tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i] %) == hay4enLinea }
 [
-	i, hay4enLinea := 0, false
+	i := 0
 	{ Cota t1: columnas - i }
 	do i != columnas ->
 		j := 0		
@@ -236,9 +309,9 @@ func verificarVertical(filas: int, columnas:int, tablero: array) -> boolean
 		do j != filas - 3 ->
 
 			if (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i]) == true ->
-				hay4enLinea := true
+				ganador := tablero[j][i]
 			[] (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i]) == false ->
-				hay4enLinea := false
+				ganador := 0
 			fi		
 
 			; j := j + 1
@@ -247,19 +320,23 @@ func verificarVertical(filas: int, columnas:int, tablero: array) -> boolean
 		; i := i + 1
 	od
 
-	>> hay4enLinea
+	>> ganador
 ]
 
-func verificarDiagonalDerecha(filas: int, columnas:int, tablero: array)
+func verificarDiagonalDerecha(filas: int, columnas:int, tablero: array) -> int
+{ Precondicion: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
+{ Postcondición: (% exist i,j : int | 0 <= i < filas - 3 /\ 0 <= j < columnas - 3 | tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3] %) == hay4enLinea }
 [
 	i := 0
+	{ Cota t1: filas - 3 - i}
 	do i != filas - 3 ->
 		j := 0
+		{ Cota t2: columnas - 3 - j}
 		do j != columnas - 3 ->
 			if (tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3]) == true ->
-				hay4enLinea := true
+				ganador := tablero[i][j]
 			[] (tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3]) == false ->
-				hay4enLinea := false
+				ganador := 0
 			fi
 
 			; j := j + 1
@@ -268,10 +345,12 @@ func verificarDiagonalDerecha(filas: int, columnas:int, tablero: array)
 		; i := i + 1
 	od
 
-	>> hay4enLinea
+	>> ganador
 ]
 
-func verificarDiagonalDerecha(filas: int, columnas:int, tablero: array)
+func verificarDiagonalIzquierda(filas: int, columnas:int, tablero: array) -> int
+{ Precondición: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
+{ Postcondición: (% exist i,j : int | 3 <= i < columnas /\ 0 <= j < filas - 3 | tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3] %) == hay4enLinea}
 [
 	i := 3
 	{ Cota t1: columnas - i }
@@ -279,10 +358,10 @@ func verificarDiagonalDerecha(filas: int, columnas:int, tablero: array)
 		j := 0
 		{ Cota t2: filas - 3 - j }
 		do j != filas - 3 ->
-			if (tablero[j][i] == tablero[j-1][i-1] == tablero[j-2][i-2] == tablero[j-3][i-3]) == true ->
-				hay4enLinea := true
-			[] (tablero[j][i] == tablero[j-1][i-1] == tablero[j-2][i-2] == tablero[j-3][i-3]) == false ->
-				hay4enLinea := false
+			if (tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3]) == true ->
+				ganador := tablero[j][i]
+			[] (tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3]) == false ->
+				ganador := 0
 			fi
 
 			; j := j + 1
@@ -291,5 +370,161 @@ func verificarDiagonalDerecha(filas: int, columnas:int, tablero: array)
 		; i := i + 1
 	od
 
-	>> hay4enLinea
+	>> ganador
+]
+
+func verificarTablero(numJugadas: int, filas: int, columnas:int) -> boolean
+{ Precondición: filas >= 4 /\ columnas >= 4 /\ numJugadas <= filas * columnas}
+{ Postcondición: (numJugadas != filas * columnas \/ continuar == false) /\ (numJugadas == filas * columnas \/ continuar == true)}
+[
+	if numJugadas == filas * columnas ->
+		continuar := false
+	[] numJugadas != filas * columnas ->
+		continuar := true
+	fi 
+
+	>> continuar
+]
+
+func jugadaDePC(filas: int, columnas: int, numJugadas: int, tablero: int, ultimaJugada: int)
+{}
+{}
+[
+	if numJugadas == 0 ->
+		if true ->
+			jugadaPC := 0
+		[] true ->
+			jugadaPC := 1
+		[] true ->
+			jugadaPC := 2
+		[] true ->
+			jugadaPC := 3
+		[] true -> 
+			jugadaPC := 4
+		[] true ->
+			jugadaPC := 5
+		[] true ->
+			jugadaPC := 6
+		fi
+
+													if true ->
+														estrategia := 0
+													[] true ->
+														estrategia := 1
+													[] true ->
+														estrategia := 2
+													[] true ->
+														estrategia := 3
+													fi
+
+	[] numJugadas != 0 ->
+		if estrategia == 0 /\ ultimaJugada[0] > 2 ->
+			if  ultimaJugada[0] > 2 ->
+				if (tablero[ultimaJugada[0] - 1][ultimaJugada[1]] == 0 /\ tablero[ultimaJugada[0] - 2][ultimaJugada[1]] == 0 tablero[ultimaJugada[0] - 3][ultimaJugada[1]] == 0) == true -> 
+					jugada := ultimaJugada[1]
+				[] (tablero[ultimaJugada[0] - 1][ultimaJugada[1]] == 0 /\ tablero[ultimaJugada[0] - 2][ultimaJugada[1]] == 0 tablero[ultimaJugada[0] - 3][ultimaJugada[1]] == 0) == false ->
+					estrategia := randomEstrategia()
+
+				fi
+			[] ultimaJugada[0] <= 2 ->
+				estrategia := randomEstrategia()
+			fi
+		[] estrategia == 1 ->
+			if ultimaJugada[0] != filas - 1 ->
+				if ultimaJugada[1] < columnas - 3 ->
+					if (tablero[ultimaJugada[0]][ultimaJugada[1] + 1] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] + 2] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] + 3] == 0) == true ->
+						if (tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1] != 0 /\ tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 2] != 0 /\ tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 3] != 0) == true ->
+							jugada := ultimaJugada[1] + 1
+						[] (tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1] != 0 /\ tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 2] != 0 /\ tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 3] != 0) == false ->
+							estrategia := randomEstrategia()
+						fi
+					[] (tablero[ultimaJugada[0]][ultimaJugada[1] + 1] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] + 2] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] + 3] == 0) == false ->
+						estrategia := randomEstrategia()
+					fi
+				[] ultimaJugada[1] => columnas - 3 ->
+					if (tablero[ultimaJugada[0]][ultimaJugada[1] - 1] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] - 2] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] - 3] == 0) == true ->
+						if (tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1] != 0 /\ tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 2] != 0 /\ tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 3] != 0) == true ->
+							jugada := ultimaJugada[1] - 1
+						[] (tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1] != 0 /\ tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 2] != 0 /\ tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 3] != 0) == false ->
+							estrategia := randomEstrategia()
+						fi
+					[] (tablero[ultimaJugada[0]][ultimaJugada[1] - 1] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] - 2] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] - 3] == 0) == false ->
+						estrategia := randomEstrategia()
+					fi
+				fi
+			[] ultimaJugada[0] == filas - 1 ->
+				if ultimaJugada[1] < columnas - 3 ->
+					if (tablero[ultimaJugada[0]][ultimaJugada[1] + 1] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] + 2] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] + 3] == 0) == true ->
+						jugada := ultimaJugada[1] + 1
+					[] (tablero[ultimaJugada[0]][ultimaJugada[1] + 1] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] + 2] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] + 3] == 0) == false ->
+						estrategia := randomEstrategia()
+					fi
+				[] ultimaJugada[1] => columnas - 3 ->
+					if (tablero[ultimaJugada[0]][ultimaJugada[1] - 1] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] - 2] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] - 3] == 0) == true ->
+						jugada := ultimaJugada[1] - 1
+					[] (tablero[ultimaJugada[0]][ultimaJugada[1] - 1] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] - 2] == 0 /\ tablero[ultimaJugada[0]][ultimaJugada[1] - 3] == 0) == false ->
+						estrategia := randomEstrategia()
+					fi
+				fi
+			fi
+		[] estrategia == 2 ->
+			if ultimaJugada[0] < filas - 3 /\ ultimaJugada[1] < columnas - 3 -> 
+				if (tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1] == 0 /\ tablero[ultimaJugada[0] + 2][ultimaJugada[1] + 2] == 0 /\ tablero[ultimaJugada[0] + 3][ultimaJugada[1] + 3] == 0) == true ->
+					if (tablero[ultimaJugada[0] + 2][ultimaJugada[1] + 1] != 0 /\ tablero[ultimaJugada[0] + 3][ultimaJugada[1] + 2] != 0) == true ->
+						if ultimaJugada[0] == filas - 4  ->
+							jugada := ultimaJugada[1] + 1
+						[] ultimaJugada[0] != filas - 4 ->
+							if (tablero[ultimaJugada[0] + 4][ultimaJugada[1] + 3] != 0) == true ->
+								jugada := ultimaJugada[1] + 1
+							[] (tablero[ultimaJugada[0] + 4][ultimaJugada[1] + 3] != 0) == false ->
+								estrategia := randomEstrategia()
+							fi
+						fi
+					[] (tablero[ultimaJugada[0] + 0][ultimaJugada[1] + 1] != 0 /\ tablero[ultimaJugada[0] + 3][ultimaJugada[1] + 2] != 0) == false ->
+						estrategia := randomEstrategia()
+					fi
+				[] (tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1] == 0 /\ tablero[ultimaJugada[0] + 2][ultimaJugada[1] + 2] == 0 /\ tablero[ultimaJugada[0] + 3][ultimaJugada[1] + 3] == 0) == false ->
+					estrategia := randomEstrategia()
+				fi
+			[] ultimaJugada[0] > 2 /\ ultimaJugada[1] > 2 ->
+				if (tablero[ultimaJugada[0] - 1][ultimaJugada[1] - 1] == 0 /\ tablero[ultimaJugada[0] - 2][ultimaJugada[1] - 2] == 0 /\ tablero[ultimaJugada[0] - 3][ultimaJugada[1] - 3] == 0) == true ->
+					jugada := ultimaJugada[1] - 1
+				[] (tablero[ultimaJugada[0] - 1][ultimaJugada[1] - 1] == 0 /\ tablero[ultimaJugada[0] - 2][ultimaJugada[1] - 2] == 0 /\ tablero[ultimaJugada[0] - 3][ultimaJugada[1] - 3] == 0) == false ->
+					estrategia := randomEstrategia()
+				fi
+			[] (ultimaJugada[0] >= filas - 3 /\ ultimaJugada[1] <= 2) \/ (ultimaJugada[0] <= 2 /\ ultimaJugada[1] >= columnas - 3) ->
+				estrategia:= randomEstrategia()
+			fi
+		[] estrategia == 3 ->
+			if ultimaJugada[0] < 3 /\ ultimaJugada[1] > 2 -> 
+				if (tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1] == 0 /\ tablero[ultimaJugada[0] + 2][ultimaJugada[1] - 2] == 0 /\ tablero[ultimaJugada[0] + 3][ultimaJugada[1] - 3] == 0) == true ->
+					if (tablero[ultimaJugada[0] + 2][ultimaJugada[1] - 1] != 0 /\ tablero[ultimaJugada[0] + 3][ultimaJugada[1] - 2] != 0) == true ->
+						if ultimaJugada[0] == filas - 4 ->
+							jugada := ultimaJugada[1] - 1
+						[] ultimaJugada[0] != filas - 4 ->
+							if (tablero[ultimaJugada[0] + 4][ultimaJugada[1] - 3] != 0) == true ->
+								jugada := ultimaJugada[1] - 1
+							[] (tablero[ultimaJugada[0] + 4][ultimaJugada[1] - 3] != 0) == false ->
+								estrategia := randomEstrategia()
+							fi
+						fi
+					[] (tablero[ultimaJugada[0] + 2][ultimaJugada[1] - 1] != 0 /\ tablero[ultimaJugada[0] + 3][ultimaJugada[1] - 2] != 0) == false ->
+						estrategia := randomEstrategia()
+					fi
+				[] (tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1] == 0 /\ tablero[ultimaJugada[0] + 2][ultimaJugada[1] - 2] == 0 /\ tablero[ultimaJugada[0] + 3][ultimaJugada[1] - 3] == 0) == false ->
+					estrategia := randomEstrategia()
+				fi
+			[] ultimaJugada[0] >= 3 /\ ultimaJugada[1] < columnas - 3 ->
+				if (tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1] == 0 /\ tablero[ultimaJugada[0] - 2][ultimaJugada[1] + 2] == 0 /\ tablero[ultimaJugada[0] - 3][ultimaJugada[1] + 3] == 0) == true ->
+					jugada := ultimaJugada[1] + 1
+				[] (tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1] == 0 /\ tablero[ultimaJugada[0] - 2][ultimaJugada[1] + 2] == 0 /\ tablero[ultimaJugada[0] - 3][ultimaJugada[1] + 3] == 0) == false ->
+					estrategia := randomEstrategia()
+				fi 
+			[] (ultimaJugada[0] <= 2 /\ ultimaJugada[1] <= 2) \/ (ultimaJugada[0] >= filas -3 /\ ultimaJugada[1] >= columnas - 3) ->
+				estrategia := randomEstrategia()
+			
+			fi
+		fi
+	fi
+
 ]
