@@ -21,6 +21,7 @@
 		jugador: int;
 		numPartidas: int;
 		jugada: int;
+		ultimaJugada: array;
 		continuar: boolean;
 		numJugadas: int;
 		numJugadasPC: int;
@@ -37,7 +38,7 @@
 	; numEmpates := 0
 	; quiereSeguirJugando := true
 
-
+	{ Cota: maxPartidas - numPartidas}
 	do quiereSeguirJugando == true /\ numPartidas != maxPartidas ->
 		; numJugadas:= 0
 		; numJugadasPC := 0
@@ -45,7 +46,7 @@
 		; inicializarPartida(numPartidas, ultimoGanador)
 		
 
-		{ Cota: }
+		{ Cota: filas * columnas - numJugadas }
 		do continuar == true /\ numJugadas != filas * columnas ->
 			ingresaJugada := true
 			do ingresaJugada == true ->
@@ -99,6 +100,10 @@
 
 ]
 
+proc entregaResultados(in partidasGanadasPersona: int, partidasGanadasPC: int numEmpates: int)
+{ Precondición: partidasGanadasPersona >= 0 /\ partidasGanadasPC >= 0 /\numEmpates >= 0 }
+{ Postcondición: Se imprime la cantidad de partidas ganadas por el Jugador, PC y numero de empates}
+
 proc entregaGanadorPartida(in ganador: int)
 { Precondición: 1 <= ganador <= 2 }
 { Postcondición: Se imprime el ganador de la partida en pantalla }
@@ -123,7 +128,7 @@ proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, col
 	numJugadas := 0
 ]
 
-proc inicializarTablero(in filas: int, in columnas: int, out tablero: array)
+proc inicializarTablero(in filas: int, in columnas: int, in-out tablero: array)
 
 { Precondición: filas >= 4 /\ columnas >= 4 }
 { Postcondición: (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | tablero[i][j] == 0 %) /\ 0 <= dificultad <= 1 
@@ -131,7 +136,6 @@ proc inicializarTablero(in filas: int, in columnas: int, out tablero: array)
 
 [
 	VAR
-		tablero: array [0,filas) x [0,columnas) of int;
 		i: int;
 		j: int;
 
@@ -189,6 +193,8 @@ func obtenerJugada(columnas: int, jugador: int, dificultad: int) -> int
 		jugadaPersona: int;
 	VAR
 		jugadaPC: int;
+		jugada: int;
+
 
 	if jugador == 2 ->
 		if dificultad == 0 ->
@@ -209,17 +215,16 @@ proc validarJugada(in jugada: int, filas: int, columnas: int, tablero: array, ju
 { Precondición: 0 <= jugada < columnas /\ filas >= 4 /\ columnas >= 4}
 { Postcondición: (% exist i : int | 0 <= i < filas | tablero[i][jugada] == 0  %) == validacion }
 [
-	VAR 
-		validacion: boolean;
+	VAR		
 		i: int;
 
-	i := 0;
-	ultimaJugada := [-1,-1]
+
+	i := filas -1;
 
 	; validacion := false
 	
-	{ Cota t: filas - i }
-	do i != filas ->
+	{ Cota t: i }
+	do i != -1 ->
 		if tablero[i][jugada] == 0 ->
 			validacion := true
 			if jugador == 2 ->
@@ -231,7 +236,7 @@ proc validarJugada(in jugada: int, filas: int, columnas: int, tablero: array, ju
 			skip
 		fi
 
-		; i := i + 1
+		; i := i - 1
 	od
 
 ]
@@ -240,6 +245,10 @@ proc reflejarJugada(in jugada: int, jugador: int, filas: int, columnas:int, in-o
 { Precondición: 1 <= jugador <= 2 /\ 0 <= jugada < columnas /\ filas >= 4 /\ columnas >= 4}
 { Postcondición: (% exist i : int | 0 <= i < filas | tablero[i][jugada] == jugador %)}
 [
+	VAR
+		i: int;
+		continuar: boolean;
+
 	i := filas - 1
 
 	{ Cota t: i }
@@ -273,7 +282,6 @@ proc verificar4enLinea(in filas: int,columnas: int, tablero: array, out continua
 { Postcondición: (% exist i : int | 0 <= i < 4 | ganadores[i] != 0 /\ ganador == ganadores[i]  %) == (continuar == false) }
 [
 	VAR
-		ganador: int;
 		ganadores: array[0,4) of int;
 
 	ganadores := [verificarHorizontal(filas, columnas, tablero), verificarVertical(filas, columnas, tablero), verificarDiagonalDerecha(filas, columnas, tablero), verificarDiagonalIzquierda(filas, columnas, tablero)]
@@ -284,8 +292,7 @@ proc verificar4enLinea(in filas: int,columnas: int, tablero: array, out continua
 			ganador := ganadores[i]
 			; continuar := false
 		[] ganadores[i] == 0 ->
-			ganador := 0	
-			; continuar := true
+			skip
 		fi
 		i := i + 1
 	od
@@ -295,6 +302,12 @@ func verificarHorizontal(filas: int, columnas:int, tablero: array) -> int
 { Precondición: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
 { Postcondición: (% exist i,j : int | 0 <= i < filas /\ 0 <= j < columnas - 3 | tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3] %) == hay4enLinea }
 [
+	VAR
+		i: int;
+		j: int;
+		hay4enLinea: boolean;
+		ganador: int;
+
 	i := 0;
 	hay4enLinea := false
 	{ Cota t1: filas - i }
@@ -324,6 +337,12 @@ func verificarVertical(filas: int, columnas:int, tablero: array) -> int
 { Precondición: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %)}
 { Postcondición: (% exist i,j : int | 0 <= i < columnas /\ 0 <= j < filas - 3 | tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i] %) == hay4enLinea }
 [
+	VAR
+		i: int;
+		j: int;
+		hay4enLinea: boolean;
+		ganador: int;
+
 	i := 0;
 	hay4enLinea := false
 	{ Cota t1: columnas - i }
@@ -352,6 +371,12 @@ func verificarDiagonalDerecha(filas: int, columnas:int, tablero: array) -> int
 { Precondicion: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
 { Postcondición: (% exist i,j : int | 0 <= i < filas - 3 /\ 0 <= j < columnas - 3 | tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3] %) == hay4enLinea }
 [
+	VAR
+		i: int;
+		j: int;
+		hay4enLinea: boolean;
+		ganador: int;
+
 	i := 0;
 	hay4enLinea := false
 	{ Cota t1: filas - 3 - i}
@@ -379,6 +404,12 @@ func verificarDiagonalIzquierda(filas: int, columnas:int, tablero: array) -> int
 { Precondición: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
 { Postcondición: (% exist i,j : int | 3 <= i < columnas /\ 0 <= j < filas - 3 | tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3] %) == hay4enLinea}
 [
+	VAR
+		i: int;
+		j: int;
+		hay4enLinea: boolean;
+		ganador: int;
+
 	i := 3;
 	hay4enLinea := false
 	{ Cota t1: columnas - i }
@@ -406,6 +437,9 @@ func verificarTablero(numJugadas: int, filas: int, columnas:int) -> boolean
 { Precondición: filas >= 4 /\ columnas >= 4 /\ numJugadas <= filas * columnas}
 { Postcondición: (numJugadas != filas * columnas \/ continuar == false) /\ (numJugadas == filas * columnas \/ continuar == true)}
 [
+	VAR 
+		continuar: boolean;
+
 	if numJugadas == filas * columnas ->
 		continuar := false
 	[] numJugadas != filas * columnas ->
@@ -415,12 +449,17 @@ func verificarTablero(numJugadas: int, filas: int, columnas:int) -> boolean
 	>> continuar
 ]
 
-func jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJugada: array)
+func jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJugada: array) -> int
 { Precondición: filas >= 4 /\ columnas >= 4 /\ numJugadas >= 0 /\ (% forall i,j : int | 0 <= i <= filas /\ 0 <= j <= columnas | 0 <= tablero[i][j] <= 2 %) /\ (% forall i : int | 0 <= i <= n |   %)}
 {}
 [
 	CONST
 		intentosMaximos: int;
+
+	VAR
+		puedeJugar: boolean;
+		estrategia: int;
+		jugada: int;
 		
 	puedeJugar := false
 
@@ -489,7 +528,7 @@ proc compruebaJugadaVertical(in ultimaJugada: array, tablero: array, out jugada:
 		fi
 	[] ultimaJugada[0] == 0 ->
 		jugada := -1
-		estrategia := randomEstrategia
+		estrategia := randomEstrategia()
 		puedeJugar := false
 	fi
 ]
