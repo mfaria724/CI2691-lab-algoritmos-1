@@ -1,7 +1,29 @@
 { 
   Juego4enLineaEquipo01.gcl
 
-  DESCRIPCIÓN: 
+  DESCRIPCIÓN: Juego realizado en gcl para luego ser implementado de python.
+  La finalidad es que los jugadores logren colocar 4 fichas de manera consecutiva,
+  en cualquiera de las posiciones vertical, horizontal o diagonal. Al momento de
+  seleccionar la jugada el jugador deberá seleccionar una columna, puesto que no 
+  podrá jugar en una casilla a menos que se encuentre en la fila inferior, o que
+  en la fila de abajo se encuentre alguna fichas.
+
+  El juego tendrá dos niveles de dificultad, básico e intermedio.
+
+  	1. En la dificultad básica la computadora hará jugadas aleatorias hasta que la
+  	   la partida se acabe.
+
+  	2. En la dificultad intermedia la computadora intentará generar una linea usando,
+  	   alguna de las estrategias, que es seleccionada cada vez que la computadora se 
+  	   ve obligada a realizar una jugada aleatoria.
+
+  Al finalizar cada partida se muestran los resultados en la pantalla, es decir, el 
+  ganador de la partida que acaba de terminar.
+
+  Finalmente, se consulta con el usuario si desea jugar otra partida, en caso de 
+  que no lo desee, se muestran en pantalla la cantidad de partidas ganadas por la
+  persona, por el computador y la cantidad de empates. De igual manera se muestra
+  la cantidad de partidas realizadas.
 
   Autores: 
  	  Manuel Faria 15-10463
@@ -35,6 +57,7 @@
 
 { Precondición: filas>=4 /\ columnas >= 4 /\ maxPartidas >= 0 }
 	
+	// Inicialización de variables.
 	; numPartidas := 0
 	; partidasGanadasPC := 0
 	; partidasGanadasPersona := 0
@@ -44,16 +67,20 @@
 
 	{ Cota: maxPartidas - numPartidas}
 	do quiereSeguirJugando == true /\ numPartidas != maxPartidas ->
+
+		// Inicializa los valores
 		; continuar := true
 		; inicializarPartida(numPartidas, ultimoGanador, filas, columnas; tablero; numJugadas, jugador, numJugadasPC, ultimaJugada)
 		
 
 		{ Cota: filas * columnas - numJugadas }
 		do continuar == true /\ numJugadas != filas * columnas ->
+			
 			ingresaJugada := true
-			{ Cota: ?No tiene? }
+			{ Cota: No tiene, la se hará hasta que la jugada sea correcta }
 			do ingresaJugada == true ->
-				continuar := seguirPartida()
+				
+				// Obtiene los valores de la jugada y verifica que sea correcto
 				; jugada := obtenerJugada(filas, columnas, tablero, ultimaJugada, jugador, dificultad)
 				; validarJugada(jugada, filas, columnas, tablero; validacion, ultimaJugada)
 
@@ -91,7 +118,17 @@
 				[] validacion == false ->
 					ingresaJugada := true
 				fi
+
 			od
+
+			// Verifica que quiere continuar con la partida actual
+			if jugador == 1 ->
+				// Pregunta al usuario si desea seguir jugando
+				continuar := seguirPartida()
+			[] jugador != 1 ->
+				skip
+			fi
+
 		od
 
 		entregaGanadorPartida(ganador)
@@ -134,13 +171,16 @@ func quiereSeguir() -> boolean
 	>> quiereSeguirJugando
 ]
 
-proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, columnas: int, in-out tablero: array,out numJugadas: int, jugador: int, numJugadasPC: int, ultimaJugada: int)
+proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, columnas: int, in-out tablero: array,out numJugadas: int, 
+						jugador: int, numJugadasPC: int, ultimaJugada: int)
 { Precondición: numPartidas >= 0 /\ 0 <= ultimoGanador <= 2 /\ filas >= 0 /\ columnas >= 0}
 { Postcondición: (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | tablero[i][j] == 0 %) }
 [
 	inicializarTablero(filas, columnas; tablero)
 	dificultad := dificultad()
 	jugador := definirPrimero(numPartidas, ultimoGanador)
+
+	// Inicializa las variables para la partida
 	numJugadas := 0
 	numJugadasPC := 0
 	ultimaJugada := [-1,-1]
@@ -150,24 +190,27 @@ proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, col
 proc inicializarTablero(in filas: int, in columnas: int, in-out tablero: array)
 
 { Precondición: filas >= 4 /\ columnas >= 4 }
-{ Postcondición: (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | tablero[i][j] == 0 %) /\ 0 <= dificultad <= 1 
-				 /\ (numPartidas != 0 \/ primerJugador == 1) /\ (numPartidas == 0 \/ primerJugador == ultimoGanador) }
-
+{ Postcondición: (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | tablero[i][j] == 0 %) }
+// Inicializa el tablero de manera que esté vacío
 [
 	VAR
 		i: int;							// Variable auxiliar para iterar
 		j: int;							// Variable auxiliar para iterar
 
+	// Inicialización de variables
 	i := 0
 
+	// Recorre las filas
 	{ Cota T: filas - i }
 	do i != filas ->
 
 		j := 0
 
+		// Recorre las columnas
 		{ Cota t2: columnas - j }
-
 		do j != columnas ->
+
+			// Rellena el tablero con 0's
 			tablero[i][j] := 0
 
 			;j := j + 1
@@ -181,6 +224,7 @@ proc inicializarTablero(in filas: int, in columnas: int, in-out tablero: array)
 func dificultad() -> (int)
 { Precondición: true }
 { Postcondición: 0 <= dificultad <= 1 }
+// Dificultad ingresada por el usuario
 [
 	CONST
 		dificultad: int;					// "Input" de jugador
@@ -191,6 +235,7 @@ func dificultad() -> (int)
 func definirPrimero(numPartidas:int, ultimoGanador: int) -> (int)
 { Precondición: numPartidas >= 0 /\ 0 <= ultimoGanador <= 2}
 { Postcondición: (numPartidas != 0 \/ primerJugador == 1) /\ (numPartidas == 0 \/ primerJugador == ultimoGanador) }
+// Función que devuelve el primer jugador dependiendo de la partida en que se encuentren
 [
 	VAR 
 		primerJugador: int;					// Variable que almacena quien sera el primer jugador de cada partida
@@ -207,6 +252,7 @@ func definirPrimero(numPartidas:int, ultimoGanador: int) -> (int)
 func obtenerJugada(filas: int, columnas: int, tablero: int, ultimaJugada: array, jugador: int, dificultad: int) -> int
 { Precondición: columnas >= 4 /\ 1 <= jugador <= 2 /\ 0 <= dificultad <= 1 }
 { Postcondición: 0 <= jugada <= columnas }
+// Devuelve la columna donde se desa jugar
 [
 	CONST
 		jugadaPersona: int;					// "Input" de jugador
@@ -214,15 +260,16 @@ func obtenerJugada(filas: int, columnas: int, tablero: int, ultimaJugada: array,
 		jugada: int;						// Variable que almacena la columna donde se desea jugar
 
 
-	if jugador == 2 ->
+	if jugador == 2 -> // Turno del computador
+		// Verifica la dificultad
 		if dificultad == 0 ->
-			
+			// Juagada aleatoria
 			jugada := randomJugadaPC()
-
 		[] dificultad == 1 ->
+			// Busca una jugada con una estrategia
 			jugada := jugadaPC(filas, columnas, numJugadasPC, tablero, ultimaJugada)
 		fi
-	[] jugador == 1 ->
+	[] jugador == 1 -> // Turno del jugador
 		jugada := jugadaPersona
 	fi
 
@@ -707,9 +754,10 @@ func randomEstrategia() -> int
 	>> estrategia
 ]
 
-func randomjugada() -> int
+func randomjugadaPC() -> int
 { Precondición: true}
 { Postcondición: 0 <= jugada < filas}
+// Devuelva una columna aleatoriamente, deben verificar el número de columnas.
 [
 	VAR
 		jugada: int;											// Variable que almacena la columna donde se desea jugar								
