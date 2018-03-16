@@ -69,9 +69,6 @@
 	do quiereSeguirJugando == true /\ numPartidas != maxPartidas ->
 
 		// Inicializa los valores
-		numJugadas := 0
-		; numJugadasPC := 0
-		; ultimaJugada := [-1,-1]
 		; continuar := true
 		; inicializarPartida(numPartidas, ultimoGanador, filas, columnas; tablero; numJugadas, jugador, numJugadasPC, ultimaJugada)
 		
@@ -194,6 +191,7 @@ proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, col
 // Inicializa el tablero y los valores necesarios para poder jugar
 [
 	inicializarTablero(filas, columnas; tablero)
+	dibujarTablero(filas, columnas)
 	dificultad := dificultad()
 	jugador := definirPrimero(numPartidas, ultimoGanador)
 
@@ -203,6 +201,11 @@ proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, col
 	ultimaJugada := [-1,-1]
 
 ]
+
+
+proc ​ dibujarTablero ​ (in filas: int, columnas: int)
+{ Precondición: filas > 0 /\ columnas > 0 }
+{ Postcondición: se dibuja en una ventana gráfica un tablero con "filas" filas y "columnas" columnas}
 
 proc inicializarTablero(in filas: int, in columnas: int, in-out tablero: array)
 
@@ -339,7 +342,9 @@ proc reflejarJugada(in jugada: int, jugador: int, filas: int, columnas:int, in-o
 			tablero[i][jugada] := jugador
 			if jugador == 2 ->
 				ultimaJugada = [i,jugada]
+				dibujarJugada(i, jugada, azul)
 			[] jugador != 2 ->
+				dibujarJugada(i, jugada, rojo)
 				skip
 			fi
 			continuar := false
@@ -350,6 +355,11 @@ proc reflejarJugada(in jugada: int, jugador: int, filas: int, columnas:int, in-o
 		; i := i - 1
 	od
 ]
+
+proc dibujarJugada(in fila: int, columna: int, color)
+// Dibuja en el tablero la jugada luego de haberla reflejado en la matriz
+{ Precondición: filas >= 0 /\ columnas >= 0 }
+{ Postcondición: Se dibuja un circulo de color "color" en la casilla posicionada en la fila "fila" y columna "columna" del tablero}
 
 func cambiarTurno(jugador) -> int
 { Precondición: 1 <= jugador <= 2 }
@@ -546,7 +556,7 @@ func verificarTablero(numJugadas: int, filas: int, columnas:int) -> boolean
 ]
 
 func jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJugada: array) -> int
-{ Precondición: filas >= 4 /\ columnas >= 4 /\ numJugadas >= 0 /\ (% forall i,j : int | 0 <= i <= filas /\ 0 <= j <= columnas | 0 <= tablero[i][j] <= 2 %) /\ (% forall i : int | 0 <= i <= n |   %)}
+{ Precondición: filas >= 4 /\ columnas >= 4 /\ numJugadas >= 0 /\ (% forall i,j : int | 0 <= i <= filas /\ 0 <= j <= columnas | 0 <= tablero[i][j] <= 2 %) }
 { Postcondición: 0 <= jugada < columnas}
 // Inteligencia Artificial del computador
 [
