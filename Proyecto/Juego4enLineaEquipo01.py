@@ -119,110 +119,143 @@ def definirPrimero(numPartidas:int, ultimoGanador: int) -> (int)
 	# assert(numPartidas != 0 or primerJugador == 1) and (numPartidas == 0 or primerJugador == ultimoGanador)
 
 def obtenerJugada(filas: int, columnas: int, tablero: int, ultimaJugada: list, jugador: int, dificultad: int) -> int
-	# Precondición: columnas >= 4 and 1 <= jugador <= 2 and 0 <= dificultad <= 1 }
+	# Precondición: 
+	# assert(columnas >= 4 and 1 <= jugador <= 2 and 0 <= dificultad <= 1)
+	print("Verifica quien debe ingresar la jugada y la obtiene")
 	# Postcondición: 0 <= jugada <= columnas }
 	# Devuelve la columna donde se desa jugar
 
 def validarJugada(jugada: int, filas: int, columnas: int, tablero: list,validacion: bool,
 				   ultimaJugada: list)
-{ Precondición: 0 <= jugada < columnas and filas >= 4 and columnas >= 4}
-{ Postcondición: (% exist i : int | 0 <= i < filas | tablero[i][jugada] == 0  %) == validacion }
-# Verifica si una jugada es posible o no
+	# Precondición: 
+	# assert(0 <= jugada < columnas and filas >= 4 and columnas >= 4)
+	# Postcondición: 
+	print("Valida que la jugada se válida")
+	# assert(any (tablero[i][jugada] == 0 for i in range(filas) == validacion))
+	# Verifica si una jugada es posible o no
 
 def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int,tablero: list)
-{ Precondición: 1 <= jugador <= 2 and 0 <= jugada < columnas and filas >= 4 and columnas >= 4}
-{ Postcondición: (% exist i : int | 0 <= i < filas | tablero[i][jugada] == jugador %)}
-# Guarda una jugada en el tablero
+	# Precondición: 
+	# assert(1 <= jugador <= 2 and 0 <= jugada < columnas and filas >= 4 and columnas >= 4)
+	print("Guarda la jugada en el tablero")
+	# Postcondición: 
+	# assert(any (tablero[i][jugada] == jugador for i in range(filas)))
 
 def cambiarTurno(jugador) -> int
-{ Precondición: 1 <= jugador <= 2 }
-{ Postcondición: (jugador != 1 or jugador ==2) and (jugador != 2 or jugador == 1) }
-# Pasa el turno al siguiente jugador
+	# Precondición:
+	# assert(1 <= jugador <= 2)
+	print("Pasa el turno al siguiente jugador")
+	# Postcondición: 
+	# assert((jugador != 1 or jugador ==2) and (jugador != 2 or jugador == 1))
 
 def verificar4enLinea(filas: int, columnas: int, tablero: list, continuar:bool, ganador:int)
-{ Precondicion: filas >= 4 and columnas >= 4 and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
-{ Postcondición: (% exist i : int | 0 <= i < 4 | ganadores[i] != 0 and ganador == ganadores[i]  %) == (continuar == False) }
-# Verifica si alguno de los jugadores realizó un 4 en línea
+	# Precondicion: 
+	# assert(filas >= 4 and columnas >= 4 and 
+	#	     all ( all (0 <= tablero[i][j] <= 2 for j in range(columnas)) for i in range(filas)))
+	print("Verifica si alguno de los jugadores realizó un 4 en línea")
+	# Postcondición: 
+	# assert(any (ganadores[i] != 0 and ganador == ganadores[i] for i in range(4) == (continuar == False)))
 
 def verificarHorizontal(filas: int, columnas:int, tablero: list) -> int
-{ Precondición: filas >= 4 and columnas >= 4 and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
-{ Postcondición: (% exist i,j : int | 0 <= i < filas and 0 <= j < columnas - 3 | tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3] %) == hay4enLinea }
-# Verifica si existe una linea horizontal
+	# Precondición: 
+	# assert(filas >= 4 and columnas >= 4 and 
+	# 		 all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
+	print("Verifica si existe una linea horizontal")
+	# Postcondición: 
+	# assert(any ( any (tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3] for i in range(filas)) 
+	# 	     for j in range(columnas - 3)) == hay4enLinea)
 
 def verificarVertical(filas: int, columnas:int, tablero: list) -> int
-{ Precondición: filas >= 4 and columnas >= 4 and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %)}
-{ Postcondición: (% exist i,j : int | 0 <= i < columnas and 0 <= j < filas - 3 | tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i] %) == hay4enLinea }
-# Verifica si  existe una linea vertical
+	# Precondición: 
+	# assert(filas >= 4 and columnas >= 4 and 
+	# 	     all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(filas - 3)))
+	print("Verifica si  existe una linea vertical")
+	# Postcondición: 
+	# assert(any (any (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i] for i in range(columnas)) 
+	#		 for j in range(filas - 3)) == hay4enLinea)
 
 def verificarDiagonalDerecha(filas: int, columnas:int, tablero: list) -> int
-{ Precondicion: filas >= 4 and columnas >= 4 and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
-{ Postcondición: (% exist i,j : int | 0 <= i < filas - 3 and 0 <= j < columnas - 3 | tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3] %) == hay4enLinea }
-# Verifica si existe una linea diagonal derecha
+	# Precondicion: 
+	# assert(filas >= 4 and columnas >= 4 and 
+	# 	     all( all(0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
+	print("Verifica si existe una linea diagonal derecha")
+	# Postcondición: 
+	# assert(any (any (tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3] for j in range(columnas - 3))
+	#  		 for i in range(filas - 3)) == hay4enLinea)
 
 def verificarDiagonalIzquierda(filas: int, columnas:int, tablero: list) -> int
-{ Precondición: filas >= 4 and columnas >= 4 and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
-{ Postcondición: (% exist i,j : int | 3 <= i < columnas and 0 <= j < filas - 3 | tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3] %) == hay4enLinea}
-# Verifica si existe una linea diagonal izquierda
+	# Precondición: 
+	# assert(filas >= 4 and columnas >= 4 and 
+	#		 all( all(0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
+	print("Verifica si existe una linea diagonal izquierda")
+	# Postcondición:
+	# assert(any( any(tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3] for i in range(columnas))
+	#		 for j in range(filas - 3)) == hay4enLinea) 
 
 def verificarTablero(numJugadas: int, filas: int, columnas:int) -> bool
-{ Precondición: filas >= 4 and columnas >= 4 and numJugadas <= filas * columnas}
-{ Postcondición: (numJugadas != filas * columnas or continuar == False) and (numJugadas == filas * columnas or continuar == True)}
-# Verifica si el tablero está lleno
+	# Precondición: 
+	# assert(filas >= 4 and columnas >= 4 and numJugadas <= filas * columnas)
+	print("Verifica si el tablero está lleno")
+	# Postcondición: 
+	# assert((numJugadas != filas * columnas or continuar == False) and (numJugadas == filas * columnas or continuar == True))
 
 def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJugada: list) -> int
-{ Precondición: filas >= 4 and columnas >= 4 and numJugadas >= 0 and (% forall i,j : int | 0 <= i <= filas and 0 <= j <= columnas | 0 <= tablero[i][j] <= 2 %) and (% forall i : int | 0 <= i <= n |   %)}
-{ Postcondición: 0 <= jugada < columnas}
-# Inteligencia Artificial del computador
+	# Precondición: 
+	assert(filas >= 4 and columnas >= 4 and numJugadas >= 0 and 
+		   all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
+	(% forall i,j : int | 0 <= i <= filas and 0 <= j <= columnas | 0 <= tablero[i][j] <= 2 %) and 
+	(% forall i : int | 0 <= i <= n |   %)}
+	print("Inteligencia Artificial del computador")
+	# Postcondición: 0 <= jugada < columnas}
 
 
 def compruebaJugadaVertical(ultimaJugada: list, tablero: list, jugada:int, puedeJugar:bool, estrategia:int)
-{ Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: (ultimaJugada[0] == 0 or (( tablero[ultimaJugada[0] - 1][ultimaJugada[1]] != 0 or (puedeJugar == True and jugada == ultimaJugada[1])) and
-				 (tablero[ultimaJugada[0] - 1][ultimaJugada[1]] == 0 or (puedeJugar == False and jugada == -1)))) and (ultimaJugada[0] != 0 or (jugada == -1 and puedeJugar == False)) }
-# Verifica si puede jugar en la casilla de arriba
+# Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
+print("Verifica si puede jugar en la casilla de arriba")
+# Postcondición: (ultimaJugada[0] == 0 or (( tablero[ultimaJugada[0] - 1][ultimaJugada[1]] != 0 or (puedeJugar == True and jugada == ultimaJugada[1])) and
+# 				 (tablero[ultimaJugada[0] - 1][ultimaJugada[1]] == 0 or (puedeJugar == False and jugada == -1)))) and (ultimaJugada[0] != 0 or (jugada == -1 and puedeJugar == False)) }
 
 def compruebaJugadaHorizontalDerecha(ultimaJugada: list, tablero: list, columnas:int, jugada:int, puedeJugar:bool, estrategia:int)
-{ Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: (ultimaJugada[1] == columnas - 1 or (( tablero[ultimaJugada[0]][ultimaJugada[1] + 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] + 1)) and
-				 (tablero[ultimaJugada[0]][ultimaJugada[1] + 1] == 0 or (puedeJugar == False and jugada == -1)))) and (ultimaJugada[1] != columnas - 1 or (jugada == -1 and puedeJugar == False)) }
-# Verifica si puede jugar en la casilla de la dereccha
+# Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
+print("Verifica si puede jugar en la casilla de la derecha")
+# Postcondición: (ultimaJugada[1] == columnas - 1 or (( tablero[ultimaJugada[0]][ultimaJugada[1] + 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] + 1)) and
+# 				 (tablero[ultimaJugada[0]][ultimaJugada[1] + 1] == 0 or (puedeJugar == False and jugada == -1)))) and (ultimaJugada[1] != columnas - 1 or (jugada == -1 and puedeJugar == False)) }
 
 
 def compruebaJugadaHorizontalIzquierda(ultimaJugada: list, tablero: list, out jugada:int, puedeJugar:bool, estrategia:int)
-{ Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: (ultimaJugada[1] == 0 or (( tablero[ultimaJugada[0]][ultimaJugada[1] - 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] - 1)) and
-				 (tablero[ultimaJugada[0]][ultimaJugada[1] - 1] == 0 or (puedeJugar == False and jugada == -1)))) and (ultimaJugada[1] != 0 or (jugada == -1 and puedeJugar == False)) }
-# Verifica si puede jugar en la casilla de la izquierda
-
+# { Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
+print("Verifica si puede jugar en la casilla de la izquierda")
+# { Postcondición: (ultimaJugada[1] == 0 or (( tablero[ultimaJugada[0]][ultimaJugada[1] - 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] - 1)) and
+# 				 (tablero[ultimaJugada[0]][ultimaJugada[1] - 1] == 0 or (puedeJugar == False and jugada == -1)))) and (ultimaJugada[1] != 0 or (jugada == -1 and puedeJugar == False)) }
 
 def compruebaJugadaDiagonalDerechaAbajo(ultimaJugada: list, tablero: list, columnas:int, filas:int, jugada:int, puedeJugar:bool, estrategia:int)
-{ Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: ((ultimaJugada[0] == filas - 1 or ultimaJugada[1] == columnas - 1 ) or (( tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] + 1)) and
-				 (tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != filas - 1 and ultimaJugada[1] != columnas -1) or (jugada == -1 and puedeJugar == False)) }
-# Verifica si puede jugar en la casilla inferior derecha
+# { Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
+print("Verifica si puede jugar en la casilla inferior derecha")
+# { Postcondición: ((ultimaJugada[0] == filas - 1 or ultimaJugada[1] == columnas - 1 ) or (( tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] + 1)) and
+# 				 (tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != filas - 1 and ultimaJugada[1] != columnas -1) or (jugada == -1 and puedeJugar == False)) }
 
 def compruebaJugadaDiagonalDerechaArriba(ultimaJugada: list, tablero: list, out jugada:int, puedeJugar:bool, estrategia:int)
-{ Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: ((ultimaJugada[0] == 0 or ultimaJugada[1] == 0 ) or (( tablero[ultimaJugada[0] - 1][ultimaJugada[1] - 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] - 1)) and
-				 (tablero[ultimaJugada[0] - 1][ultimaJugada[1] - 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != 0 and ultimaJugada[1] != 0) or (jugada == -1 and puedeJugar == False)) }
-# Verifica si puede jugar en la casilla superior derecha
+# { Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
+print("Verifica si puede jugar en la casilla superior derecha")
+# { Postcondición: ((ultimaJugada[0] == 0 or ultimaJugada[1] == 0 ) or (( tablero[ultimaJugada[0] - 1][ultimaJugada[1] - 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] - 1)) and
+# 				 (tablero[ultimaJugada[0] - 1][ultimaJugada[1] - 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != 0 and ultimaJugada[1] != 0) or (jugada == -1 and puedeJugar == False)) }
 
 def compruebaJugadaDiagonalIzquierdaAbajo(ultimaJugada: list, tablero: list, filas:int, out jugada:int, puedeJugar:bool, estrategia:int)
-{ Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: ((ultimaJugada[0] == filas - 1 or ultimaJugada[1] == 0 ) or (( tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] - 1)) and
-				 (tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != filas - 1 and ultimaJugada[1] != 0) or (jugada == -1 and puedeJugar == False)) }
-# Verifica si puede jugar en la casilla inferior izquierda
+# { Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
+print("Verifica si puede jugar en la casilla inferior izquierda")
+# { Postcondición: ((ultimaJugada[0] == filas - 1 or ultimaJugada[1] == 0 ) or (( tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] - 1)) and
+# 				 (tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != filas - 1 and ultimaJugada[1] != 0) or (jugada == -1 and puedeJugar == False)) }
 
 def compruebaJugadaDiagonalIzquierdaArriba(ultimaJugada: list, tablero: list, columnas: int, out jugada:int, puedeJugar:bool, estrategia:int)
-{ Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: ((ultimaJugada[0] == 0 or ultimaJugada[1] == columnas - 1 ) or (( tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] + 1)) and
-				 (tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != 0 and ultimaJugada[1] != columnas -1) or (jugada == -1 and puedeJugar == False)) }
-# Verifica si puede jugar en la casilla superior izquierda
+# { Precondición: 0 <= ultimaJugada[0] < filas and 0 <= ultimaJugada[1] < columnas and (% forall i,j : int | 0 <= i < filas and 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
+print("Verifica si puede jugar en la casilla superior izquierda")
+# { Postcondición: ((ultimaJugada[0] == 0 or ultimaJugada[1] == columnas - 1 ) or (( tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] + 1)) and
+# 				 (tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != 0 and ultimaJugada[1] != columnas -1) or (jugada == -1 and puedeJugar == False)) }
 
 def randomEstrategia() -> int
-{ Precondición: True}
-{ Postcondición 0 <= estrategia < 4}
-# Devuelve una estrategia aleatoria
+# { Precondición: True}
+print("Devuelve una estrategia aleatoria")
+# { Postcondición 0 <= estrategia < 4}
 
 def randomjugadaPC() -> int
 # Devuelva una columna aleatoriamente, deben verificar el número de columnas.
