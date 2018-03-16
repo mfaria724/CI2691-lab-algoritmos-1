@@ -69,7 +69,11 @@
 	do quiereSeguirJugando == true /\ numPartidas != maxPartidas ->
 
 		// Inicializa los valores
+<<<<<<< HEAD
 		; continuar := true
+=======
+		continuar := true
+>>>>>>> fa7475aa1b8a4c8d56da3cdaf5c6661eac4e9296
 		; inicializarPartida(numPartidas, ultimoGanador, filas, columnas; tablero; numJugadas, jugador, numJugadasPC, ultimaJugada)
 		
 
@@ -133,6 +137,12 @@
 			if jugador == 1 ->
 				// Pregunta al usuario si desea seguir jugando
 				continuar := seguirPartida()
+				if continuar == false ->
+					partidasGanadasPC := partidasGanadasPC + 1
+					numPartidas := numPartidas + 1
+				[] continuar == true
+					skip
+				fi
 			[] jugador != 1 ->
 				skip
 			fi
