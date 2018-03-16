@@ -282,6 +282,28 @@ def randomjugadaPC() -> int:
 	# Postcondición
 	# assert(0 <= jugada < filas)
 
+def​ dibujarTablero ​ (filas: int, columnas: int, color: color) -> 'void':
+	# Precondición: 
+	# assert(filas > 0 and columnas > 0)
+	print("Se dibuja el tablero en la interfaz gráfica")
+	# Postcondición: 
+	# se dibuja en una ventana gráfica un tablero con "filas" filas y "columnas" columnas de color "color"
+
+def dibujarJugada(fila: int, columna: int, color: color)
+	# Precondición: 
+	# assert(filas >= 0 and columnas >= 0)
+	print("Dibuja en el tablero la jugada luego de haberla reflejado en la matriz")
+	# Postcondición: 
+	# Se dibuja un circulo de color "color" en la casilla posicionada en la fila "fila" y columna "columna" del tablero
+
+def resaltarGanador(fila, columna, color)
+	# Precondición: 
+	# assert(fila >= 0 and columna >= 0)
+	print("Resalta las fichas que se encuentran en 4 en linea")
+	# Postcondición: 
+	# Se resalta el circulo de la casilla posicionada en la fila "fila" y columna "columna" del tablero de color "color" }
+
+
 # Precondición:
 # assert(filas>=4 and columnas >= 4 and maxPartidas >= 0)
 	
