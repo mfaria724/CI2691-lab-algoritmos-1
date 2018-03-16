@@ -36,6 +36,10 @@
 		filas:int;													// Numero de filas del tablero
 		columnas: int;												// Numero de columnas del table
 		maxPartidas: int;											// Numero maximo de partidas a jugar
+		azul: color 												// Color usado para las fichas de la computadora en el tablero
+		rojo: color 												// Color usado para las fichas del jugador en el tablero
+		verde: color 												// Color usado para dibujar el tablero
+		amarillo: color 											// Color usado para resaltar las fichas ganadoras
 	VAR
 		tablero: array [0,filas) x [0,columnas) of int;				// Tablero de juego
 		dificultad: int;											// Variable que almacena la dificultad seleccionada por el jugador (0 basico, 1 medio)
@@ -69,11 +73,7 @@
 	do quiereSeguirJugando == true /\ numPartidas != maxPartidas ->
 
 		// Inicializa los valores
-<<<<<<< HEAD
-		; continuar := true
-=======
 		continuar := true
->>>>>>> fa7475aa1b8a4c8d56da3cdaf5c6661eac4e9296
 		; inicializarPartida(numPartidas, ultimoGanador, filas, columnas; tablero; numJugadas, jugador, numJugadasPC, ultimaJugada)
 		
 
@@ -201,7 +201,7 @@ proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, col
 // Inicializa el tablero y los valores necesarios para poder jugar
 [
 	inicializarTablero(filas, columnas; tablero)
-	dibujarTablero(filas, columnas)
+	dibujarTablero(filas, columnas, verde)
 	dificultad := dificultad()
 	jugador := definirPrimero(numPartidas, ultimoGanador)
 
@@ -213,9 +213,9 @@ proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, col
 ]
 
 
-proc ​ dibujarTablero ​ (in filas: int, columnas: int)
+proc ​ dibujarTablero ​ (in filas: int, columnas: int, color: color)
 { Precondición: filas > 0 /\ columnas > 0 }
-{ Postcondición: se dibuja en una ventana gráfica un tablero con "filas" filas y "columnas" columnas}
+{ Postcondición: se dibuja en una ventana gráfica un tablero con "filas" filas y "columnas" columnas de color "color"}
 
 proc inicializarTablero(in filas: int, in columnas: int, in-out tablero: array)
 
@@ -355,7 +355,6 @@ proc reflejarJugada(in jugada: int, jugador: int, filas: int, columnas:int, in-o
 				dibujarJugada(i, jugada, azul)
 			[] jugador != 2 ->
 				dibujarJugada(i, jugada, rojo)
-				skip
 			fi
 			continuar := false
 		[] tablero[i][jugada] != 0 ->
@@ -366,7 +365,7 @@ proc reflejarJugada(in jugada: int, jugador: int, filas: int, columnas:int, in-o
 	od
 ]
 
-proc dibujarJugada(in fila: int, columna: int, color)
+proc dibujarJugada(in fila: int, columna: int, color: color)
 // Dibuja en el tablero la jugada luego de haberla reflejado en la matriz
 { Precondición: filas >= 0 /\ columnas >= 0 }
 { Postcondición: Se dibuja un circulo de color "color" en la casilla posicionada en la fila "fila" y columna "columna" del tablero}
@@ -409,6 +408,11 @@ proc verificar4enLinea(in filas: int,columnas: int, tablero: array, out continua
 	od
 ]
 
+proc resaltarGanador(in fila, columna, color)
+// Resalta las fichas que se encuentran en 4 en linea
+{ Precondición: fila >= 0 /\ columna >= 0}
+{ Postcondición: Se resalta el circulo de la casilla posicionada en la fila "fila" y columna "columna" del tablero de color "color" }
+
 func verificarHorizontal(filas: int, columnas:int, tablero: array) -> int
 { Precondición: filas >= 4 /\ columnas >= 4 /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2 %) }
 { Postcondición: (% exist i,j : int | 0 <= i < filas /\ 0 <= j < columnas - 3 | tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3] %) == hay4enLinea }
@@ -431,6 +435,10 @@ func verificarHorizontal(filas: int, columnas:int, tablero: array) -> int
 
 			if (tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3]) == true /\ tablero[i][j] != 0 ->
 				ganador := tablero[i][j];
+				resaltarGanador(i, j, amarillo)
+				resaltarGanador(i, j+1, amarillo)
+				resaltarGanador(i, j+2, amarillo)
+				resaltarGanador(i, j+3, amarillo)
 				hay4enLinea := true
 			[] (tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3]) == false \/ tablero[i][j] == 0 ->
 				ganador := 0
@@ -466,6 +474,10 @@ func verificarVertical(filas: int, columnas:int, tablero: array) -> int
 
 			if (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i]) == true /\ tablero[i][j] != 0 ->
 				ganador := tablero[j][i];
+				resaltarGanador(j, i, amarillo)
+				resaltarGanador(j+1, i, amarillo)
+				resaltarGanador(j+2, i, amarillo)
+				resaltarGanador(j+3, i, amarillo)
 				hay4enLinea := true
 			[] (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i]) == false \/ tablero[i][j] == 0 ->
 				ganador := 0
@@ -500,6 +512,10 @@ func verificarDiagonalDerecha(filas: int, columnas:int, tablero: array) -> int
 		do j != columnas - 3 ->
 			if (tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3]) == true /\ tablero[i][j] != 0 ->
 				ganador := tablero[i][j];
+				resaltarGanador(i, j, amarillo)
+				resaltarGanador(i+1, j+1, amarillo)
+				resaltarGanador(i+2, j+2, amarillo)
+				resaltarGanador(i+3, j+3, amarillo)
 				hay4enLinea := true
 			[] (tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3]) == false \/ tablero[i][j] == 0 ->
 				ganador := 0
@@ -534,6 +550,10 @@ func verificarDiagonalIzquierda(filas: int, columnas:int, tablero: array) -> int
 		do j != filas - 3 ->
 			if (tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3]) == true /\ tablero[i][j] != 0 ->
 				ganador := tablero[j][i];
+				resaltarGanador(i, j, amarillo)
+				resaltarGanador(i+1, j-1, amarillo)
+				resaltarGanador(i+2, j-2, amarillo)
+				resaltarGanador(i+3, j-3, amarillo)
 				hay4enLinea := true
 			[] (tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3]) == false \/ tablero[i][j] == 0 ->
 				ganador := 0
