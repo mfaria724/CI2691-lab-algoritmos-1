@@ -114,12 +114,12 @@ def definirPrimero(numPartidas:int, ultimoGanador: int) -> (int):
 	# Postcondición: 
 	# assert(numPartidas != 0 or primerJugador == 1) and (numPartidas == 0 or primerJugador == ultimoGanador)
 
-def obtenerJugada(filas: int, columnas: int, tablero: int, ultimaJugada: list, jugador: int, dificultad: int) -> int:
+def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJugada: list, jugador: int, dificultad: int) -> int:
 	# Precondición: 
 	# assert(columnas >= 4 and 1 <= jugador <= 2 and 0 <= dificultad <= 1)
 	print("Verifica quien debe ingresar la jugada y la obtiene")
 	# Postcondición: 0 <= jugada <= columnas }
-	# Devuelve la columna donde se desa jugar
+	# Devuelve la columna donde se desea jugar
 
 def validarJugada(jugada: int, filas: int, columnas: int, tablero: list,validacion: bool,
 				   ultimaJugada: list) -> 'void':
@@ -137,7 +137,7 @@ def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int,tablero: 
 	# Postcondición: 
 	# assert(any (tablero[i][jugada] == jugador for i in range(filas)))
 
-def cambiarTurno(jugador) -> int:
+def cambiarTurno(jugador: int) -> int:
 	# Precondición:
 	# assert(1 <= jugador <= 2)
 	print("Pasa el turno al siguiente jugador")
@@ -282,21 +282,21 @@ def randomjugadaPC() -> int:
 	# Postcondición
 	# assert(0 <= jugada < filas)
 
-def​ dibujarTablero ​ (filas: int, columnas: int, color: color) -> 'void':
+def dibujarTablero(filas: int, columnas: int, color: list) -> 'void':
 	# Precondición: 
 	# assert(filas > 0 and columnas > 0)
 	print("Se dibuja el tablero en la interfaz gráfica")
 	# Postcondición: 
 	# se dibuja en una ventana gráfica un tablero con "filas" filas y "columnas" columnas de color "color"
 
-def dibujarJugada(fila: int, columna: int, color: color)
+def dibujarJugada(fila: int, columna: int, color: list) -> 'void':
 	# Precondición: 
 	# assert(filas >= 0 and columnas >= 0)
 	print("Dibuja en el tablero la jugada luego de haberla reflejado en la matriz")
 	# Postcondición: 
 	# Se dibuja un circulo de color "color" en la casilla posicionada en la fila "fila" y columna "columna" del tablero
 
-def resaltarGanador(fila, columna, color)
+def resaltarGanador(fila: int, columna: int, color: list) -> 'void':
 	# Precondición: 
 	# assert(fila >= 0 and columna >= 0)
 	print("Resalta las fichas que se encuentran en 4 en linea")
@@ -338,11 +338,11 @@ while quiereSeguirJugando == True and numPartidas != maxPartidas:
 	while continuar == True and numJugadas != filas * columnas:
 		
 		ingresaJugada = True
-		# Cota: No tiene, la se hará hasta que la jugada sea correcta
+		# Cota: No tiene, la iteracion se hará hasta que la jugada sea correcta
 		while ingresaJugada == True:
 			
 			# Obtiene los valores de la jugada y verifica que sea correcto
-			jugada = obtenerJugada(filas, columnas, tablero, ultimaJugada, jugador, dificultad)
+			jugada = obtenerJugada(filas, columnas, numJugadasPC, tablero, ultimaJugada, jugador, dificultad)
 			validarJugada(jugada, filas, columnas, tablero, validacion, ultimaJugada)
 
 			if validacion == True:
