@@ -1,0 +1,110 @@
+#
+# Quiz31510463.gcl
+#
+# DESCRIPCION: 
+# 
+# Autor: Manuel Faria 15-10463
+#	
+# Ultima modificacion: 20/03/2018
+
+[
+   CONST
+     opcion: int; // Opción del menu
+	  m: int;      // entero a evaluar como coprimo de n y a calcularle su numero Euler
+	  n: int;      // entero a evaluar como coprimo de m
+
+   { (opcion = 1 \/ opcion = 2 \/ opcion = 3) /\ m > 0 /\ n > 0}
+
+   ejecutar(opcion)
+
+   { 
+     (opcion = 1 => ... completar ...) /\ 
+     (opcion = 2 => ... completar ...) /\ 
+	 (opcion = 3 => ... completar ...) 
+   }
+]
+  
+// Retorna 1 si x y y son coprimos y 0 en caso contrario
+func sonCoprimos( x:int, y:int ) -> int
+{ PRE: x >= 0 /\ y >= 0 }
+{ POST: (not (% exist i: 1 < i <= menor | x mod i == 0 /\ y mod i == 0 %) /\ coprimos == 0) \/ ((% exist i: 1 < i <= menor | x mod i == 0 /\ y mod i == 0 %) /\ coprimos == 1) }
+[
+
+   coprimos := 1
+
+   if x >= y ->
+      i := y
+      menor := y
+   [] x < y ->
+      i := x
+      menor := x
+   fi
+
+   do i != 1 ->
+      if x mod i == 0 /\ y mod i == 0 ->
+         coprimos := 0
+      [] x mod i != 0 \/ y mod i != 0 ->
+         skip
+      fi
+   od
+
+   >> coprimos
+]
+
+// Cuenta cuantos enteros positivos menores que n son coprimos con n
+func phiEuler(n:int) -> int
+{ PRE: n > 0 }
+{ POST: contador == (% sum i : 1 < i < n : 1 if (% exist j : 1 < j < n : n mod j == 0 /\ i mod j == 0  %)  %) }
+[
+
+   i,contador := n,0
+
+   do i != 0 ->
+
+      j,coprimos := i - 1, true
+
+      do j != 1 ->
+         if n mod j == 0 /\ i mod j == 0 ->
+            coprimos := false
+         [] n mod j != 0 \/ i mod j != 0 ->
+            coprimos := true
+         fi
+
+         ; j := j - 1
+      od
+
+      if coprimos == true
+         contador := contador + 1
+
+      ; i := i - 1
+   od
+
+   >> contador
+
+]
+
+// Recibe un entero que representa la opcion seleccionada y llama a la funcion 
+// adecuada según lo que indica esa opcion
+proc ejecutar(in op:int, in a: int, in b:int, out resp: int)
+{ PRE: (op = 1 \/ op = 2 \/ op = 3) /\ a > 0 /\ b > 0} }
+{ POST: 
+   (opcion = 1 /\ (!(%exists i: 1<i<=m /\ i<=n: (a mod i = 0) /\ (b mod i = 0)) => resp = 1) /\ (...completar ... => resp = 0)
+   (opcion = 2 /\  ... completar ...) /\ 
+   (opcion = 3 /\ resp = ... completar ...)
+ }
+[
+   VAR
+      resp: int; // valor del resultado
+
+   if op == 1 ->
+      resp := sonCoprimos(a,b)
+
+   [] op == 2 ->
+      resp := phiEuler(a)
+
+   [] op == 3 ->
+      resp := 0
+	  
+   fi
+}
+
