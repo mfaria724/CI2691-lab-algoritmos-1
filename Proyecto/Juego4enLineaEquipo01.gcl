@@ -74,7 +74,7 @@
 
 		// Inicializa los valores
 		continuar := true
-		; inicializarPartida(numPartidas, ultimoGanador, filas, columnas; tablero; numJugadas, jugador, numJugadasPC, ultimaJugada)
+		; inicializarPartida(numPartidas, ultimoGanador, filas, columnas; tablero; numJugadas, jugador, numJugadasPC, ultimaJugada, dificultad)
 		
 
 		{ Cota: filas * columnas - numJugadas }
@@ -194,7 +194,7 @@ func quiereSeguir() -> boolean
 ]
 
 proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, columnas: int, in-out tablero: array,out numJugadas: int, 
-						jugador: int, numJugadasPC: int, ultimaJugada: int)
+						jugador: int, numJugadasPC: int, ultimaJugada: int, dificultad: int)
 { Precondición: numPartidas >= 0 /\ 0 <= ultimoGanador <= 2 /\ filas >= 0 /\ columnas >= 0}
 { Postcondición: (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | tablero[i][j] == 0 %) /\ 0 <= dificultad <= 1 /\ 
 				 (numPartidas != 0 \/ primerJugador == 1) /\ (numPartidas == 0 \/ primerJugador == ultimoGanador)}
