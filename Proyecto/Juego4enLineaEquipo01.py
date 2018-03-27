@@ -58,40 +58,97 @@
 import random
 
 def seguirPartida() -> bool:
+
 	# Precondición: 
-	# assert(True)
-	print("Le pregunta al usuario si quiere seguir con la partida")
-	# Postcondición:
-	# El jugador ingresa si desea continuar la partida actual o no
+	assert(True)
+
+	# Le pregunta al usuario si quiere seguir con la partida.
+	print("Le pregunta al usuario si quiere seguir con la partida.")
+
+	while True:
+		try:
+			confirmacion = int(input("Por favor, ingrese 1 si desea continuar con la partida, en caso contrario ingrese 0: "))
+
+			assert(0 <= confirmacion <= 1)
+
+			if confirmacion == 1:
+				validacion == True
+			elif confirmacion == 0:
+				validacion == False
+
+			break
+		except:
+			print("Por favor, ingrese una opción válida.")
+
+	
+	# Postcondición: 
+	assert((confirmacion != 1 or validacion == True) and (confirmacion != 0 or validacion == False))
+
+	return validacion
 
 def entregaResultados(partidasGanadasPersona: int, partidasGanadasPC: int, numEmpates: int) -> 'void':
 	# Precondición: 
-	# assert(partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and numEmpates >= 0)
+	assert(partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and numEmpates >= 0)
+
 	print("Se imprime la cantidad de partidas ganadas por el Jugador, PC y numero de empates")
+
+	print("Número de partidas ganadas por la persona: " + str(partidasGanadasPersona))
+	print("Número de partidas ganadas por la computadora: " + str(partidasGanadasPC))
+	print("Número de empates: " + str(numEmpates))
+
 	# Postcondición: 
 	# Se imprime la cantidad de partidas ganadas por el Jugador, PC y numero de empates
+	assert(True)
 
 def entregaGanadorPartida(ganador: int) -> 'void':
 	# Precondición: 
-	# assert(1 <= ganador <= 2)
+	assert(1 <= ganador <= 2)
+	
 	print("Entrega los resultados de la partida que acaba de finalizar")
+
+	if ganador == 1:
+		print("El jugador ha ganado la partida.")
+	else:
+		print("La computadora ha ganado la partida.")
+	
 	# Postcondición: 
-	# Se imprime el ganador de la partida en pantalla
+	assert(True)
 
 def quiereSeguir() -> bool:
 	# Precondición: 
-	# assert(True)
+	assert(True)
+
+	# Le pregunta al jugador si desea jugar otra partida cuando ha finalizado una.
 	print("El jugador ingresa si desea jugar otra partida")
+
+	while True:
+		try:
+			confirmacion = int(input("Por favor, ingrese 1 si desea jugar otra partida, en caso contrario ingrese 0: "))
+
+			assert(0 <= confirmacion <= 1)
+
+			if confirmacion == 1:
+				validacion == True
+			elif confirmacion == 0:
+				validacion == False
+
+			break
+		except:
+			print("Por favor, ingrese una opción válida.")
+
+	
 	# Postcondición: 
-	# assert(True)
+	assert((confirmacion != 1 or validacion == True) and (confirmacion != 0 or validacion == False))
+
+	return validacion
 
 def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columnas: int,tablero: list, numJugadas: int, 
 						jugador: int, numJugadasPC: int, ultimaJugada: int) -> int:
 	# Precondición: 
-	# assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2 and filas >= 0 and columnas >= 0)
-	print("Inicializa el tablero y los valores necesarios para poder jugar")
+	assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2 and filas >= 0 and columnas >= 0)
 
 	# Inicializa el tablero y los valores necesarios para poder jugar
+	print("Inicializa el tablero y los valores necesarios para poder jugar")
 
 	inicializarTablero(filas, columnas, tablero)
 	# dibujarTablero(filas, columnas, verde)
@@ -104,8 +161,8 @@ def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columna
 	ultimaJugada = [-1,-1]
 
 	# Postcondición: 
-	# assert(all ( all (tablero[i][j] == 0 for i in range(filas)) for j in range(columnas)) and 0 <= dificultad <= 1 and 
-	#		(numPartidas != 0 or primerJugador == 1) and (numPartidas == 0 or primerJugador == ultimoGanador))
+	assert(all ( all (tablero[i][j] == 0 for i in range(filas)) for j in range(columnas)) and 0 <= dificultad <= 1 and 
+		(numPartidas != 0 or jugador == 1) and (numPartidas == 0 or jugador == ultimoGanador))
 
 	return dificultad, jugador, numJugadas, numJugadasPC
 
@@ -194,7 +251,7 @@ def escogerDificultad() -> (int):
 
 	return dificultad
 
-def definirPrimero(numPartidas:int, ultimoGanador: int) -> (int):
+def definirPrimero(numPartidas: int, ultimoGanador: int) -> (int):
 	# Precondición: 
 	assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2)
 
@@ -204,13 +261,14 @@ def definirPrimero(numPartidas:int, ultimoGanador: int) -> (int):
 	# VAR 
 	# 	primerJugador: int;					# Variable que almacena quien sera el primer jugador de cada partida
 
+	print('Numero de partidas' + str(numPartidas))
 	if numPartidas == 0:
 		primerJugador = 1
 	else:
 		primerJugador = ultimoGanador
 
 	# Postcondición: 
-	assert(numPartidas != 0 or primerJugador == 1) and (numPartidas == 0 or primerJugador == ultimoGanador)
+	assert((numPartidas != 0 or primerJugador == 1) and (numPartidas == 0 or primerJugador == ultimoGanador))
 
 	return primerJugador
 
@@ -279,25 +337,25 @@ def validarJugada(jugada: int, filas: int, columnas: int, tablero: list,validaci
 	validacion = False
 	
 	# Cota:
-	cota = i
+	cota = i + 1
 	assert(cota >= 0)
 
 	while i != -1:
 		if tablero[i][jugada] == 0:
-			validacion = true
+			validacion = True
 
 		i = i - 1
 
 		# Verificacion de cota estrictamente decreciente.
 		assert(cota > i)
 
-		cota = i
+		cota = i + 1
 
 		# Verificacion de cota acotada por 0.
 		assert(cota >= 0)
 
 	# Postcondición: 
-	assert(any (tablero[i][jugada] == 0 for i in range(filas) == validacion))
+	assert(any (tablero[i][jugada] == 0 for i in range(filas)) == validacion)
 
 	return validacion
 
@@ -313,19 +371,19 @@ def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int,tablero: 
 	#	continuar: boolean;					# Variable auxiliar para finalizar el ciclo y evitar seguir modificando el tablero
 
 	i = filas - 1
-	continua = True
+	continuar = True
 
 	# Cota:
-	cota = i
+	cota = i + 1
 	assert(cota >= 0)
 
-	while i != -1 and continuar == True ->
-		if tablero[i][jugada] == 0 ->
+	while i != -1 and continuar == True:
+		if tablero[i][jugada] == 0:
 			tablero[i][jugada] = jugador
-			if jugador == 2 ->
+			if jugador == 2:
 				ultimaJugada = [i,jugada]
 				# dibujarJugada(i, jugada, azul)
-			else:
+			#	else:
 				# dibujarJugada(i, jugada, rojo)
 
 			continuar = False
@@ -333,9 +391,9 @@ def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int,tablero: 
 		i = i - 1
 
 		# Verificacion de cota estrictamente decreciente.
-		assert(cota >= i)
+		assert(cota >= i + 1)
 
-		cota = i
+		cota = i + 1
 
 		# Verificacion de cota acotada por 0.
 		assert(cota >= 0)
@@ -345,61 +403,358 @@ def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int,tablero: 
 
 def cambiarTurno(jugador: int) -> int:
 	# Precondición:
-	# assert(1 <= jugador <= 2)
+	assert(1 <= jugador <= 2)
+
+	# Pasa el turno al siguiente jugador
 	print("Pasa el turno al siguiente jugador")
+
+	if jugador == 1:
+		jugador = 2
+	elif jugador == 2:
+		jugador = 1
+
 	# Postcondición: 
-	# assert((jugador != 1 or jugador ==2) and (jugador != 2 or jugador == 1))
+	assert(jugador == 1 or jugador == 2)
+
+	return jugador
 
 def verificar4enLinea(filas: int, columnas: int, tablero: list, continuar:bool, ganador:int) -> 'void':
 	# Precondicion: 
-	# assert(filas >= 4 and columnas >= 4 and 
-	#	     all ( all (0 <= tablero[i][j] <= 2 for j in range(columnas)) for i in range(filas)))
+	assert(filas >= 4 and columnas >= 4 and 
+			all ( all (0 <= tablero[i][j] <= 2 for j in range(columnas)) for i in range(filas)))
+
+	# Verifica si alguno de los jugadores realizó un 4 en línea
 	print("Verifica si alguno de los jugadores realizó un 4 en línea")
+	
+	# VAR
+	# 	ganadores: array[0,4) of int;							# Arreglo utilizado para verificar si se cumple alguna de las verificaciones de 4 en linea
+	# 	i: int;													# Variable auxiliar para iterar
+
+	ganadores = [verificarHorizontal(filas, columnas, tablero), verificarVertical(filas, columnas, tablero), verificarDiagonalDerecha(filas, columnas, tablero), verificarDiagonalIzquierda(filas, columnas, tablero)]
+	i = 0
+
+	# Cota 
+	cota = 4 - i
+	# Verificacion de cota acotada por 0.
+	assert(cota >= 0)
+
+	while i != 4:
+		if ganadores[i] != 0:
+			ganador = ganadores[i]
+			continuar = False
+		i = i + 1
+
+		# Verificacion de cota estrictamente decreciente
+		assert(cota > 4 - i)
+
+		# Actualiza valor de la cota
+		cota = 4 - i
+
+		# Verificacion de cota acotada por 0.
+		assert(cota >= 0)
+
 	# Postcondición: 
-	# assert(any (ganadores[i] != 0 and ganador == ganadores[i] for i in range(4) == (continuar == False)))
+	assert(any (ganadores[i] != 0 and ganador == ganadores[i] for i in range(4)) == (continuar == False))
 
 def verificarHorizontal(filas: int, columnas:int, tablero: list) -> int:
 	# Precondición: 
-	# assert(filas >= 4 and columnas >= 4 and 
-	# 		 all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
+	assert(filas >= 4 and columnas >= 4 and 
+			 all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
+
+	# Verifica si existe una linea horizontal
 	print("Verifica si existe una linea horizontal")
+
+	# VAR
+	# 	i: int;													# Variable auxiliar para iterar
+	# 	j: int;													# Variable auxiliar para iterar
+	# 	hay4enLinea: boolean;									# Variable que determina si hay 4 en linea
+	# 	ganador: int;											# Variable que al almacena el ganador de la partida actual, (en caso de ser distinto de 0)
+
+	i = 0;
+	hay4enLinea = False
+	# Cota1:
+	cota1 = filas - i
+	# Verificacion de cota acotada por 0.
+	assert(cota1 >= 0)
+
+	while i != filas:
+	
+		j = 0
+
+		# Cota2:
+		cota2 = columnas - 3 - j
+		# Verificacion de cota acotada por 0.
+		assert(cota2 >= 0)
+
+		while j != columnas - 3:
+
+			if (tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3]) == True and tablero[i][j] != 0:
+				ganador = tablero[i][j];
+				#resaltarGanador(i, j, amarillo)
+				#resaltarGanador(i, j+1, amarillo)
+				#resaltarGanador(i, j+2, amarillo)
+				#resaltarGanador(i, j+3, amarillo)
+				hay4enLinea = True
+			else:
+				ganador = 0
+
+			j = j + 1
+
+			# Verificacion de cota estrictamente decreciente
+			assert(cota2 > columnas - 3 - j)
+
+			# Actualizacion del valor de la cota
+			cota2 = columnas - 3 - j
+
+			# Verificacion de cota acotada por 0.
+			assert(cota2 >= 0)
+
+		i = i + 1
+		
+		# Verificacion de cota estrictamente decreciente
+		assert(cota1 > filas - i)
+
+		# Actualizacion del valor de la cota
+		cota1 = filas - i
+
+		# Verificacion de cota acotada por 0.
+		assert(cota1 >= 0)
+
+
 	# Postcondición: 
-	# assert(any ( any (tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3] for i in range(filas)) 
-	# 	     for j in range(columnas - 3)) == hay4enLinea)
+	assert(any ( any (tablero[i][j] == tablero[i][j+1] == tablero[i][j+2] == tablero[i][j+3] and tablero[i][j] != 0 for i in range(filas)) 
+		     for j in range(columnas - 3)) == hay4enLinea)
+	
+	return ganador
 
 def verificarVertical(filas: int, columnas:int, tablero: list) -> int:
 	# Precondición: 
-	# assert(filas >= 4 and columnas >= 4 and 
-	# 	     all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(filas - 3)))
+	assert(filas >= 4 and columnas >= 4 and 
+		     all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(filas - 3)))
+
+	# Verifica si  existe una linea vertical
 	print("Verifica si  existe una linea vertical")
+
+	# VAR
+	# 	i: int;													# Variable auxiliar para iterar
+	# 	j: int;													# Variable auxiliar para iterar
+	# 	hay4enLinea: boolean;									# Variable que determina si hay 4 en linea
+	# 	ganador: int;											# Variable que al almacena el ganador de la partida actual, (en caso de ser distinto de 0)
+
+	i = 0;
+	hay4enLinea = False
+
+	# Cota1:
+	cota1 = columnas - i
+	# Verificacion de cota acotada por 0.
+	assert(cota1 >= 0)	
+
+	while i != columnas:
+		j = 0		
+		
+		# Cota2:
+		cota2 = filas - 4 - j
+		# Verificacion de cota acotada por 0.
+		assert(cota2 >= 0)
+
+		while j != filas - 4:
+
+			if (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i]) == True and tablero[j][i] != 0:
+				ganador = tablero[j][i]
+				# resaltarGanador(j, i, amarillo)
+				# resaltarGanador(j+1, i, amarillo)
+				# resaltarGanador(j+2, i, amarillo)
+				# resaltarGanador(j+3, i, amarillo)
+				hay4enLinea = True
+			else:
+				ganador = 0
+
+			j = j + 1
+
+			# Verificacion de cota estrictamente decreciente
+			assert(cota2 > filas - 4 - j)
+
+			# Actualizacion del valor de la cota
+			cota2 = filas - 4 - j
+
+			# Verificacion de cota acotada por 0.
+			assert(cota2 >= 0)
+
+		i = i + 1
+
+		# Verificacion de cota estrictamente decreciente
+		assert(cota1 > columnas - i)
+
+		# Actualizacion del valor de la cota
+		cota1 = columnas - i
+
+		# Verificacion de cota acotada por 0.
+		assert(cota1 >= 0)
+
 	# Postcondición: 
-	# assert(any (any (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i] for i in range(columnas)) 
-	#		 for j in range(filas - 3)) == hay4enLinea)
+	assert(any (any (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == tablero[j+3][i] for i in range(columnas)) 
+		 for j in range(filas - 3)) == hay4enLinea)
+	
+	return ganador
 
 def verificarDiagonalDerecha(filas: int, columnas:int, tablero: list) -> int:
 	# Precondicion: 
-	# assert(filas >= 4 and columnas >= 4 and 
-	# 	     all( all(0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
+	assert(filas >= 4 and columnas >= 4 and 
+		     all( all(0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
+
+	# Verifica si existe una linea diagonal derecha
 	print("Verifica si existe una linea diagonal derecha")
+
+	# VAR
+	# 	i: int;													# Variable auxiliar para iterar
+	# 	j: int;													# Variable auxiliar para iterar
+	# 	hay4enLinea: boolean;									# Variable que determina si hay 4 en linea
+	# 	ganador: int;											# Variable que al almacena el ganador de la partida actual, (en caso de ser distinto de 0)
+
+	i = 0;
+	hay4enLinea = False
+
+	# Cota1:
+	cota1 = filas - 4 - i
+	# Verificacion de cota acotada por 0.
+	assert(cota1 >= 0)	
+	
+	while i != filas - 4:
+		j = 0
+
+		# Cota2:
+		cota2 = columnas - 4 - j
+		# Verificacion de cota acotada por 0.
+		assert(cota2 >= 0)
+
+		while j != columnas - 4:
+			if (tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3]) == True and tablero[i][j] != 0:
+				ganador = tablero[i][j];
+				# resaltarGanador(i, j, amarillo)
+				# resaltarGanador(i+1, j+1, amarillo)
+				# resaltarGanador(i+2, j+2, amarillo)
+				# resaltarGanador(i+3, j+3, amarillo)
+				hay4enLinea = True
+			else:
+				ganador = 0
+
+			j = j + 1
+
+			# Verificacion de cota estrictamente decreciente
+			assert(cota2 > columnas - 4 - j)
+
+			# Actualizacion del valor de la cota
+			cota2 = columnas - 4 - j
+
+			# Verificacion de cota acotada por 0.
+			assert(cota2 >= 0)
+
+		i = i + 1
+
+		# Verificacion de cota estrictamente decreciente
+		assert(cota1 > filas - 4 - i)
+
+		# Actualizacion del valor de la cota
+		cota1 = filas - 4 - i
+
+		# Verificacion de cota acotada por 0.
+		assert(cota1 >= 0)
+
 	# Postcondición: 
-	# assert(any (any (tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3] for j in range(columnas - 3))
-	#  		 for i in range(filas - 3)) == hay4enLinea)
+	assert(any (any (tablero[i][j] == tablero[i+1][j+1] == tablero[i+2][j+2] == tablero[i+3][j+3] and tablero[i][j] != 0 for j in range(columnas - 4))
+	 		 for i in range(filas - 4)) == hay4enLinea)
+	
+	return ganador
 
 def verificarDiagonalIzquierda(filas: int, columnas:int, tablero: list) -> int:
 	# Precondición: 
-	# assert(filas >= 4 and columnas >= 4 and 
-	#		 all( all(0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
+	assert(filas >= 4 and columnas >= 4 and 
+			 all( all(0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
+
+	# Verifica si existe una linea diagonal izquierda
 	print("Verifica si existe una linea diagonal izquierda")
+
+	# VAR
+	# 	i: int;													# Variable auxiliar para iterar
+	# 	j: int;													# Variable auxiliar para iterar
+	# 	hay4enLinea: boolean;									# Variable que determina si hay 4 en linea
+	# 	ganador: int;											# Variable que al almacena el ganador de la partida actual, (en caso de ser distinto de 0)
+
+	i = 3;
+	hay4enLinea = False
+
+	# Cota1:
+	cota1 = columnas - i
+	# Verificacion de cota acotada por 0.
+	assert(cota1 >= 0)	
+
+	while i != columnas:
+
+		j = 0
+
+		# Cota2:
+		cota2 = filas - 4 - j
+		# Verificacion de cota acotada por 0.
+		assert(cota2 >= 0)
+
+		while j != filas - 4:
+			if (tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3]) == True and tablero[j][i] != 0:
+				ganador = tablero[j][i]
+				# resaltarGanador(i, j, amarillo)
+				# resaltarGanador(i+1, j-1, amarillo)
+				# resaltarGanador(i+2, j-2, amarillo)
+				# resaltarGanador(i+3, j-3, amarillo)
+				hay4enLinea = True
+			else:
+				ganador = 0
+
+			j = j + 1
+
+			# Verificacion de cota estrictamente decreciente
+			assert(cota2 > filas - 4 - j)
+
+			# Actualizacion del valor de la cota
+			cota2 = filas - 4 - j
+
+			# Verificacion de cota acotada por 0.
+			assert(cota2 >= 0)
+
+		i = i + 1
+
+		# Verificacion de cota estrictamente decreciente
+		assert(cota1 > columnas - i)
+
+		# Actualizacion del valor de la cota
+		cota1 = columnas - i
+
+		# Verificacion de cota acotada por 0.
+		assert(cota1 >= 0)
+
 	# Postcondición:
-	# assert(any( any(tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3] for i in range(columnas))
-	#		 for j in range(filas - 3)) == hay4enLinea) 
+	assert(any( any(tablero[j][i] == tablero[j+1][i-1] == tablero[j+2][i-2] == tablero[j+3][i-3] and tablero[j][i] != 0 for i in range(columnas))
+			 for j in range(filas - 4)) == hay4enLinea) 
+	
+	return ganador
 
 def verificarTablero(numJugadas: int, filas: int, columnas:int) -> bool:
 	# Precondición: 
-	# assert(filas >= 4 and columnas >= 4 and numJugadas <= filas * columnas)
+	assert(filas >= 4 and columnas >= 4 and numJugadas <= filas * columnas)
+
+	# Verifica si el tablero está lleno
 	print("Verifica si el tablero está lleno")
+
+	# VAR 
+	# 	continuar: boolean;								# Variable que determina si la partida ha finalizado o no
+
+	if numJugadas == filas * columnas:
+		continuar = False
+	else:
+		continuar = True
+
 	# Postcondición: 
-	# assert((numJugadas != filas * columnas or continuar == False) and (numJugadas == filas * columnas or continuar == True))
+	assert((numJugadas != filas * columnas or continuar == False) and (numJugadas == filas * columnas or continuar == True))
+	
+	return continuar
 
 def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJugada: list) -> int:
 
