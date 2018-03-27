@@ -56,6 +56,8 @@
 
 # Se importa la librería random para generar las jugadas aleatorias.
 import random
+import pygame
+import sys
 
 def seguirPartida() -> bool:
 
@@ -143,7 +145,7 @@ def quiereSeguir() -> bool:
 	return validacion
 
 def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columnas: int,tablero: list, numJugadas: int, 
-						jugador: int, numJugadasPC: int, ultimaJugada: int) -> int:
+						jugador: int, numJugadasPC: int, ultimaJugada: int, color: list) -> int:
 	# Precondición: 
 	assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2 and filas >= 0 and columnas >= 0)
 
@@ -151,7 +153,7 @@ def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columna
 	print("Inicializa el tablero y los valores necesarios para poder jugar")
 
 	inicializarTablero(filas, columnas, tablero)
-	# dibujarTablero(filas, columnas, verde)
+	dibujarTablero(color)
 	dificultad = escogerDificultad()
 	jugador = definirPrimero(numPartidas, ultimoGanador)
 
@@ -238,7 +240,7 @@ def escogerDificultad() -> (int):
 
 	while True:
 		try:
-			dificultad = int(input("Por favor, ingrese el tipo de dificultad que desea para esta partida. 0 para básico, 1 para medio: "))
+			dificultad = int(input("Por favor "+nombre+", ingresa el tipo de dificultad que deseas para esta partida. 0 para básico, 1 para medio: "))
 			
 			# Postcondición:
 			assert(0 <= dificultad <= 1)
@@ -281,7 +283,7 @@ def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ul
 	if jugador == 2:
 			# Verifica la dificultad
 		if dificultad == 0:
-			# Juagada aleatoria
+			# Jugada aleatoria
 			jugada = randomJugadaPC(columnas)
 		
 		elif dificultad == 1:
@@ -298,7 +300,7 @@ def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ul
 
 def jugadaPersona(columnas: int) -> int:
 	# VAR:
-	# Columnas: int 	# Número de columnas del tablero, la juagda no puede estar fuera del rango [0,columnas).
+	# Columnas: int 	# Número de columnas del tablero, la jugada no puede estar fuera del rango [0,columnas).
 
 	print("Solicita entrada de una jugada válida a la persona hasta que se introduzca una correctamente.")
 
@@ -307,7 +309,7 @@ def jugadaPersona(columnas: int) -> int:
 
 	while True:
 		try:
-			jugada = int(input("Por favor, ingrese el número de la columna donde desea jugar: "))
+			jugada = int(input("Por favor "+nombre+", ingresa el número de la columna donde desea jugar: "))
 			
 			# Postcondición:
 			assert(0 <= jugada < columnas)
@@ -1053,9 +1055,32 @@ def randomJugadaPC(columnas: int) -> int:
 
 	return jugada
 
-def dibujarTablero(filas: int, columnas: int, color: list) -> 'void':
+def dibujarTablero(color: list) -> 'void':
 	# Precondición: 
 	# assert(filas > 0 and columnas > 0)
+	# Cuadrado exterior
+	pygame.draw.line(pantalla, BLANCO, (130, 90), (130, 620))
+	pygame.draw.line(pantalla, BLANCO, (1120, 90), (1120, 620))
+	pygame.draw.line(pantalla, BLANCO, (130, 90), (1120, 90))
+	pygame.draw.line(pantalla, BLANCO, (130, 620), (1120, 620))
+
+	# Filas
+	pygame.draw.line(pantalla, BLANCO, (130, 178), (1120, 178))
+	pygame.draw.line(pantalla, BLANCO, (130, 266), (1120, 266))
+	pygame.draw.line(pantalla, BLANCO, (130, 354), (1120, 354))
+	pygame.draw.line(pantalla, BLANCO, (130, 442), (1120, 442))
+	pygame.draw.line(pantalla, BLANCO, (130, 530), (1120, 530))
+
+	# Columnas
+	pygame.draw.line(pantalla, BLANCO, (272, 90), (272, 620))
+	pygame.draw.line(pantalla, BLANCO, (414, 90), (414, 620))
+	pygame.draw.line(pantalla, BLANCO, (556, 90), (556, 620))
+	pygame.draw.line(pantalla, BLANCO, (698, 90), (698, 620))
+	pygame.draw.line(pantalla, BLANCO, (840, 90), (840, 620))
+	pygame.draw.line(pantalla, BLANCO, (982, 90), (982, 620))
+
+	pygame.display.flip()
+
 	print("Se dibuja el tablero en la interfaz gráfica")
 	# Postcondición: 
 	# se dibuja en una ventana gráfica un tablero con "filas" filas y "columnas" columnas de color "color"
@@ -1074,10 +1099,32 @@ def resaltarGanador(fila: int, columna: int, color: list) -> 'void':
 	# Postcondición: 
 	# Se resalta el circulo de la casilla posicionada en la fila "fila" y columna "columna" del tablero de color "color" }
 
+def pedirNombre() -> str:
+	# Solicita el nombre del jugador.
+	# Precondicion:
+	assert(True)
+
+	nombre = str(input("Por favor, ingrese su nombre. "))
+
+	return nombre
 
 # Precondición:
-# assert(filas>=4 and columnas >= 4 and maxPartidas >= 0)
-	
+# assert(filas>=4 and columnas >= 4 and maxPartidas >= 0)0
+
+
+# CONSTANTES:
+# Colores que seran usados en el juego
+NEGRO = (0, 0, 0)
+BLANCO = (255, 255, 255)
+ROJO = (255, 0, 0)
+AZUL = (0, 0, 255)
+AMARILLO = (255, 255, 0)
+
+# Valores necesarios para la pantalla
+ALTO = 720               # Alto de la ventana
+ANCHO = 1280             # Ancho de la ventana
+FPS = 60                 # Cuadros por segundo
+
 # Inicialización de variables.
 filas = 6
 columnas = 7
@@ -1095,76 +1142,100 @@ numEmpates = 0
 quiereSeguirJugando = True
 validacion = True
 ganador = 0
+nombre = pedirNombre()
 
-# Cota: 
-# assert(maxPartidas - numPartidas)
-while quiereSeguirJugando == True and numPartidas != maxPartidas:
+# Inicializar la pantalla del juego
+pygame.init()
+pantalla = pygame.display.set_mode((ANCHO, ALTO))
+pygame.display.set_caption("4 en Linea")
+reloj = pygame.time.Clock()
 
-	# Inicializa los valores
-	continuar = True
-	dificultad, jugador, numJugadas, numJugadasPC = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, numJugadas, jugador, numJugadasPC, ultimaJugada)
-	
-	# Cota: 
-	# assert(filas * columnas - numJugadas)
-	while continuar == True and numJugadas != filas * columnas:
-		
-		ingresaJugada = True
-		# Cota: No tiene, la iteracion se hará hasta que la jugada sea correcta
-		while ingresaJugada == True:
-			
-			# Obtiene los valores de la jugada y verifica que sea correcto
-			jugada = obtenerJugada(filas, columnas, numJugadasPC, tablero, ultimaJugada, jugador, dificultad)
-			validarJugada(jugada, filas, columnas, tablero, validacion, ultimaJugada)
+# Loop del Juego
+graphic = True
 
-			if validacion == True:
+while graphic == True:
 
-				# Si la jugada se puede realizar, se almacena en el tablero.
-				reflejarJugada(jugada, jugador, filas, columnas, tablero)
-				jugador = cambiarTurno(jugador)
-				numJugadas = numJugadas + 1
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			graphic = False
+		else:
+			# Cota: 
+			# assert(maxPartidas - numPartidas)
+			while quiereSeguirJugando == True and numPartidas != maxPartidas:
 
-				# Verifica si existe un ganador
-				verificar4enLinea(filas, columnas, tablero, continuar, ganador)
+				# Inicializa los valores
+				continuar = True
+				dificultad, jugador, numJugadas, numJugadasPC = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, numJugadas, jugador, numJugadasPC, ultimaJugada, BLANCO)
 				
-				if continuar == True:
+				# Cota: 
+				# assert(filas * columnas - numJugadas)
+				while continuar == True and numJugadas != filas * columnas:
+					
+					ingresaJugada = True
+					# Cota: No tiene, la iteracion se hará hasta que la jugada sea correcta
+					while ingresaJugada == True:
+						
+						# Obtiene los valores de la jugada y verifica que sea correcto
+						jugada = obtenerJugada(filas, columnas, numJugadasPC, tablero, ultimaJugada, jugador, dificultad)
+						validarJugada(jugada, filas, columnas, tablero, validacion, ultimaJugada)
 
-					# Si no hay ganador,verifica que el tablero no esté lleno
-					continuar = verificarTablero(numJugadas, filas, columnas)
+						if validacion == True:
 
-					if continuar == False:
-						# Si el tablero está lleno, finaliza la partida y aumenta el conteo de empates
-						numEmpates = numEmpates + 1
-						numPartidas = numPartidas + 1
+							# Si la jugada se puede realizar, se almacena en el tablero.
+							reflejarJugada(jugada, jugador, filas, columnas, tablero)
+							jugador = cambiarTurno(jugador)
+							numJugadas = numJugadas + 1
 
-				else:
-					# Establece el ganador, le aumenta una victoria y lo registra para determinar el primer
-					# jugador de la pŕoxima partida
-					if ganador == 1:
-						ultimoGanador = ganador
-						partidasGanadasPersona = partidasGanadasPersona + 1
-					else:
-						ultimoGanador = ganador
-						partidasGanadasPC = partidasGanadasPC + 1
-					numPartidas = numPartidas + 1
+							# Verifica si existe un ganador
+							verificar4enLinea(filas, columnas, tablero, continuar, ganador)
+							
+							if continuar == True:
 
-				ingresaJugada = False
+								# Si no hay ganador,verifica que el tablero no esté lleno
+								continuar = verificarTablero(numJugadas, filas, columnas)
 
-			else:
-				# Si la jugada no se puede realizar, se solicita una nueva jugada
-				ingresaJugada = True
+								if continuar == False:
+									# Si el tablero está lleno, finaliza la partida y aumenta el conteo de empates
+									numEmpates = numEmpates + 1
+									numPartidas = numPartidas + 1
 
-		# Verifica que quiere continuar con la partida actual
-		if jugador == 1:
-			# Pregunta al usuario si desea seguir jugando
-			continuar = seguirPartida()
+							else:
+								# Establece el ganador, le aumenta una victoria y lo registra para determinar el primer
+								# jugador de la pŕoxima partida
+								if ganador == 1:
+									ultimoGanador = ganador
+									partidasGanadasPersona = partidasGanadasPersona + 1
+								else:
+									ultimoGanador = ganador
+									partidasGanadasPC = partidasGanadasPC + 1
+								numPartidas = numPartidas + 1
 
-	# Muestra el ganador de la partida
-	entregaGanadorPartida(ganador)
+							ingresaJugada = False
 
-	# Pregunta si se desea jugar otra partida
-	quiereSeguirJugando = quiereSeguir()
+						else:
+							# Si la jugada no se puede realizar, se solicita una nueva jugada
+							ingresaJugada = True
 
-# Entrega los resultados finales de la partida
-entregaResultados(partidasGanadasPersona, partidasGanadasPC, numEmpates)
+					# Verifica que quiere continuar con la partida actual
+					if jugador == 1:
+						# Pregunta al usuario si desea seguir jugando
+						continuar = seguirPartida()
 
-# assert(Postcondición: numPartidas >= 0 and partidasGanadasPersona >=0 and partidasGanadasPC >= 0 and quiereSeguirJugando == False)
+				# Muestra el ganador de la partida
+				entregaGanadorPartida(ganador)
+
+				# Pregunta si se desea jugar otra partida
+				quiereSeguirJugando = quiereSeguir()
+
+			# Entrega los resultados finales de la partida
+			entregaResultados(partidasGanadasPersona, partidasGanadasPC, numEmpates)
+			graphic == False
+
+			# assert(Postcondición: numPartidas >= 0 and partidasGanadasPersona >=0 and partidasGanadasPC >= 0 and quiereSeguirJugando == False)
+
+
+pygame.display.flip()
+
+
+sys.exit()
+pygame.quit()
