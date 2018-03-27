@@ -32,28 +32,30 @@
 #	DECLARACIÓN DE VARIABLES
 # 
 # 	CONST
-# 		filas:int;													# Numero de filas del tablero
-# 		columnas: int;												# Numero de columnas del table
-# 		maxPartidas: int;											# Numero maximo de partidas a jugar
+# 		filas:int;										# Numero de filas del tablero
+# 		columnas: int;									# Numero de columnas del table
+# 		maxPartidas: int;								# Numero maximo de partidas a jugar
 # 	VAR
-# 		tablero: list [0,filas) x [0,columnas) of int;				# Tablero de juego
-# 		dificultad: int;											# Variable que almacena la dificultad seleccionada por el jugador (0 basico, 1 medio)
-# 		ultimoGanador: int;											# Variable que almacena el ganador de la partida anterior
-# 		jugador: int;												# Variable que almacena el jugador del turno actual
-# 		numPartidas: int;											# Variable que almacena la cantidad de partidas jugadas
-# 		jugada: int;												# Variable que almacena la columna donde se desea jugar
-# 		ultimaJugada: list;										# Variable que almacena la fila y columna de la ultima jugada de la computadora
-# 		continuar: bool;											# Variable que determina si una partida ha finalizado o no
-# 		numJugadas: int;											# Variable que almacena el numero de jugadas de la partida actual
-# 		numJugadasPC: int;											# Variable que almacena el numero de jugadas de la computadora en la partida actual
-# 		numEmpates: int;											# Variable que almacena el numero de empates de todos los juegos
-# 		partidasGanadasPersona: int;								# Variable que almacena la cantidad de veces que gana el jugador
-# 		partidasGanadasPC: int;										# Variable que almacena la cantidad de veces que gana la computadora
-# 		ganador: int;												# Variable que almacena el ganador de la partida actual
-# 		validacion: bool;										# Variable que determina si una jugada es valida o no
-# 		quiereSeguirJugando: bool;								# Variable que determina si el usuario desea jugar otra partia o no
-# 		ingresaJugada: bool;										# Variable utilizada en el ciclo de cada jugada para en caso de no ser valida, poder ingresar otra jugada
+# 		tablero: list [0,filas) x [0,columnas) of int;	# Tablero de juego
+# 		dificultad: int;								# Variable que almacena la dificultad seleccionada por el jugador (0 basico, 1 medio)
+# 		ultimoGanador: int;								# Variable que almacena el ganador de la partida anterior
+# 		jugador: int;									# Variable que almacena el jugador del turno actual
+# 		numPartidas: int;								# Variable que almacena la cantidad de partidas jugadas
+# 		jugada: int;									# Variable que almacena la columna donde se desea jugar
+# 		ultimaJugada: list;								# Variable que almacena la fila y columna de la ultima jugada de la computadora
+# 		continuar: bool;								# Variable que determina si una partida ha finalizado o no
+# 		numJugadas: int;								# Variable que almacena el numero de jugadas de la partida actual
+# 		numJugadasPC: int;								# Variable que almacena el numero de jugadas de la computadora en la partida actual
+# 		numEmpates: int;								# Variable que almacena el numero de empates de todos los juegos
+# 		partidasGanadasPersona: int;					# Variable que almacena la cantidad de veces que gana el jugador
+# 		partidasGanadasPC: int;							# Variable que almacena la cantidad de veces que gana la computadora
+# 		ganador: int;									# Variable que almacena el ganador de la partida actual
+# 		validacion: bool;								# Variable que determina si una jugada es valida o no
+# 		quiereSeguirJugando: bool;						# Variable que determina si el usuario desea jugar otra partia o no
+# 		ingresaJugada: bool;							# Variable utilizada en el ciclo de cada jugada para en caso de no ser valida, poder ingresar otra jugada
 
+# Se importa la librería random para generar las jugadas aleatorias.
+import random
 
 def seguirPartida() -> bool:
 	# Precondición: 
@@ -84,42 +86,182 @@ def quiereSeguir() -> bool:
 	# assert(True)
 
 def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columnas: int,tablero: list, numJugadas: int, 
-						jugador: int, numJugadasPC: int, ultimaJugada: int) -> 'void':
+						jugador: int, numJugadasPC: int, ultimaJugada: int) -> int:
 	# Precondición: 
 	# assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2 and filas >= 0 and columnas >= 0)
 	print("Inicializa el tablero y los valores necesarios para poder jugar")
+
+	# Inicializa el tablero y los valores necesarios para poder jugar
+
+	inicializarTablero(filas, columnas, tablero)
+	# dibujarTablero(filas, columnas, verde)
+	dificultad = escogerDificultad()
+	jugador = definirPrimero(numPartidas, ultimoGanador)
+
+	# Inicializa las variables para la partida
+	numJugadas = 0
+	numJugadasPC = 0
+	ultimaJugada = [-1,-1]
+
 	# Postcondición: 
 	# assert(all ( all (tablero[i][j] == 0 for i in range(filas)) for j in range(columnas)) and 0 <= dificultad <= 1 and 
 	#		(numPartidas != 0 or primerJugador == 1) and (numPartidas == 0 or primerJugador == ultimoGanador))
 
+	return dificultad, jugador, numJugadas, numJugadasPC
+
 def inicializarTablero(filas: int,columnas: int,tablero: list) -> 'void':
 
 	# Precondición: 
-	# assert(filas >= 4 and columnas >= 4)
-	print("Inicializa el tablero de manera que esté vacío")
-	# Postcondición: 
-	# assert(all ( all (tablero[i][j] == 0 for i in range(filas)) for j in range(columnas)))
+	assert(filas >= 4 and columnas >= 4)
 
-def dificultad() -> (int):
+	print("Inicializa el tablero de manera que esté vacío")
+
+	# Inicializa el tablero de manera que esté vacío
+
+	# VAR
+	# 	i: int;							# Variable auxiliar para iterar
+	# 	j: int;							# Variable auxiliar para iterar
+
+	# Inicialización de variables
+	i = 0
+
+	# Recorre las filas
+	# Cota T:
+	# Verificación de cota acotada por 0.
+	cota1 = filas - i
+	assert(cota1 >= 0)
+	while i != filas:
+
+		# Inicialización de variables
+		j = 0
+
+		# Recorre las columnas
+		# Cota t2:
+		# Verificación de cota acotada por 0.
+		cota2 = columnas - j
+		assert(cota2 >= 0)
+		while j != columnas:
+
+			# Rellena el tablero con 0's
+			tablero[i][j] = 0
+
+			j = j + 1
+
+			# Cota estrictamente decreciente
+			assert(cota2 > columnas - j)
+
+			# Cambio de valor de la cota
+			cota2 = columnas - j
+
+			# Verificación de cota acotada por 0.
+			assert(cota2 >= 0)
+
+
+		i = i + 1
+
+		# Cota estrictamente decreciente
+		assert(cota1 > filas - i)
+
+		# Cambio de valor de la cota
+		cota1 = filas - i
+
+		# Verificación de cota acotada por 0.
+		assert(cota1 >= 0)
+
+	# Postcondición: 
+	assert(all ( all (tablero[i][j] == 0 for i in range(filas)) for j in range(columnas)))
+
+def escogerDificultad() -> (int):
+	# Se le solicita al usuario que ingrese la dificultad de la partida que va a jugar. Siendo 0 para básico y 1 para medio.
+
 	# Precondición: 
-	# assert(True)
-	print("El usuario ingresa la dificultad")
-	# Postcondición: 0 <= dificultad <= 1 }
-	# Dificultad ingresada por el usuario
+	assert(True)
+	
+	print("Se solicita al usuario que ingrese una dificultad hasta que ingrese una correctamente.")
+
+	while True:
+		try:
+			dificultad = int(input("Por favor, ingrese el tipo de dificultad que desea para esta partida. 0 para básico, 1 para medio: "))
+			
+			# Postcondición:
+			assert(0 <= dificultad <= 1)
+			break
+
+		except:
+			# En caso de error le solicita al usuario que ingrese otro valor:
+			print("Por favor, verifique que la dificultad que escogió sea un entero entre 0 y 1.")
+			print("Por favor, ingrese la dificultad de la partida de nuevo.")
+
+	return dificultad
 
 def definirPrimero(numPartidas:int, ultimoGanador: int) -> (int):
 	# Precondición: 
-	# assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2)
-	print("Función que devuelve el primer jugador dependiendo de la partida en que se encuentren")
+	assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2)
+
+	# Función que devuelve el primer jugador dependiendo de la partida en que se encuentren.
+	print("Función que devuelve el primer jugador dependiendo de la partida en que se encuentren.")
+
+	# VAR 
+	# 	primerJugador: int;					# Variable que almacena quien sera el primer jugador de cada partida
+
+	if numPartidas == 0:
+		primerJugador = 1
+	else:
+		primerJugador = ultimoGanador
+
 	# Postcondición: 
-	# assert(numPartidas != 0 or primerJugador == 1) and (numPartidas == 0 or primerJugador == ultimoGanador)
+	assert(numPartidas != 0 or primerJugador == 1) and (numPartidas == 0 or primerJugador == ultimoGanador)
+
+	return primerJugador
 
 def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJugada: list, jugador: int, dificultad: int) -> int:
+	
 	# Precondición: 
-	# assert(columnas >= 4 and 1 <= jugador <= 2 and 0 <= dificultad <= 1)
+	assert(columnas >= 4 and 1 <= jugador <= 2 and 0 <= dificultad <= 1)
 	print("Verifica quien debe ingresar la jugada y la obtiene")
+
+	if jugador == 2:
+			# Verifica la dificultad
+		if dificultad == 0:
+			# Juagada aleatoria
+			jugada = randomJugadaPC(columnas)
+		
+		elif dificultad == 1:
+			# Busca una jugada con una estrategia
+			jugada = jugadaPC(filas, columnas, numJugadasPC, tablero, ultimaJugada)
+	
+	elif jugador == 1: # Turno del jugador
+		jugada = jugadaPersona(columnas)
+
+	return jugada
+
 	# Postcondición: 0 <= jugada <= columnas }
 	# Devuelve la columna donde se desea jugar
+
+def jugadaPersona(columnas: int) -> int:
+	# VAR:
+	# Columnas: int 	# Número de columnas del tablero, la juagda no puede estar fuera del rango [0,columnas).
+
+	print("Solicita entrada de una jugada válida a la persona hasta que se introduzca una correctamente.")
+
+	# Precondición:
+	assert(columnas > 4)
+
+	while True:
+		try:
+			jugada = int(input("Por favor, ingrese el número de la columna donde desea jugar: "))
+			
+			# Postcondición:
+			assert(0 <= jugada < columnas)
+
+			break
+		except:
+			# En caso de error le solicita al usuario que ingrese otro valor:
+			print("Por favor, verifique que la columna donde desea jugar sea un entero entre 0 y " + str(columnas - 1) + ".")
+			print("Por favor, ingrese el número donde desea jugar de nuevo.")
+
+	return jugada
+
 
 def validarJugada(jugada: int, filas: int, columnas: int, tablero: list,validacion: bool,
 				   ultimaJugada: list) -> 'void':
@@ -200,6 +342,64 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 	# assert(filas >= 4 and columnas >= 4 and numJugadas >= 0 and 
 	#    	 all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
 	print("Inteligencia Artificial del computador")
+
+# Inteligencia Artificial del computador
+
+	# CONST
+	# 	intentosMaximos: int;									# Numero maximo de intentos que puede hacer la computadora de intentar con varias estrategias antes de jugar random 
+
+	# VAR
+	# 	puedeJugar: boolean;									# Variable que determina si las estrategias comprobadas pueden llevarse a cabo
+	# 	estrategia: int;										# Variable que almacena la estrategia a llevar a cabo por la computadora
+	# 	jugada: int;											# Variable que almacena la columna en la que se desea jugar	
+	# 	i: int;													# Variable auxiliar para realizar la iteracion
+		
+	puedeJugar = false
+
+	if numJugadasPC == 0:
+		jugada = randomJugadaPC(columnas)
+		estrategia = randomEstrategia()
+	else:
+		{ Cota: intentosMaximos - i}
+		while puedeJugar == false and i != intentosMaximos:
+
+			if estrategia == 0: # Vertical
+
+				compruebaJugadaVertical(ultimaJugada, tablero; jugada, puedeJugar, estrategi)
+
+			elif estrategia == 1: # Horizontal Derecha
+
+				compruebaJugadaHorizontalDerecha(ultimaJugada, tablero, columnas; jugada, puedeJugar, estrategia)
+
+			elif estrategia == 2: # Horizontal Izquierda
+
+				compruebaJugadaHorizontalIzquierda(ultimaJugada, tablero; jugada, puedeJugar, estrategia)	
+
+			elif estrategia == 3: # Diagonal derecha abajo
+				
+				compruebaJugadaDiagonalDerechaAbajo(ultimaJugada, tablero, columnas, filas; jugada, puedeJugar, estrategia)
+			
+			elif estrategia == 4: # Diagonal derecha arriba
+
+				compruebaJugadaDiagonalDerechaArriba(ultimaJugada, tablero; jugada, puedeJugar, estrategia)
+
+			elif estrategia == 5: # Diagonal izquierda abajo
+
+				compruebaJugadaDiagonalIzquierdaAbajo(ultimaJugada, tablero, filas; jugada, puedeJugar, estrategia)
+
+			elif estrategia == 6: # Diagonal izquierda arriba
+
+				compruebaJugadaDiagonalIzquierdaArriba(ultimaJugada, tablero; jugada, puedeJugar, estrategia)
+
+			i = i + 1
+
+		if jugada == -1:
+			jugada = randomJugadaPC(columnas)
+		else:
+			skip
+
+	return jugada
+
 	# Postcondición: 
 	# assert(0 <= jugada < columnas)
 
@@ -275,12 +475,18 @@ def randomEstrategia() -> int:
 	# Postcondición: 
 	# assert(0 <= estrategia < 4)
 
-def randomjugadaPC() -> int:
+def randomJugadaPC(columnas: int) -> int:
 	# Precondición:
-	# assert(True)
-	print("Devuelva una columna aleatoriamente, deben verificar el número de columnas.")	
+	assert(True)
+	print("Devuelve una columna aleatoriamente para generar la jugada de la computadora.")
+
+	jugada = random.randrange(columnas)
+	print("Columna seleccionada: " + str(jugada))
+
 	# Postcondición
-	# assert(0 <= jugada < filas)
+	assert(0 <= jugada < columnas)
+
+	return jugada
 
 def dibujarTablero(filas: int, columnas: int, color: list) -> 'void':
 	# Precondición: 
@@ -315,7 +521,7 @@ numJugadas = 0
 numJugadasPC = 0
 ultimaJugada = [0,0]
 jugador = 0
-tablero = [[0]*filas]*columnas
+tablero = [[0]*columnas]*filas
 numPartidas = 0
 partidasGanadasPC = 0
 partidasGanadasPersona = 0
@@ -331,7 +537,7 @@ while quiereSeguirJugando == True and numPartidas != maxPartidas:
 
 	# Inicializa los valores
 	continuar = True
-	inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, numJugadas, jugador, numJugadasPC, ultimaJugada)
+	dificultad, jugador, numJugadas, numJugadasPC = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, numJugadas, jugador, numJugadasPC, ultimaJugada)
 	
 	# Cota: 
 	# assert(filas * columnas - numJugadas)

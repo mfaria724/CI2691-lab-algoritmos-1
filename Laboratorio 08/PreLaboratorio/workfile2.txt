@@ -1,3 +1,2 @@
-Leyendo linea 1
-Leyendo linea 2
-Leyendo linea 3
+
+La lista leida es:[2, 3, 4]
