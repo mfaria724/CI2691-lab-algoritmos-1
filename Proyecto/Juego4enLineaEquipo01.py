@@ -88,7 +88,7 @@ def quiereSeguir() -> bool:
 	# assert(True)
 
 def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columnas: int,tablero: list, numJugadas: int, 
-						jugador: int, numJugadasPC: int, ultimaJugada: int, color: list) -> int:
+						jugador: int, numJugadasPC: int, ultimaJugada: int, BLANCO: list, NEGRO: list) -> int:
 	# Precondición: 
 	# assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2 and filas >= 0 and columnas >= 0)
 	print("Inicializa el tablero y los valores necesarios para poder jugar")
@@ -96,7 +96,7 @@ def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columna
 	# Inicializa el tablero y los valores necesarios para poder jugar
 
 	inicializarTablero(filas, columnas, tablero)
-	dibujarTablero(color)
+	dibujarTablero(BLANCO, NEGRO)
 	dificultad = escogerDificultad()
 	jugador = definirPrimero(numPartidas, ultimoGanador)
 
@@ -276,30 +276,30 @@ def validarJugada(jugada: int, filas: int, columnas: int, tablero: list,validaci
 	# VAR		
 	# 	i: int;								# Variable auxiliar para iterar
 
-	i = filas -1
+	i = filas - 1
 
 	validacion = False
 	
 	# Cota:
-	cota = i
+	cota = i + 1
 	assert(cota >= 0)
 
 	while i != -1:
 		if tablero[i][jugada] == 0:
-			validacion = true
+			validacion = True
 
 		i = i - 1
 
 		# Verificacion de cota estrictamente decreciente.
 		assert(cota > i)
 
-		cota = i
+		cota = i + 1
 
 		# Verificacion de cota acotada por 0.
 		assert(cota >= 0)
 
 	# Postcondición: 
-	assert(any (tablero[i][jugada] == 0 for i in range(filas) == validacion))
+	assert(any (tablero[i][jugada] == 0 for i in range(filas)) == validacion)
 
 	return validacion
 
@@ -315,29 +315,29 @@ def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int,tablero: 
 	#	continuar: boolean;					# Variable auxiliar para finalizar el ciclo y evitar seguir modificando el tablero
 
 	i = filas - 1
-	continua = True
+	continuar = True
 
 	# Cota:
-	cota = i
+	cota = i + 1
 	assert(cota >= 0)
 
-	while i != -1 and continuar == True ->
-		if tablero[i][jugada] == 0 ->
+	while i != -1 and continuar == True:
+		if tablero[i][jugada] == 0:
 			tablero[i][jugada] = jugador
-			if jugador == 2 ->
+			if jugador == 2:
 				ultimaJugada = [i,jugada]
-				# dibujarJugada(i, jugada, azul)
+				dibujarJugada(i, jugada, AZUL)
 			else:
-				# dibujarJugada(i, jugada, rojo)
-
+				dibujarJugada(i, jugada, ROJO)
 			continuar = False
-
+			pygame.display.flip()
+				
 		i = i - 1
 
 		# Verificacion de cota estrictamente decreciente.
 		assert(cota >= i)
 
-		cota = i
+		cota = i + 1
 
 		# Verificacion de cota acotada por 0.
 		assert(cota >= 0)
@@ -658,15 +658,15 @@ def compruebaJugadaDiagonalIzquierdaArriba(ultimaJugada: list, tablero: list, co
 	if ultimaJugada[0] == 0 or ultimaJugada[1] == columnas - 1:
 		jugada = -1
 		estrategia = randomEstrategia()
-		puedeJugar = false
+		puedeJugar = False
 	else:
 		if tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1] == 0:
 			jugada = ultimaJugada[1] + 1
-			puedeJugar = true
+			puedeJugar = True
 		else:
 			jugada = -1
 			estrategia = randomEstrategia()
-			puedeJugar = false
+			puedeJugar = False
 
 	# Postcondición: 
 	assert(((ultimaJugada[0] == 0 or ultimaJugada[1] == columnas - 1 ) or (( tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] + 1)) and
@@ -700,29 +700,31 @@ def randomJugadaPC(columnas: int) -> int:
 
 	return jugada
 
-def dibujarTablero(color: list) -> 'void':
+def dibujarTablero(colorlineas: list, colorfondo: list) -> 'void':
 	# Precondición: 
 	# assert(filas > 0 and columnas > 0)
+	# Fondo
+	pantalla.fill(colorfondo)
 	# Cuadrado exterior
-	pygame.draw.line(pantalla, BLANCO, (130, 90), (130, 620))
-	pygame.draw.line(pantalla, BLANCO, (1120, 90), (1120, 620))
-	pygame.draw.line(pantalla, BLANCO, (130, 90), (1120, 90))
-	pygame.draw.line(pantalla, BLANCO, (130, 620), (1120, 620))
+	pygame.draw.line(pantalla, colorlineas, (130, 90), (130, 620))
+	pygame.draw.line(pantalla, colorlineas, (1120, 90), (1120, 620))
+	pygame.draw.line(pantalla, colorlineas, (130, 90), (1120, 90))
+	pygame.draw.line(pantalla, colorlineas, (130, 620), (1120, 620))
 
 	# Filas
-	pygame.draw.line(pantalla, BLANCO, (130, 178), (1120, 178))
-	pygame.draw.line(pantalla, BLANCO, (130, 266), (1120, 266))
-	pygame.draw.line(pantalla, BLANCO, (130, 354), (1120, 354))
-	pygame.draw.line(pantalla, BLANCO, (130, 442), (1120, 442))
-	pygame.draw.line(pantalla, BLANCO, (130, 530), (1120, 530))
+	pygame.draw.line(pantalla, colorlineas, (130, 178), (1120, 178))
+	pygame.draw.line(pantalla, colorlineas, (130, 266), (1120, 266))
+	pygame.draw.line(pantalla, colorlineas, (130, 354), (1120, 354))
+	pygame.draw.line(pantalla, colorlineas, (130, 442), (1120, 442))
+	pygame.draw.line(pantalla, colorlineas, (130, 530), (1120, 530))
 
 	# Columnas
-	pygame.draw.line(pantalla, BLANCO, (272, 90), (272, 620))
-	pygame.draw.line(pantalla, BLANCO, (414, 90), (414, 620))
-	pygame.draw.line(pantalla, BLANCO, (556, 90), (556, 620))
-	pygame.draw.line(pantalla, BLANCO, (698, 90), (698, 620))
-	pygame.draw.line(pantalla, BLANCO, (840, 90), (840, 620))
-	pygame.draw.line(pantalla, BLANCO, (982, 90), (982, 620))
+	pygame.draw.line(pantalla, colorlineas, (272, 90), (272, 620))
+	pygame.draw.line(pantalla, colorlineas, (414, 90), (414, 620))
+	pygame.draw.line(pantalla, colorlineas, (556, 90), (556, 620))
+	pygame.draw.line(pantalla, colorlineas, (698, 90), (698, 620))
+	pygame.draw.line(pantalla, colorlineas, (840, 90), (840, 620))
+	pygame.draw.line(pantalla, colorlineas, (982, 90), (982, 620))
 
 	pygame.display.flip()
 
@@ -730,10 +732,11 @@ def dibujarTablero(color: list) -> 'void':
 	# Postcondición: 
 	# se dibuja en una ventana gráfica un tablero con "filas" filas y "columnas" columnas de color "color"
 
-def dibujarJugada(fila: int, columna: int, color: list) -> 'void':
+def dibujarJugada(i: int, jugada: int, color: list) -> 'void':
 	# Precondición: 
 	# assert(filas >= 0 and columnas >= 0)
 	print("Dibuja en el tablero la jugada luego de haberla reflejado en la matriz")
+	pygame.draw.circle(pantalla, color, (201 + jugada*142, 134 + i*88), 30, 0)
 	# Postcondición: 
 	# Se dibuja un circulo de color "color" en la casilla posicionada en la fila "fila" y columna "columna" del tablero
 
@@ -794,6 +797,7 @@ pygame.init()
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("4 en Linea")
 reloj = pygame.time.Clock()
+print(type(pantalla))
 
 # Loop del Juego
 graphic = True
@@ -810,7 +814,7 @@ while graphic == True:
 
 				# Inicializa los valores
 				continuar = True
-				dificultad, jugador, numJugadas, numJugadasPC = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, numJugadas, jugador, numJugadasPC, ultimaJugada, BLANCO)
+				dificultad, jugador, numJugadas, numJugadasPC = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, numJugadas, jugador, numJugadasPC, ultimaJugada, BLANCO, NEGRO)
 				
 				# Cota: 
 				# assert(filas * columnas - numJugadas)
@@ -877,9 +881,6 @@ while graphic == True:
 			graphic == False
 
 			# assert(Postcondición: numPartidas >= 0 and partidasGanadasPersona >=0 and partidasGanadasPC >= 0 and quiereSeguirJugando == False)
-
-
-pygame.display.flip()
 
 
 sys.exit()
