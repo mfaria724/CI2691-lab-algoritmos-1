@@ -1256,35 +1256,35 @@ def escribeArchivo(nombre: str, filas: int, columnas: int, tablero: list, dificu
 	)
 
 	with open('guardarPartida.txt', 'w') as f:
-		f.write('Nombre \n')
+		f.write('Nombre\n')
 		f.write(str(nombre) + '\n')
-		f.write('Filas \n')
+		f.write('Filas\n')
 		f.write(str(filas) + '\n')
-		f.write('Columnas \n')
+		f.write('Columnas\n')
 		f.write(str(columnas) + '\n')
-		f.write('Tablero \n')
+		f.write('Tablero\n')
 		f.write(str(tablero) + '\n')
-		f.write('Dficultad \n')
+		f.write('Dficultad\n')
 		f.write(str(dificultad) + '\n')
-		f.write('ultimoGanador \n')
+		f.write('ultimoGanador\n')
 		f.write(str(ultimoGanador) + '\n')
-		f.write('Jugador \n')
+		f.write('Jugador\n')
 		f.write(str(jugador) + '\n')
-		f.write('numPartidas \n')
+		f.write('numPartidas\n')
 		f.write(str(numPartidas) + '\n')
-		f.write('ultimaJugada \n')
+		f.write('ultimaJugada\n')
 		f.write(str(ultimaJugada) + '\n')
-		f.write('numJugadas \n')
+		f.write('numJugadas\n')
 		f.write(str(numJugadas) + '\n')
-		f.write('numJugadasPC \n')
+		f.write('numJugadasPC\n')
 		f.write(str(numJugadasPC) + '\n')
-		f.write('numEmpates \n')
+		f.write('numEmpates\n')
 		f.write(str(numEmpates) + '\n')
-		f.write('partidasGanadasPersona \n')
+		f.write('partidasGanadasPersona\n')
 		f.write(str(partidasGanadasPersona) + '\n')
-		f.write('partidasGanadasPC \n')
+		f.write('partidasGanadasPC\n')
 		f.write(str(partidasGanadasPC) + '\n')
-		f.write('estrategia \n')
+		f.write('estrategia\n')
 		f.write(str(estrategia) + '\n')
 	f.closed
 
@@ -1293,11 +1293,68 @@ def escribeArchivo(nombre: str, filas: int, columnas: int, tablero: list, dificu
 		True
 		)
 
+def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, int, int, int, int):
+	archivo = open('guardarPartida.txt')
+	
+	datos = archivo.readlines()
+	print(datos)
 
+	for i in range(len(datos)):
+		datos[i] = datos[i].rstrip('\n')
+
+	print("Nombre: " + str(datos[1]))
+	nombre = datos[1]
+	print("Filas: " + str(datos[3]))
+	filas = int(datos[3])
+	print("Columnas: " + str(datos[5]))
+	columnas = int(datos[5])
+	print("Tablero: " + str(datos[7]))
+	tablero = eval(datos[7])
+	print("Dificultad: " + str(datos[9]))
+	dificultad = int(datos[9])
+	print("ultimoGanador: " + str(datos[11]))
+	ultimoGanador = int(datos[11])
+	print("jugador: " + str(datos[13]))
+	jugador = int(datos[13])
+	print("numPartidas: " + str(datos[15]))
+	numPartidas = int(datos[15])
+	print("ultimaJugada: " + str(datos[17]))
+	ultimaJugada = eval(datos[17])
+	print("numJugadas: " + str(datos[19]))
+	numJugadas = int(datos[19])
+	print("numJugadasPC: " + str(datos[21]))
+	numJugadasPC = int(datos[21])
+	print("numEmpates: " + str(datos[23]))
+	numEmpates = int(datos[23])
+	print("partidasGanadasPersona: " + str(datos[25]))
+	partidasGanadasPersona = int(datos[25])
+	print("partidasGanadasPC: " + str(datos[27]))
+	partidasGanadasPC = int(datos[27])
+	print("Estrategia: " + str(datos[29]))
+	estrategia = int(datos[29])
+
+	return nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia
+
+def cargarPartida() -> bool:
+
+	while True:
+		try:
+			confirmacion = int(input("Por favor, ingrese 1 si desea cargar una partida, en caso contrario ingrese 0: "))
+
+			if confirmacion == 1:
+				cargar = True
+			elif confirmacion == 0:
+				cargar = False
+
+			break
+		except:
+			print("Por favor, ingrese una opción válida.")
+
+	return cargar
 
 # CONSTANTES:
 # Colores que seran usados en el juego
-NEGRO = (0, 0, 0)
+NEGRO = (0, 20, 0)
 BLANCO = (255, 255, 255)
 ROJO = (255, 0, 0)
 AZUL = (0, 0, 255)
@@ -1349,7 +1406,14 @@ while True:
 
 				# Inicializa los valores
 				continuar = True
-				dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO, nombre)
+				if numPartidas == 0:
+					if cargarPartida():
+						nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia = leeArchivo()
+						print(type(tablero))
+					else:
+						dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO, nombre)
+				else:
+					dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO, nombre)
 				
 				# Cota: 
 				# assert(filas * columnas - numJugadas)
