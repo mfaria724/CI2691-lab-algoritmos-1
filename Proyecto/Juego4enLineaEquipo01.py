@@ -278,6 +278,8 @@ def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ul
 	
 	# Precondición: 
 	assert(columnas >= 4 and 1 <= jugador <= 2 and 0 <= dificultad <= 1)
+	
+	# Devuelve la columna donde se desea jugar
 	print("Verifica quien debe ingresar la jugada y la obtiene")
 
 	if jugador == 2:
@@ -293,10 +295,10 @@ def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ul
 	elif jugador == 1: # Turno del jugador
 		jugada = jugadaPersona(columnas)
 
+	# Postcondición: 
+	assert(0 <= jugada <= columnas)
+	
 	return jugada, estrategia
-
-	# Postcondición: 0 <= jugada <= columnas }
-	# Devuelve la columna donde se desea jugar
 
 def jugadaPersona(columnas: int) -> int:
 	# VAR:
@@ -879,6 +881,7 @@ def compruebaJugadaHorizontalDerecha(ultimaJugada: list, tablero: list, columnas
 
 	# Verifica si puede jugar en la casilla de la dereccha
 	print("Verifica si puede jugar en la casilla de la derecha")
+
 	if ultimaJugada[1] != columnas - 1:
 		if tablero[ultimaJugada[0]][ultimaJugada[1] + 1] == 0:
 			if ultimaJugada[0] != filas - 1:
@@ -902,8 +905,10 @@ def compruebaJugadaHorizontalDerecha(ultimaJugada: list, tablero: list, columnas
 		puedeJugar = False
 
 	# Postcondición: 
-	# assert((ultimaJugada[1] == columnas - 1 or (( tablero[ultimaJugada[0]][ultimaJugada[1] + 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] + 1)) and
-	#  		(tablero[ultimaJugada[0]][ultimaJugada[1] + 1] == 0 or (puedeJugar == False and jugada == -1)))) and (ultimaJugada[1] != columnas - 1 or (jugada == -1 and puedeJugar == False)))
+	assert(
+		(puedeJugar == True and 0 <= jugada <= columnas - 1) or
+		(puedeJugar == False and jugada == -1)
+	)
 
 	return jugada, puedeJugar, estrategia
 
@@ -938,9 +943,11 @@ def compruebaJugadaHorizontalIzquierda(ultimaJugada: list, tablero: list, column
 		puedeJugar = False
 
 	# Postcondición: 
-	# assert((ultimaJugada[1] == 0 or (( tablero[ultimaJugada[0]][ultimaJugada[1] - 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] - 1)) and
-	#   		(tablero[ultimaJugada[0]][ultimaJugada[1] - 1] == 0 or (puedeJugar == False and jugada == -1)))) and (ultimaJugada[1] != 0 or (jugada == -1 and puedeJugar == False)))
-
+	assert(
+		(puedeJugar == True and 0 <= jugada <= columnas - 1) or
+		(puedeJugar == False and jugada == -1)
+	)
+	
 	return jugada, puedeJugar, estrategia
 
 
@@ -975,8 +982,10 @@ def compruebaJugadaDiagonalDerechaAbajo(ultimaJugada: list, tablero: list, colum
 			puedeJugar = False
 
 	# Postcondición: 
-	# assert(((ultimaJugada[0] == filas - 1 or ultimaJugada[1] == columnas - 1 ) or (( tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] + 1)) and
-	# 		 (tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != filas - 1 and ultimaJugada[1] != columnas -1) or (jugada == -1 and puedeJugar == False)))
+	assert(
+		(puedeJugar == True and 0 <= jugada <= columnas - 1) or
+		(puedeJugar == False and jugada == -1)
+	)
 
 	return jugada, puedeJugar, estrategia
 
@@ -1007,8 +1016,10 @@ def compruebaJugadaDiagonalIzquierdaArriba(ultimaJugada: list, tablero: list, es
 			puedeJugar = False
 
 	# Postcondición: 
-	# assert(((ultimaJugada[0] == 0 or ultimaJugada[1] == 0 ) or (( tablero[ultimaJugada[0] - 1][ultimaJugada[1] - 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] - 1)) and
-	# 		 (tablero[ultimaJugada[0] - 1][ultimaJugada[1] - 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != 0 and ultimaJugada[1] != 0) or (jugada == -1 and puedeJugar == False)))
+	assert(
+		(puedeJugar == True and 0 <= jugada <= columnas - 1) or
+		(puedeJugar == False and jugada == -1)
+	)
 
 	return jugada, puedeJugar, estrategia
 
@@ -1043,8 +1054,10 @@ def compruebaJugadaDiagonalIzquierdaAbajo(ultimaJugada: list, tablero: list, fil
 			puedeJugar = False
 
 	# Postcondición: 
-	# assert(((ultimaJugada[0] == filas - 1 or ultimaJugada[1] == 0 ) or (( tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] - 1)) and
-	# 		 (tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != filas - 1 and ultimaJugada[1] != 0) or (jugada == -1 and puedeJugar == False)))
+	assert(
+		(puedeJugar == True and 0 <= jugada <= columnas - 1) or
+		(puedeJugar == False and jugada == -1)
+	)
 
 	return jugada, puedeJugar, estrategia
 
@@ -1075,8 +1088,10 @@ def compruebaJugadaDiagonalDerechaArriba(ultimaJugada: list, tablero: list, colu
 			puedeJugar = False
 
 	# Postcondición: 
-	# assert(((ultimaJugada[0] == 0 or ultimaJugada[1] == columnas - 1 ) or (( tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1 ] != 0 or (puedeJugar == True and jugada == ultimaJugada[1] + 1)) and
-	# 	 (tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1] == 0 or (puedeJugar == False and jugada == -1)))) and ((ultimaJugada[0] != 0 and ultimaJugada[1] != columnas -1) or (jugada == -1 and puedeJugar == False)))
+	assert(
+		(puedeJugar == True and 0 <= jugada <= columnas - 1) or
+		(puedeJugar == False and jugada == -1)
+	)
 
 	return jugada, puedeJugar, estrategia
 

@@ -676,8 +676,7 @@ proc compruebaJugadaVertical(in ultimaJugada: array, tablero: array, out jugada:
 
 proc compruebaJugadaHorizontalDerecha(in ultimaJugada: array, tablero: array, columnas:int, out jugada:int, puedeJugar:boolean, estrategia:int)
 { Precondición: 0 <= ultimaJugada[0] < filas /\ 0 <= ultimaJugada[1] < columnas /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: (ultimaJugada[1] == columnas - 1 \/ (( tablero[ultimaJugada[0]][ultimaJugada[1] + 1 ] != 0 \/ (puedeJugar == true /\ jugada == ultimaJugada[1] + 1)) /\
-				 (tablero[ultimaJugada[0]][ultimaJugada[1] + 1] == 0 \/ (puedeJugar == false /\ jugada == -1)))) /\ (ultimaJugada[1] != columnas - 1 \/ (jugada == -1 /\ puedeJugar == false)) }
+{ Postcondición: puedeJugar == true /\ 0 <= jugada <= columnas - 1) \/ (puedeJugar == false /\ jugada == -1 }
 // Verifica si puede jugar en la casilla de la dereccha
 	if ultimaJugada[1] != columnas - 1 ->
 		if tablero[ultimaJugada[0]][ultimaJugada[1] + 1] == 0 ->
@@ -708,8 +707,8 @@ proc compruebaJugadaHorizontalDerecha(in ultimaJugada: array, tablero: array, co
 
 proc compruebaJugadaHorizontalIzquierda(in ultimaJugada: array, tablero: array, out jugada:int, puedeJugar:boolean, estrategia:int)
 { Precondición: 0 <= ultimaJugada[0] < filas /\ 0 <= ultimaJugada[1] < columnas /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: (ultimaJugada[1] == 0 \/ (( tablero[ultimaJugada[0]][ultimaJugada[1] - 1 ] != 0 \/ (puedeJugar == true /\ jugada == ultimaJugada[1] - 1)) /\
-				 (tablero[ultimaJugada[0]][ultimaJugada[1] - 1] == 0 \/ (puedeJugar == false /\ jugada == -1)))) /\ (ultimaJugada[1] != 0 \/ (jugada == -1 /\ puedeJugar == false)) }
+{ Postcondición: puedeJugar == true /\ 0 <= jugada <= columnas - 1) \/ (puedeJugar == false /\ jugada == -1 }
+
 // Verifica si puede jugar en la casilla de la izquierda
 [
 	if ultimaJugada[1] != 0 ->
@@ -741,8 +740,8 @@ proc compruebaJugadaHorizontalIzquierda(in ultimaJugada: array, tablero: array, 
 
 proc compruebaJugadaDiagonalDerechaAbajo(in ultimaJugada: array, tablero: array, columnas:int, filas:int, out jugada:int, puedeJugar:boolean, estrategia:int)
 { Precondición: 0 <= ultimaJugada[0] < filas /\ 0 <= ultimaJugada[1] < columnas /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: ((ultimaJugada[0] == filas - 1 \/ ultimaJugada[1] == columnas - 1 ) \/ (( tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1 ] != 0 \/ (puedeJugar == true /\ jugada == ultimaJugada[1] + 1)) /\
-				 (tablero[ultimaJugada[0] + 1][ultimaJugada[1] + 1] == 0 \/ (puedeJugar == false /\ jugada == -1)))) /\ ((ultimaJugada[0] != filas - 1 /\ ultimaJugada[1] != columnas -1) \/ (jugada == -1 /\ puedeJugar == false)) }
+{ Postcondición: puedeJugar == true /\ 0 <= jugada <= columnas - 1) \/ (puedeJugar == false /\ jugada == -1 }
+
 // Verifica si puede jugar en la casilla inferior derecha
 [
 	if ultimaJugada[0] == filas - 1 \/ ultimaJugada[1] == columnas - 1 ->
@@ -774,8 +773,8 @@ proc compruebaJugadaDiagonalDerechaAbajo(in ultimaJugada: array, tablero: array,
 
 proc compruebaJugadaDiagonalIzquierdaArriba(in ultimaJugada: array, tablero: array, out jugada:int, puedeJugar:boolean, estrategia:int)
 { Precondición: 0 <= ultimaJugada[0] < filas /\ 0 <= ultimaJugada[1] < columnas /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: ((ultimaJugada[0] == 0 \/ ultimaJugada[1] == 0 ) \/ (( tablero[ultimaJugada[0] - 1][ultimaJugada[1] - 1 ] != 0 \/ (puedeJugar == true /\ jugada == ultimaJugada[1] - 1)) /\
-				 (tablero[ultimaJugada[0] - 1][ultimaJugada[1] - 1] == 0 \/ (puedeJugar == false /\ jugada == -1)))) /\ ((ultimaJugada[0] != 0 /\ ultimaJugada[1] != 0) \/ (jugada == -1 /\ puedeJugar == false)) }
+{ Postcondición: puedeJugar == true /\ 0 <= jugada <= columnas - 1) \/ (puedeJugar == false /\ jugada == -1 }
+
 // Verifica si puede jugar en la casilla superior izquierda
 [
 	if ultimaJugada[0] == 0 \/ ultimaJugada[1] == 0 ->
@@ -802,8 +801,8 @@ proc compruebaJugadaDiagonalIzquierdaArriba(in ultimaJugada: array, tablero: arr
 
 proc compruebaJugadaDiagonalIzquierdaAbajo(in ultimaJugada: array, tablero: array, filas:int, out jugada:int, puedeJugar:boolean, estrategia:int)
 { Precondición: 0 <= ultimaJugada[0] < filas /\ 0 <= ultimaJugada[1] < columnas /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: ((ultimaJugada[0] == filas - 1 \/ ultimaJugada[1] == 0 ) \/ (( tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1 ] != 0 \/ (puedeJugar == true /\ jugada == ultimaJugada[1] - 1)) /\
-				 (tablero[ultimaJugada[0] + 1][ultimaJugada[1] - 1] == 0 \/ (puedeJugar == false /\ jugada == -1)))) /\ ((ultimaJugada[0] != filas - 1 /\ ultimaJugada[1] != 0) \/ (jugada == -1 /\ puedeJugar == false)) }
+{ Postcondición: puedeJugar == true /\ 0 <= jugada <= columnas - 1) \/ (puedeJugar == false /\ jugada == -1 }
+
 // Verifica si puede jugar en la casilla inferior izquierda
 [
 	if ultimaJugada[0] == filas - 1 \/ ultimaJugada[1] == 0 ->
@@ -834,8 +833,8 @@ proc compruebaJugadaDiagonalIzquierdaAbajo(in ultimaJugada: array, tablero: arra
 
 proc compruebaJugadaDiagonalDerechaArriba(in ultimaJugada: array, tablero: array, columnas: int, out jugada:int, puedeJugar:boolean, estrategia:int)
 { Precondición: 0 <= ultimaJugada[0] < filas /\ 0 <= ultimaJugada[1] < columnas /\ (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | 0 <= tablero[i][j] <= 2  %) }
-{ Postcondición: ((ultimaJugada[0] == 0 \/ ultimaJugada[1] == columnas - 1 ) \/ (( tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1 ] != 0 \/ (puedeJugar == true /\ jugada == ultimaJugada[1] + 1)) /\
-				 (tablero[ultimaJugada[0] - 1][ultimaJugada[1] + 1] == 0 \/ (puedeJugar == false /\ jugada == -1)))) /\ ((ultimaJugada[0] != 0 /\ ultimaJugada[1] != columnas -1) \/ (jugada == -1 /\ puedeJugar == false)) }
+{ Postcondición: puedeJugar == true /\ 0 <= jugada <= columnas - 1) \/ (puedeJugar == false /\ jugada == -1 }
+
 // Verifica si puede jugar en la casilla superior derecha
 [
 	if ultimaJugada[0] == 0 \/ ultimaJugada[1] == columnas - 1 ->
