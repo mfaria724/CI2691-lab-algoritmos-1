@@ -1180,6 +1180,41 @@ def dibujarTablero(colorlineas: list, colorfondo: list) -> 'void':
 	# Postcondición: 
 	# se dibuja en una ventana gráfica un tablero con "filas" filas y "columnas" columnas de color "color"
 
+def cargarTablero(colorlineas: list, colorfondo: list, colorpc: list, colorjugador: list, filas: int, columas: int, tablero: list) -> 'void':
+	# Precondición: 
+	assert(True)
+	# Fondo
+	pantalla.fill(colorfondo)
+	# Cuadrado exterior
+	pygame.draw.line(pantalla, colorlineas, (130, 90), (130, 620))
+	pygame.draw.line(pantalla, colorlineas, (1120, 90), (1120, 620))
+	pygame.draw.line(pantalla, colorlineas, (130, 90), (1120, 90))
+	pygame.draw.line(pantalla, colorlineas, (130, 620), (1120, 620))
+
+	# Filas
+	pygame.draw.line(pantalla, colorlineas, (130, 178), (1120, 178))
+	pygame.draw.line(pantalla, colorlineas, (130, 266), (1120, 266))
+	pygame.draw.line(pantalla, colorlineas, (130, 354), (1120, 354))
+	pygame.draw.line(pantalla, colorlineas, (130, 442), (1120, 442))
+	pygame.draw.line(pantalla, colorlineas, (130, 530), (1120, 530))
+
+	# Columnas
+	pygame.draw.line(pantalla, colorlineas, (272, 90), (272, 620))
+	pygame.draw.line(pantalla, colorlineas, (414, 90), (414, 620))
+	pygame.draw.line(pantalla, colorlineas, (556, 90), (556, 620))
+	pygame.draw.line(pantalla, colorlineas, (698, 90), (698, 620))
+	pygame.draw.line(pantalla, colorlineas, (840, 90), (840, 620))
+	pygame.draw.line(pantalla, colorlineas, (982, 90), (982, 620))
+
+	for i in range(filas):
+		for j in range(columas):
+			if tablero[i][j] == 1:
+				pygame.draw.circle(pantalla, colorjugador, (201 + j*142, 134 + i*88), 30, 0)
+			elif tablero[i][j] == 2:
+				pygame.draw.circle(pantalla, colorpc, (201 + j*142, 134 + i*88), 30, 0)
+
+	pygame.display.flip()
+
 def dibujarJugada(i: int, jugada: int, color: list) -> 'void':
 	# Precondición: 
 	assert(True)
@@ -1333,7 +1368,11 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 	print("Estrategia: " + str(datos[29]))
 	estrategia = int(datos[29])
 
+	cargarTablero(BLANCO, NEGRO, AZUL, ROJO, filas, columnas, tablero)
+
 	return nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia
+
+
 
 def cargarPartida() -> bool:
 
@@ -1354,7 +1393,7 @@ def cargarPartida() -> bool:
 
 # CONSTANTES:
 # Colores que seran usados en el juego
-NEGRO = (0, 20, 0)
+NEGRO = (0, 0, 0)
 BLANCO = (255, 255, 255)
 ROJO = (255, 0, 0)
 AZUL = (0, 0, 255)
