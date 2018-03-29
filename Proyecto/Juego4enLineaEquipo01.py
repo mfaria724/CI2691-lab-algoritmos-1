@@ -1210,8 +1210,76 @@ def pedirNombre() -> str:
 
 	return nombre
 
-# Precondición:
-# assert(filas>=4 and columnas >= 4 and maxPartidas >= 0)0
+def guardarPartida(nombre: str, filas: int, columnas: int, tablero: list, dificultad: bool, ultimoGanador: list, jugador: int,
+	numPartidas: int, ultimaJugada: list, numJugadas: int, numJugadasPC: int, numEmpates: int, partidasGanadasPersona: int,
+	partidasGanadasPC: int, estrategia: int) -> bool:
+
+	# Precondición: 
+	assert(True)
+
+	print("Le pregunta al usuario si quiere guardar la partida.")
+
+	while True:
+		try:
+			confirmacion = int(input("Por favor " + nombre +", ingrese 1 si desea guardar la partida, en caso contrario ingrese 0: "))
+
+			print(0 <= confirmacion <= 1)
+			assert(0 <= confirmacion <= 1)
+
+			if confirmacion == 1:
+				print('puta')
+				guardar = True
+				escribeArchivo(nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas,
+					ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia)
+			elif confirmacion == 0:
+				guardar = False
+
+			break
+		except:
+			print("Por favor " + nombre + ", ingrese una opción válida.")
+	
+	# Postcondición: 
+	assert((confirmacion == 1 and guardar == True) or (confirmacion == 0 and guardar == False))
+
+	return guardar
+
+def escribeArchivo(nombre: str, filas: int, columnas: int, tablero: list, dificultad: bool, ultimoGanador: list, jugador: int,
+	numPartidas: int, ultimaJugada: list, numJugadas: int, numJugadasPC: int, numEmpates: int, partidasGanadasPersona: int,
+	partidasGanadasPC: int, estrategia: int) -> 'void':
+
+	with open('guardarPartida.txt', 'w') as f:
+		f.write('Nombre \n')
+		f.write(str(nombre) + '\n')
+		f.write('Filas \n')
+		f.write(str(filas) + '\n')
+		f.write('Columnas \n')
+		f.write(str(columnas) + '\n')
+		f.write('Tablero \n')
+		f.write(str(tablero) + '\n')
+		f.write('Dficultad \n')
+		f.write(str(dificultad) + '\n')
+		f.write('ultimoGanador \n')
+		f.write(str(ultimoGanador) + '\n')
+		f.write('Jugador \n')
+		f.write(str(jugador) + '\n')
+		f.write('numPartidas \n')
+		f.write(str(numPartidas) + '\n')
+		f.write('ultimaJugada \n')
+		f.write(str(ultimaJugada) + '\n')
+		f.write('numJugadas \n')
+		f.write(str(numJugadas) + '\n')
+		f.write('numJugadasPC \n')
+		f.write(str(numJugadasPC) + '\n')
+		f.write('numEmpates \n')
+		f.write(str(numEmpates) + '\n')
+		f.write('partidasGanadasPersona \n')
+		f.write(str(partidasGanadasPersona) + '\n')
+		f.write('partidasGanadasPC \n')
+		f.write(str(partidasGanadasPC) + '\n')
+		f.write('estrategia \n')
+		f.write(str(estrategia) + '\n')
+	f.closed
+
 
 
 # CONSTANTES:
@@ -1242,6 +1310,9 @@ quiereSeguirJugando = True
 validacion = True
 ganador = 0
 estrategia = -1
+
+# Precondición:
+assert(filas>=4 and columnas >= 4 and maxPartidas >= 0)
 
 # Inicializar la pantalla del juego
 pygame.init()
@@ -1303,10 +1374,13 @@ while True:
 									# Pregunta al usuario si desea seguir jugando
 									continuar = seguirPartida()
 									if continuar == False:
-										partidasGanadasPC = partidasGanadasPC + 1
-										numPartidas = numPartidas + 1
-										ganador = 2
-										ultimoGanador = ganador
+										if guardarPartida(nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador,
+											numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona,
+											partidasGanadasPC, estrategia) == False:
+											partidasGanadasPC = partidasGanadasPC + 1
+											numPartidas = numPartidas + 1
+											ganador = 2
+											ultimoGanador = ganador
 
 							else:
 								# Establece el ganador, le aumenta una victoria y lo registra para determinar el primer
@@ -1337,4 +1411,4 @@ while True:
 			sys.exit()
 			pygame.quit()
 
-			# assert(Postcondición: numPartidas >= 0 and partidasGanadasPersona >=0 and partidasGanadasPC >= 0 and quiereSeguirJugando == False)
+assert(numPartidas >= 0 and partidasGanadasPersona >=0 and partidasGanadasPC >= 0 and quiereSeguirJugando == False)

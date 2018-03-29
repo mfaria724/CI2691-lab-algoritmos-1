@@ -1,0 +1,30 @@
+Nombre 
+ghgdfdfgdf
+Filas 
+6
+Columnas 
+7
+Tablero 
+[[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 2, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0], [0, 2, 0, 1, 0, 0, 0], [0, 2, 0, 1, 0, 0, 0]]
+Dficultad 
+1
+ultimoGanador 
+0
+Jugador 
+1
+numPartidas 
+0
+ultimaJugada 
+[2, 3]
+numJugadas 
+6
+numJugadasPC 
+3
+numEmpates 
+0
+partidasGanadasPersona 
+0
+partidasGanadasPC 
+0
+estrategia 
+0
