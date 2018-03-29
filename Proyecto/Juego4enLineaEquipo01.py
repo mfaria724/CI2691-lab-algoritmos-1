@@ -35,6 +35,15 @@
 # 		filas:int;										# Numero de filas del tablero
 # 		columnas: int;									# Numero de columnas del table
 # 		maxPartidas: int;								# Numero maximo de partidas a jugar
+#		NEGRO: list;									# Color utilizado en la parte grafica del programa	
+#		BLANCO: list;									# Color utilizado en la parte grafica del programa
+#		ROJO: list;										# Color utilizado en la parte grafica del programa
+#		AZUL: list;										# Color utilizado en la parte grafica del programa
+#		AMARILLO: list;									# Color utilizado en la parte grafica del programa
+#		ALTO: int          							    # Alto de la ventana
+#		ANCHO: int    							        # Ancho de la ventana
+#		FPS: int   							            # Cuadros por segundo
+#
 # 	VAR
 # 		tablero: list [0,filas) x [0,columnas) of int;	# Tablero de juego
 # 		dificultad: int;								# Variable que almacena la dificultad seleccionada por el jugador (0 basico, 1 medio)
@@ -53,10 +62,14 @@
 # 		validacion: bool;								# Variable que determina si una jugada es valida o no
 # 		quiereSeguirJugando: bool;						# Variable que determina si el usuario desea jugar otra partia o no
 # 		ingresaJugada: bool;							# Variable utilizada en el ciclo de cada jugada para en caso de no ser valida, poder ingresar otra jugada
+#		nombre: str;									# Variable que almacena el nombre del jugador
+#		estrategia: int:								# Variable que almacena la estrategia a utilizar por la computadora en la dificultad media
 
 # Se importa la librería random para generar las jugadas aleatorias.
 import random
+# Se importa la libreria pygame para generar la grafica del juego.
 import pygame
+# Se importa la libreria sys para realizar una programacion robusta, y poder finalizar el programa
 import sys
 
 def seguirPartida() -> bool:
@@ -765,6 +778,7 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 
 	# Inteligencia Artificial del computador
 	# Toma una estrategia y la sigue mientras sea posible, en caso de no serlo
+	# En caso de que el jugador tenga una fila vertical de 3 fichas, la tranca
 	# toma una nueva estrategia aleatoriamente.
 
 	print("Genera una jugada que tenga cierto nivel de dificultad.")
@@ -790,55 +804,64 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 		jugada = randomJugadaPC(columnas)
 		estrategia = randomEstrategia()
 	else:
-		# Cota:
-		cota = intentosMaximos - i
 
-		# Verificacion de cota acotada por 0.
-		assert(cota >= 0)
-
-		while puedeJugar == False and i != intentosMaximos:
-			if estrategia == 0: # Vertical
-
-				jugada, puedeJugar, estrategia = compruebaJugadaVertical(ultimaJugada, tablero, estrategia)
-
-			elif estrategia == 1: # Horizontal Derecha
-
-				jugada, puedeJugar, estrategia = compruebaJugadaHorizontalDerecha(ultimaJugada, tablero, columnas, filas, estrategia)
-
-			elif estrategia == 2: # Horizontal Izquierda
-
-				jugada, puedeJugar, estrategia = compruebaJugadaHorizontalIzquierda(ultimaJugada, tablero, columnas, filas, estrategia)	
-
-			elif estrategia == 3: # Diagonal derecha abajo
-				
-				jugada, puedeJugar, estrategia = compruebaJugadaDiagonalDerechaAbajo(ultimaJugada, tablero, columnas, filas, estrategia)
-			
-			elif estrategia == 4: # Diagonal izquierda arriba
-
-				jugada, puedeJugar, estrategia = compruebaJugadaDiagonalIzquierdaArriba(ultimaJugada, tablero, estrategia)
-
-			elif estrategia == 5: # Diagonal izquierda abajo
-
-				jugada, puedeJugar, estrategia = compruebaJugadaDiagonalIzquierdaAbajo(ultimaJugada, tablero, filas, estrategia)
-
-			elif estrategia == 6: # Diagonal derecha arriba
-
-				jugada, puedeJugar, estrategia = compruebaJugadaDiagonalDerechaArriba(ultimaJugada, tablero, columnas, estrategia)
-
-
-			i = i + 1
-
-			# Verificacion de cota estrictamente decreciente.
-			assert(cota > intentosMaximos - i)
-
+		# Verifica antes de jugar que haya una fila vertical de tres fichas de jugador para trancarla
+		if any (any (tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == 1 and tablero[j-1][i] == 0 for i in range(columnas)) 
+		 for j in range(1, filas - 2)):
+		 	for i in range(columnas):
+		 		for j in range(filas - 2):
+		 			if tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == 1 and tablero[j-1][i] == 0:
+		 				jugada = i
+		# Sigue que con su estrategia
+		else:
+			# Cota:
 			cota = intentosMaximos - i
 
 			# Verificacion de cota acotada por 0.
 			assert(cota >= 0)
 
-		if jugada == -1:
-			jugada = randomJugadaPC(columnas)
+			while puedeJugar == False and i != intentosMaximos:
+				if estrategia == 0: # Vertical
 
+					jugada, puedeJugar, estrategia = compruebaJugadaVertical(ultimaJugada, tablero, estrategia)
+
+				elif estrategia == 1: # Horizontal Derecha
+
+					jugada, puedeJugar, estrategia = compruebaJugadaHorizontalDerecha(ultimaJugada, tablero, columnas, filas, estrategia)
+
+				elif estrategia == 2: # Horizontal Izquierda
+
+					jugada, puedeJugar, estrategia = compruebaJugadaHorizontalIzquierda(ultimaJugada, tablero, columnas, filas, estrategia)	
+
+				elif estrategia == 3: # Diagonal derecha abajo
+					
+					jugada, puedeJugar, estrategia = compruebaJugadaDiagonalDerechaAbajo(ultimaJugada, tablero, columnas, filas, estrategia)
+				
+				elif estrategia == 4: # Diagonal izquierda arriba
+
+					jugada, puedeJugar, estrategia = compruebaJugadaDiagonalIzquierdaArriba(ultimaJugada, tablero, estrategia)
+
+				elif estrategia == 5: # Diagonal izquierda abajo
+
+					jugada, puedeJugar, estrategia = compruebaJugadaDiagonalIzquierdaAbajo(ultimaJugada, tablero, filas, estrategia)
+
+				elif estrategia == 6: # Diagonal derecha arriba
+
+					jugada, puedeJugar, estrategia = compruebaJugadaDiagonalDerechaArriba(ultimaJugada, tablero, columnas, estrategia)
+
+
+				i = i + 1
+
+				# Verificacion de cota estrictamente decreciente.
+				assert(cota > intentosMaximos - i)
+
+				cota = intentosMaximos - i
+
+				# Verificacion de cota acotada por 0.
+				assert(cota >= 0)
+
+			if jugada == -1:
+				jugada = randomJugadaPC(columnas)
 	return jugada, estrategia
 
 	# Postcondición: 
@@ -1110,7 +1133,7 @@ def randomJugadaPC(columnas: int) -> int:
 
 def dibujarTablero(colorlineas: list, colorfondo: list) -> 'void':
 	# Precondición: 
-	# assert(filas > 0 and columnas > 0)
+	assert(True)
 	# Fondo
 	pantalla.fill(colorfondo)
 	# Cuadrado exterior
@@ -1142,21 +1165,21 @@ def dibujarTablero(colorlineas: list, colorfondo: list) -> 'void':
 
 def dibujarJugada(i: int, jugada: int, color: list) -> 'void':
 	# Precondición: 
-	# assert(filas >= 0 and columnas >= 0)
+	assert(True)
 	print("Dibuja en el tablero la jugada luego de haberla reflejado en la matriz")
 	pygame.draw.circle(pantalla, color, (201 + jugada*142, 134 + i*88), 30, 0)
 	# Postcondición: 
-	# Se dibuja un circulo de color "color" en la casilla posicionada en la fila "fila" y columna "columna" del tablero
+	# Se dibuja un circulo de color "color" en la casilla posicionada en la fila "i" y columna "jugada" del tablero
 
 def resaltarGanador(i: int, j: int, color: list) -> 'void':
 	# Precondición: 
-	# assert(fila >= 0 and columna >= 0)
+	assert(True)
 	print("Resalta las fichas que se encuentran en 4 en linea")
 	pygame.draw.circle(pantalla, color, (201 + j*142, 134 + i*88), 25, 0)
 	pygame.display.flip()
 
 	# Postcondición: 
-	# Se resalta el circulo de la casilla posicionada en la fila "fila" y columna "columna" del tablero de color "color" }
+	# Se resalta el circulo de la casilla posicionada en la fila "i" y columna "j" del tablero de color "color" }
 
 def pedirNombre() -> str:
 	# Solicita el nombre del jugador.
@@ -1165,6 +1188,9 @@ def pedirNombre() -> str:
 
 	nombre = str(input("Por favor, ingrese su nombre: "))
 	print("Hola "+ nombre)
+
+	# Postcondicion:
+	assert(True)
 
 	return nombre
 
