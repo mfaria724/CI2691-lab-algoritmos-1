@@ -167,7 +167,8 @@ def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columna
 
 	inicializarTablero(filas, columnas, tablero)
 	dibujarTablero(BLANCO, NEGRO)
-	dificultad = escogerDificultad()
+	nombre = pedirNombre()
+	dificultad = escogerDificultad(nombre)
 	jugador = definirPrimero(numPartidas, ultimoGanador)
 
 	# Inicializa las variables para la partida
@@ -179,7 +180,7 @@ def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columna
 	assert(all ( all (tablero[i][j] == 0 for i in range(filas)) for j in range(columnas)) and 0 <= dificultad <= 1 and 
 		(numPartidas != 0 or jugador == 1) and (numPartidas == 0 or jugador == ultimoGanador))
 
-	return dificultad, jugador, numJugadas, numJugadasPC
+	return dificultad, jugador, numJugadas, numJugadasPC, nombre
 
 def inicializarTablero(filas: int,columnas: int,tablero: list) -> 'void':
 
@@ -244,7 +245,7 @@ def inicializarTablero(filas: int,columnas: int,tablero: list) -> 'void':
 	# Postcondición: 
 	assert(all ( all (tablero[i][j] == 0 for i in range(filas)) for j in range(columnas)))
 
-def escogerDificultad() -> (int):
+def escogerDificultad(nombre: str) -> (int):
 	# Se le solicita al usuario que ingrese la dificultad de la partida que va a jugar. Siendo 0 para básico y 1 para medio.
 
 	# Precondición: 
@@ -1240,7 +1241,6 @@ numEmpates = 0
 quiereSeguirJugando = True
 validacion = True
 ganador = 0
-nombre = pedirNombre()
 estrategia = -1
 
 # Inicializar la pantalla del juego
@@ -1264,7 +1264,7 @@ while True:
 
 				# Inicializa los valores
 				continuar = True
-				dificultad, jugador, numJugadas, numJugadasPC = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO)
+				dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO)
 				
 				# Cota: 
 				# assert(filas * columnas - numJugadas)
