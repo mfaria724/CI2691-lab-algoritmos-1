@@ -158,7 +158,7 @@ def quiereSeguir() -> bool:
 
 	return validacion
 
-def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columnas: int,tablero: list, BLANCO: list, NEGRO: list) -> int:
+def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columnas: int,tablero: list, BLANCO: list, NEGRO: list, nombre: str) -> int:
 	# Precondición: 
 	assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2 and filas >= 0 and columnas >= 0)
 
@@ -167,7 +167,8 @@ def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columna
 
 	inicializarTablero(filas, columnas, tablero)
 	dibujarTablero(BLANCO, NEGRO)
-	nombre = pedirNombre()
+	if numPartidas == 0:
+		nombre = pedirNombre()
 	dificultad = escogerDificultad(nombre)
 	jugador = definirPrimero(numPartidas, ultimoGanador)
 
@@ -1322,6 +1323,7 @@ quiereSeguirJugando = True
 validacion = True
 ganador = 0
 estrategia = -1
+nombre = ''
 
 # Precondición:
 assert(filas>=4 and columnas >= 4 and maxPartidas >= 0)
@@ -1347,7 +1349,7 @@ while True:
 
 				# Inicializa los valores
 				continuar = True
-				dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO)
+				dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO, nombre)
 				
 				# Cota: 
 				# assert(filas * columnas - numJugadas)
