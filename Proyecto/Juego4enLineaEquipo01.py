@@ -357,9 +357,11 @@ def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ul
 	#	estrategia: int;							// Variable que almacena la estrategia a utilizar por la computadora en la dificultad media
 	#	jugada: int;								// Variable que almacena la columna donde se desea jugar
 	#	nombre: str;								// Variable que almacena el nombre del jugador
+	#	tranca: 
 	
 	# Devuelve la columna donde se desea jugar
 
+	tranca = False
 	if jugador == 2: # Verifica quien debe ingresar la jugada y la obtiene
 			# Verifica la dificultad
 		if dificultad == 0:
@@ -368,7 +370,7 @@ def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ul
 		
 		elif dificultad == 1:
 			# Busca una jugada con una estrategia
-			jugada, estrategia = jugadaPC(filas, columnas, numJugadasPC, tablero, ultimaJugada, estrategia)
+			jugada, estrategia, tranca = jugadaPC(filas, columnas, numJugadasPC, tablero, ultimaJugada, estrategia)
 	
 	elif jugador == 1: # Turno del jugador
 		jugada = jugadaPersona(columnas, nombre)
@@ -376,7 +378,7 @@ def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ul
 	# Postcondición: 
 	assert(0 <= jugada <= columnas)
 	
-	return jugada, estrategia
+	return jugada, estrategia, tranca
 
 def jugadaPersona(columnas: int, nombre: str) -> int:
 	# VAR:
@@ -448,7 +450,7 @@ def validarJugada(jugada: int, filas: int, columnas: int, tablero: list) -> bool
 
 	return validacion
 
-def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int, tablero: list, ultimaJugada: list, numJugadasPC: int) -> (int, int):
+def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int, tablero: list, ultimaJugada: list, numJugadasPC: int, tranca: bool) -> (int, int):
 	# Precondición: 
 	assert(1 <= jugador <= 2 and 0 <= jugada < columnas and filas >= 4 and columnas >= 4)
 
@@ -478,9 +480,10 @@ def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int, tablero:
 		if tablero[i][jugada] == 0:		# Al encontrarse con la primera casilla con cero, asigna en esta el numero del jugador correspondiente
 			tablero[i][jugada] = jugador
 			if jugador == 2:
-				ultimaJugada = [i,jugada] # Se asigna como ultima jugada la jugada que acabade realizarse
 				numJugadasPC = numJugadasPC + 1
 				dibujarJugada(i, jugada, AZUL)
+				if tranca == False:
+					ultimaJugada = [i,jugada] # Se asigna como ultima jugada la jugada que acabade realizarse
 			else:
 				dibujarJugada(i, jugada, ROJO)
 			continua = False 	# Cambia la variable continuar para evitar seguir modificando la matriz
@@ -922,6 +925,7 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 	intentosMaximos = 50
 	puedeJugar = False
 	i = 0
+	tranca = False
 
 	if numJugadasPC == 0: 	# Si es la primera jugada de la computadora, se asigna una jugada y una estrategia random
 		jugada = randomJugadaPC(columnas)
@@ -935,6 +939,7 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 		 		for j in range(filas - 2):
 		 			if tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == 1 and tablero[j-1][i] == 0:
 		 				jugada = i
+		 				tranca = True
 		# Sigue que con su estrategia
 		else:
 			# Cota:
@@ -990,7 +995,7 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 	# Postcondición: 
 	assert(0 <= jugada < columnas)
 	
-	return jugada, estrategia
+	return jugada, estrategia, tranca
 
 
 def compruebaJugadaVertical(ultimaJugada: list, tablero: list, estrategia: int) -> (int, bool, int):
@@ -1344,8 +1349,8 @@ def dibujarTablero(colorlineas: list, colorfondo: list) -> 'void':
 	# Dibuja el tablero que sera utilizado para el juego
 
 	# VAR
-	#	colorlineas: list;													// Variable que almacena el color de las lineas del tablero
-	#	colorfondo: list;													// Variable que almacena el color del fondo del tablero
+	#	colorlineas: list;										// Variable que almacena el color de las lineas del tablero
+	#	colorfondo: list;										// Variable que almacena el color del fondo del tablero
 
 	# Fondo
 	pantalla.fill(colorfondo)
@@ -1401,13 +1406,13 @@ def cargarTablero(colorlineas: list, colorfondo: list, colorpc: list, colorjugad
 	# Carga el tablero usando la informacion cargada el archivo donde se guardo la partida.
 
 	# VAR
-	# 	colorlineas: list;													// Variable que almacena el color de las lineas del tablero
-	# 	colorfondo: list;													// Varibale que almacena el color del fondo del tablero
-	#	colorpc: list;														// Variable que almacena el color de las fichas de la computadora
-	#	colorjugador: list;													// Variable que almacena el color de las fichas del jugador
-	#	filas: int;															// Numero de filas del tablero
-	#	columnas: int;														// Numero de columnas del tablero
-	#	tablero: list;														// Matriz del tablero de juego
+	# 	colorlineas: list;										// Variable que almacena el color de las lineas del tablero
+	# 	colorfondo: list;										// Varibale que almacena el color del fondo del tablero
+	#	colorpc: list;											// Variable que almacena el color de las fichas de la computadora
+	#	colorjugador: list;										// Variable que almacena el color de las fichas del jugador
+	#	filas: int;												// Numero de filas del tablero
+	#	columnas: int;											// Numero de columnas del tablero
+	#	tablero: list;											// Matriz del tablero de juego
 
 
 	# Fondo
@@ -1449,9 +1454,9 @@ def dibujarJugada(i: int, jugada: int, color: list) -> 'void':
 	# Dibuja en el tablero la jugada luego de haberla reflejado en la matriz
 
 	# VAR
-	#	i: int;																// Variable que almacena la fila donde se debe dibujar la ficha
-	#	jugada: int;														// Variable que almacena la columna donde se debe dibujar la ficha
-	#	color: list;														// Variable que almacena el color de la ficha
+	#	i: int;													// Variable que almacena la fila donde se debe dibujar la ficha
+	#	jugada: int;											// Variable que almacena la columna donde se debe dibujar la ficha
+	#	color: list;											// Variable que almacena el color de la ficha
 
 	pygame.draw.circle(pantalla, color, (201 + jugada*142, 134 + i*88), 30, 0)
 	# Postcondición: 
@@ -1462,6 +1467,13 @@ def resaltarGanador(i: int, j: int, color: list) -> 'void':
 	assert(True)
 	# print("Resalta las fichas que se encuentran en 4 en linea")
 	# Resalta las fichas que se encuentran en 4 en linea
+
+	# VAR
+	#	i: int;													// Variable que almacena la fila donde se encuentra la ficha a resaltar
+	#	j: int;													// Variable que almacena la columna donde se encuentra la ficha a resaltar
+	#	color: int;												// Variable que almacena el color con el que se resaltara la ficha
+
+
 	pygame.draw.circle(pantalla, color, (201 + j*142, 134 + i*88), 25, 0)
 	pygame.display.flip()
 
@@ -1473,6 +1485,9 @@ def pedirNombre() -> str:
 	# Precondicion:
 	assert(True)
 
+	# VAR
+	#	nombre: str;											// Variable que almacena del nombre del jugador
+
 	nombre = str(input("Por favor, ingrese su nombre: "))
 	print("Hola "+ nombre)
 
@@ -1481,9 +1496,30 @@ def pedirNombre() -> str:
 
 	return nombre
 
-def guardarPartida(nombre: str, filas: int, columnas: int, tablero: list, dificultad: int, ultimoGanador: list, jugador: int,
+def guardarPartida(nombre: str, filas: int, columnas: int, tablero: list, dificultad: int, ultimoGanador: int, jugador: int,
 	numPartidas: int, ultimaJugada: list, numJugadas: int, numJugadasPC: int, numEmpates: int, partidasGanadasPersona: int,
 	partidasGanadasPC: int, estrategia: int) -> bool:
+
+	# Pregunta al jugador si desea guardar la partida. Si desea guardarla escribe un archivo con toda la informacion de la partida actual y los resultados de las partidas
+	# anteriores
+
+	# VAR
+	#	nombre: str;											// Variable que almacena el nombre del jugador
+	#	filas: int;												// Numero de filas del tablero
+	#	columnas: int;											// Numero de columnas del tablero
+	#	tablero: list;											// Matriz del tablero de juego
+	#	dificultad: int;										// Variable que almacena la dificultad seleccionada por el jugador
+	#	ultimoGanador: int;										// Variable que almacena el ganador de la partida anterior
+	#	jugador: int;											// Varibale que almacena el jugador del turno actual
+	#	numPartidas: int;										// Variable que almacena la cantidad de partidas jugadas
+	#	ultimaJugada: list;										// Variable que almacena la fila y la columna de la ultima jugada realizada por la computadora
+	#	numJugadas: int;										// Variable que almacena el numero de jugadas realizadas en la partida actual
+	#	numJugadasPC: int;										// Variable que almacena el numero de jugadas realizadas por la computadora en la partida actual
+	#	numEmpates: int;										// Variable que almacena el numero de empates de todos los juegos
+	#	partidasGanadasPersona: int;							// Variable que almacena las partidas ganadas por el jugadora
+	#	partidasGanadasPC: int;									// Variable que almacena las partidas ganadas por la computadora
+	#	estrategia: int;										// Variable que almacena la estrategia a utilizar por la computadora en la dificultad media
+	#	guarda: bool;											// Variable que determina si el jugador desea guardar la partida o no
 
 	while True:
 		try:
@@ -1513,7 +1549,7 @@ def guardarPartida(nombre: str, filas: int, columnas: int, tablero: list, dificu
 
 	return guardar
 
-def escribeArchivo(nombre: str, filas: int, columnas: int, tablero: list, dificultad: bool, ultimoGanador: list, jugador: int,
+def escribeArchivo(nombre: str, filas: int, columnas: int, tablero: list, dificultad: bool, ultimoGanador: int, jugador: int,
 	numPartidas: int, ultimaJugada: list, numJugadas: int, numJugadasPC: int, numEmpates: int, partidasGanadasPersona: int,
 	partidasGanadasPC: int, estrategia: int) -> 'void':
 
@@ -1524,6 +1560,26 @@ def escribeArchivo(nombre: str, filas: int, columnas: int, tablero: list, dificu
 		and 0 <= ultimaJugada[1] < columnas and 0 <= numJugadas < filas*columnas and 0 <= numJugadasPC < (filas*columnas)/2 and 
 		numEmpates >= 0 and partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and 0 <= estrategia <= 6
 	)
+
+	# Guarda los datos de la partida actual y los resultados anteriores en un archivo.
+
+	# VAR
+	#	nombre: str;											// Variable que almacena el nombre del jugador
+	#	filas: int;												// Numero de filas del tablero
+	#	columnas: int;											// Numero de columnas del tablero
+	#	tablero: list;											// Matriz del tablero de juego
+	#	dificultad: int;										// Variable que almacena la dificultad seleccionada por el jugador
+	#	ultimoGanador: int;										// Variable que almacena el ganador de la partida anterior
+	#	jugador: int;											// Varibale que almacena el jugador del turno actual
+	#	numPartidas: int;										// Variable que almacena la cantidad de partidas jugadas
+	#	ultimaJugada: list;										// Variable que almacena la fila y la columna de la ultima jugada realizada por la computadora
+	#	numJugadas: int;										// Variable que almacena el numero de jugadas realizadas en la partida actual
+	#	numJugadasPC: int;										// Variable que almacena el numero de jugadas realizadas por la computadora en la partida actual
+	#	numEmpates: int;										// Variable que almacena el numero de empates de todos los juegos
+	#	partidasGanadasPersona: int;							// Variable que almacena las partidas ganadas por el jugadora
+	#	partidasGanadasPC: int;									// Variable que almacena las partidas ganadas por la computadora
+	#	estrategia: int;										// Variable que almacena la estrategia a utilizar por la computadora en la dificultad media
+
 
 	with open('guardarPartida.txt', 'w') as f:
 		f.write('Nombre\n')
@@ -1567,6 +1623,23 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 
 	# Precondición:
 	assert(True)
+
+	# VAR
+	#	nombre: str;											// Variable que almacena el nombre del jugador
+	#	filas: int;												// Numero de filas del tablero
+	#	columnas: int;											// Numero de columnas del tablero
+	#	tablero: list;											// Matriz del tablero de juego
+	#	dificultad: int;										// Variable que almacena la dificultad seleccionada por el jugador
+	#	ultimoGanador: int;										// Variable que almacena el ganador de la partida anterior
+	#	jugador: int;											// Varibale que almacena el jugador del turno actual
+	#	numPartidas: int;										// Variable que almacena la cantidad de partidas jugadas
+	#	ultimaJugada: list;										// Variable que almacena la fila y la columna de la ultima jugada realizada por la computadora
+	#	numJugadas: int;										// Variable que almacena el numero de jugadas realizadas en la partida actual
+	#	numJugadasPC: int;										// Variable que almacena el numero de jugadas realizadas por la computadora en la partida actual
+	#	numEmpates: int;										// Variable que almacena el numero de empates de todos los juegos
+	#	partidasGanadasPersona: int;							// Variable que almacena las partidas ganadas por el jugadora
+	#	partidasGanadasPC: int;									// Variable que almacena las partidas ganadas por la computadora
+	#	estrategia: int;										// Variable que almacena la estrategia a utilizar por la computadora en la dificultad media
 
 	try:
 		archivo = open('guardarPartida.txt')
@@ -1617,9 +1690,14 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 
 def cargarPartida() -> bool:
 
+	# VAR
+	# cargar: bool;												// Variable que determina si el jugador desea guardar la partida o no
+
 	while True:
 		try:
 			confirmacion = int(input("Por favor, ingrese 1 si desea cargar una partida, en caso contrario ingrese 0: "))
+
+			assert(0 <= confirmacion <= 1)
 
 			if confirmacion == 1:
 				cargar = True
@@ -1691,9 +1769,9 @@ while True:
 						nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia = leeArchivo()
 						print(type(tablero))
 					else:
-						dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO, nombre)
+						dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, NEGRO, BLANCO, nombre)
 				else:
-					dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO, nombre)
+					dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, NEGRO, BLANCO, nombre)
 				
 				# Cota: 
 				# assert(filas * columnas - numJugadas)
@@ -1704,13 +1782,13 @@ while True:
 					while ingresaJugada == True:
 						
 						# Obtiene los valores de la jugada y verifica que sea correcto
-						jugada, estrategia = obtenerJugada(filas, columnas, numJugadasPC, tablero, ultimaJugada, jugador, dificultad, estrategia, nombre)
+						jugada, estrategia, tranca = obtenerJugada(filas, columnas, numJugadasPC, tablero, ultimaJugada, jugador, dificultad, estrategia, nombre)
 						validacion = validarJugada(jugada, filas, columnas, tablero)
 
 						if validacion == True:
 
 							# Si la jugada se puede realizar, se almacena en el tablero.
-							ultimaJugada, numJugadasPC = reflejarJugada(jugada, jugador, filas, columnas, tablero, ultimaJugada, numJugadasPC)
+							ultimaJugada, numJugadasPC = reflejarJugada(jugada, jugador, filas, columnas, tablero, ultimaJugada, numJugadasPC, tranca)
 							jugador = cambiarTurno(jugador)
 							numJugadas = numJugadas + 1
 
