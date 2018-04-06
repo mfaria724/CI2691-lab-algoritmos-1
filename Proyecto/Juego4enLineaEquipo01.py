@@ -1370,6 +1370,23 @@ def dibujarTablero(colorlineas: list, colorfondo: list) -> 'void':
 	pygame.draw.line(pantalla, colorlineas, (840, 90), (840, 620))
 	pygame.draw.line(pantalla, colorlineas, (982, 90), (982, 620))
 
+	#Numeros Guia
+	fuente = pygame.font.Font(None, 75)
+	I = fuente.render("0", True, NEGRO)
+	pantalla.blit(I, [185, 40])
+	II = fuente.render("1", True, NEGRO)
+	pantalla.blit(II, [330, 40])
+	III = fuente.render("2", True, NEGRO)
+	pantalla.blit(III, [470, 40])
+	IV = fuente.render("3", True, NEGRO)
+	pantalla.blit(IV, [610, 40])
+	V = fuente.render("4", True, NEGRO)
+	pantalla.blit(V, [750, 40])
+	VI = fuente.render("5", True, NEGRO)
+	pantalla.blit(VI, [900, 40])
+	VII = fuente.render("6", True, NEGRO)
+	pantalla.blit(VII, [1040, 40])	
+
 	pygame.display.flip()			# Actualiza el tablero
 
 	# print("Se dibuja el tablero en la interfaz gráfica")
