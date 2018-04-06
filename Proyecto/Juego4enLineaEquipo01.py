@@ -183,7 +183,7 @@ def quiereSeguir(nombre: str) -> bool:
 
 	return validacion
 
-def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columnas: int,tablero: list, BLANCO: list, NEGRO: list, nombre: str) -> (int, int, int, int, str) :
+def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columnas: int,tablero: list, BLANCO: list, NEGRO: list, nombre: str, partidasGanadasPersona: int, partidasGanadasPC: int) -> (int, int, int, int, str) :
 	# Precondición: 
 	assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2 and filas >= 0 and columnas >= 0)
 
@@ -204,9 +204,9 @@ def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columna
 	# print("Inicializa el tablero y los valores necesarios para poder jugar")
 
 	inicializarTablero(filas, columnas, tablero)
-	dibujarTablero(BLANCO, NEGRO)
 	if numPartidas == 0:	# Si es la primera partida, pide al jugador su nombre
 		nombre = pedirNombre()
+	dibujarTablero(BLANCO, NEGRO, nombre, partidasGanadasPersona, partidasGanadasPC, numEmpates)
 	dificultad = escogerDificultad(nombre)
 	jugador = definirPrimero(numPartidas, ultimoGanador)
 
@@ -1342,7 +1342,7 @@ def randomJugadaPC(columnas: int) -> int:
 
 	return jugada
 
-def dibujarTablero(colorlineas: list, colorfondo: list) -> 'void':
+def dibujarTablero(colorlineas: list, colorfondo: list, nombre: str, partidasGanadasPersona: int, partidasGanadasPC: int, numEmpates: int) -> 'void':
 	# Precondición: 
 	assert(True)
 
@@ -1375,22 +1375,33 @@ def dibujarTablero(colorlineas: list, colorfondo: list) -> 'void':
 	pygame.draw.line(pantalla, colorlineas, (840, 90), (840, 620))
 	pygame.draw.line(pantalla, colorlineas, (982, 90), (982, 620))
 
-	#Numeros Guia
+	# Inicializa la fuente
 	fuente = pygame.font.Font(None, 75)
-	I = fuente.render("0", True, NEGRO)
-	pantalla.blit(I, [185, 40])
-	II = fuente.render("1", True, NEGRO)
-	pantalla.blit(II, [330, 40])
-	III = fuente.render("2", True, NEGRO)
-	pantalla.blit(III, [470, 40])
-	IV = fuente.render("3", True, NEGRO)
-	pantalla.blit(IV, [610, 40])
-	V = fuente.render("4", True, NEGRO)
-	pantalla.blit(V, [750, 40])
-	VI = fuente.render("5", True, NEGRO)
-	pantalla.blit(VI, [900, 40])
-	VII = fuente.render("6", True, NEGRO)
-	pantalla.blit(VII, [1040, 40])	
+
+	# Variables a printear en pantalla
+	uno = fuente.render("0", True, NEGRO)
+	dos = fuente.render("1", True, NEGRO)
+	tres = fuente.render("2", True, NEGRO)
+	cuatro = fuente.render("3", True, NEGRO)
+	cinco = fuente.render("4", True, NEGRO)
+	seis = fuente.render("5", True, NEGRO)
+	siete = fuente.render("6", True, NEGRO)
+	printNombre = fuente.render(nombre + ": " + str(partidasGanadasPersona), True, NEGRO)
+	printPC = fuente.render("Computadora: " + str(partidasGanadasPC), True, NEGRO)
+	printEmpates = fuente.render("Empates: " + str(numEmpates), True, NEGRO)
+
+	# Dibuja las variables en la pantalla
+	pantalla.blit(uno, [185, 40])
+	pantalla.blit(dos, [330, 40])
+	pantalla.blit(tres, [470, 40])
+	pantalla.blit(cuatro, [610, 40])
+	pantalla.blit(cinco, [750, 40])
+	pantalla.blit(seis, [900, 40])
+	pantalla.blit(siete, [1040, 40])
+	pantalla.blit(printNombre, [100, 650])
+	pantalla.blit(printPC, [400, 650])
+	pantalla.blit(printEmpates, [850, 650])
+	
 
 	pygame.display.flip()			# Actualiza el tablero
 
@@ -1399,7 +1410,8 @@ def dibujarTablero(colorlineas: list, colorfondo: list) -> 'void':
 	# Postcondición: 
 	# Se dibuja en una ventana gráfica un tablero con "filas" filas y "columnas" columnas de color "color"
 
-def cargarTablero(colorlineas: list, colorfondo: list, colorpc: list, colorjugador: list, filas: int, columas: int, tablero: list) -> 'void':
+def cargarTablero(colorlineas: list, colorfondo: list, colorpc: list, colorjugador: list, filas: int, columas: int, tablero: list, nombre: str, 
+	partidasGanadasPersona: int, partidasGanadasPC: int, numEmpates: int) -> 'void':
 	# Precondición: 
 	assert(True)
 
@@ -1415,28 +1427,7 @@ def cargarTablero(colorlineas: list, colorfondo: list, colorpc: list, colorjugad
 	#	tablero: list;											// Matriz del tablero de juego
 
 
-	# Fondo
-	pantalla.fill(colorfondo)
-	# Cuadrado exterior
-	pygame.draw.line(pantalla, colorlineas, (130, 90), (130, 620))
-	pygame.draw.line(pantalla, colorlineas, (1120, 90), (1120, 620))
-	pygame.draw.line(pantalla, colorlineas, (130, 90), (1120, 90))
-	pygame.draw.line(pantalla, colorlineas, (130, 620), (1120, 620))
-
-	# Filas
-	pygame.draw.line(pantalla, colorlineas, (130, 178), (1120, 178))
-	pygame.draw.line(pantalla, colorlineas, (130, 266), (1120, 266))
-	pygame.draw.line(pantalla, colorlineas, (130, 354), (1120, 354))
-	pygame.draw.line(pantalla, colorlineas, (130, 442), (1120, 442))
-	pygame.draw.line(pantalla, colorlineas, (130, 530), (1120, 530))
-
-	# Columnas
-	pygame.draw.line(pantalla, colorlineas, (272, 90), (272, 620))
-	pygame.draw.line(pantalla, colorlineas, (414, 90), (414, 620))
-	pygame.draw.line(pantalla, colorlineas, (556, 90), (556, 620))
-	pygame.draw.line(pantalla, colorlineas, (698, 90), (698, 620))
-	pygame.draw.line(pantalla, colorlineas, (840, 90), (840, 620))
-	pygame.draw.line(pantalla, colorlineas, (982, 90), (982, 620))
+	dibujarTablero(colorlineas, colorfondo, nombre, partidasGanadasPersona, partidasGanadasPC, numEmpates)
 
 	for i in range(filas):			# El ciclo va recorriendo la matriz en busca de fichas, si encuentra un 1 en la matriz dibuja la ficha de color rojo en la posicion correspondiente, 
 		for j in range(columas):	# si encuentra un 2 la dibuja de color azul,
@@ -1528,7 +1519,7 @@ def guardarPartida(nombre: str, filas: int, columnas: int, tablero: list, dificu
 			# Precondición: 
 			assert(
 				filas >= 4 and columnas >= 4 and all ( all ( 0 <= tablero[x][y] <= 2 for x in range(filas)) for y in range(columnas))
-				and 0 <= dificultad <= 1 and 0 <= ultimoGanador <= 2 and 1 <= jugador <= 2 and numPartidas >= 0 and 0 <= ultimaJugada[0] < filas
+				and 0 <= dificultad <= 1 and 0 <= ultimoGanador <= 2 and 0 <= jugador <= 2 and numPartidas >= 0 and 0 <= ultimaJugada[0] < filas
 				and 0 <= ultimaJugada[1] < columnas and 0 <= numJugadas < filas*columnas and 0 <= numJugadasPC < (filas*columnas)/2 and 
 				numEmpates >= 0 and partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and 0 <= estrategia <= 6
 				)
@@ -1670,7 +1661,7 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 		partidasGanadasPC = int(datos[27])
 		estrategia = int(datos[29])
 
-		cargarTablero(BLANCO, NEGRO, AZUL, ROJO, filas, columnas, tablero)
+		cargarTablero(NEGRO, BLANCO, AZUL, ROJO, filas, columnas, tablero, nombre, partidasGanadasPersona, partidasGanadasPC, numEmpates)
 
 	except:
 		print("Verifique que existe el archivo guardarPartida.txt, si no existe, no puede cargar una partida.")
@@ -1767,11 +1758,10 @@ while True:
 				if numPartidas == 0:
 					if cargarPartida():
 						nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia = leeArchivo()
-						print(type(tablero))
 					else:
-						dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, NEGRO, BLANCO, nombre)
+						dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, NEGRO, BLANCO, nombre, partidasGanadasPersona, partidasGanadasPC)
 				else:
-					dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, NEGRO, BLANCO, nombre)
+					dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, NEGRO, BLANCO, nombre, partidasGanadasPersona, partidasGanadasPC)
 				
 				# Cota: 
 				# assert(filas * columnas - numJugadas)
