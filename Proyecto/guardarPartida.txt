@@ -1,0 +1,30 @@
+Nombre
+Manuel
+Filas
+6
+Columnas
+7
+Tablero
+[[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 2, 0, 0, 0], [0, 0, 0, 2, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0], [2, 2, 1, 1, 0, 0, 0]]
+Dficultad
+1
+ultimoGanador
+1
+Jugador
+1
+numPartidas
+1
+ultimaJugada
+[1, 3]
+numJugadas
+8
+numJugadasPC
+4
+numEmpates
+0
+partidasGanadasPersona
+1
+partidasGanadasPC
+0
+estrategia
+0

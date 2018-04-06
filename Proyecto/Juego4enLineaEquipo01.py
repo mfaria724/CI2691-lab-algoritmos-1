@@ -991,10 +991,11 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 			if jugada == -1:		# En caso de que se se salga del ciclo sin haber escogido ninguna estrategia (debido al numero de intentos maximos), se asigna una jugada y estrategia random
 				jugada = randomJugadaPC(columnas)
 				estrategia = randomEstrategia()
-	return jugada, estrategia, tranca
 
 	# Postcondición: 
 	assert(0 <= jugada < columnas)
+	
+	return jugada, estrategia, tranca
 
 
 def compruebaJugadaVertical(ultimaJugada: list, tablero: list, estrategia: int) -> (int, bool, int):
@@ -1603,11 +1604,8 @@ def escribeArchivo(nombre: str, filas: int, columnas: int, tablero: list, dificu
 
 def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, int, int, int, int):
 
-
-
-
-
-
+	# Precondición:
+	assert(True)
 
 	# VAR
 	#	nombre: str;											// Variable que almacena el nombre del jugador
@@ -1626,46 +1624,48 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 	#	partidasGanadasPC: int;									// Variable que almacena las partidas ganadas por la computadora
 	#	estrategia: int;										// Variable que almacena la estrategia a utilizar por la computadora en la dificultad media
 
-	archivo = open('guardarPartida.txt')
-	
-	datos = archivo.readlines()
-	print(datos)
+	try:
+		archivo = open('guardarPartida.txt')
+		
+		datos = archivo.readlines()
 
-	for i in range(len(datos)):
-		datos[i] = datos[i].rstrip('\n')
+		for i in range(len(datos)):
+			datos[i] = datos[i].rstrip('\n')
 
-	print("Nombre: " + str(datos[1]))
-	nombre = datos[1]
-	print("Filas: " + str(datos[3]))
-	filas = int(datos[3])
-	print("Columnas: " + str(datos[5]))
-	columnas = int(datos[5])
-	print("Tablero: " + str(datos[7]))
-	tablero = eval(datos[7])
-	print("Dificultad: " + str(datos[9]))
-	dificultad = int(datos[9])
-	print("ultimoGanador: " + str(datos[11]))
-	ultimoGanador = int(datos[11])
-	print("jugador: " + str(datos[13]))
-	jugador = int(datos[13])
-	print("numPartidas: " + str(datos[15]))
-	numPartidas = int(datos[15])
-	print("ultimaJugada: " + str(datos[17]))
-	ultimaJugada = eval(datos[17])
-	print("numJugadas: " + str(datos[19]))
-	numJugadas = int(datos[19])
-	print("numJugadasPC: " + str(datos[21]))
-	numJugadasPC = int(datos[21])
-	print("numEmpates: " + str(datos[23]))
-	numEmpates = int(datos[23])
-	print("partidasGanadasPersona: " + str(datos[25]))
-	partidasGanadasPersona = int(datos[25])
-	print("partidasGanadasPC: " + str(datos[27]))
-	partidasGanadasPC = int(datos[27])
-	print("Estrategia: " + str(datos[29]))
-	estrategia = int(datos[29])
+		print("Nombre: " + str(datos[1]))
+		nombre = datos[1]
+		filas = int(datos[3])
+		columnas = int(datos[5])
+		tablero = eval(datos[7])
+		print("Dificultad: " + str(datos[9]))
+		dificultad = int(datos[9])
+		ultimoGanador = int(datos[11])
+		jugador = int(datos[13])
+		numPartidas = int(datos[15])
+		ultimaJugada = eval(datos[17])
+		numJugadas = int(datos[19])
+		numJugadasPC = int(datos[21])
+		print("Número de empates: " + str(datos[23]))
+		numEmpates = int(datos[23])
+		print("Partidas ganadas por " + str(nombre) + " " + str(datos[25]))
+		partidasGanadasPersona = int(datos[25])
+		print("Partidas ganadas por la computadora: " + str(datos[27]))
+		partidasGanadasPC = int(datos[27])
+		estrategia = int(datos[29])
 
-	cargarTablero(NEGRO, BLANCO, AZUL, ROJO, filas, columnas, tablero)
+		cargarTablero(BLANCO, NEGRO, AZUL, ROJO, filas, columnas, tablero)
+
+	except:
+		print("Verifique que existe el archivo guardarPartida.txt, si no existe, no puede cargar una partida.")
+		sys.exit()
+
+	# Postcondición:
+	assert(
+			filas >= 4 and columnas >= 4 and all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)) and
+			0 <= dificultad <= 1 and 0 <= ultimoGanador <= 2 and 1 <= jugador <= 2 and numPartidas >= 0 and
+			0 <= ultimaJugada[0] <= filas and 0 <= ultimaJugada[1] <= columnas and numJugadas >= 0 and numJugadasPC >= 0 and 
+			numEmpates >= 0 and partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and 0 <= estrategia <= 6
+		)
 
 	return nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia
 
