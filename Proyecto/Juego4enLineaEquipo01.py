@@ -1551,35 +1551,40 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 	# Precondición:
 	assert(True)
 
-	archivo = open('guardarPartida.txt')
-	
-	datos = archivo.readlines()
+	try:
+		archivo = open('guardarPartida.txt')
+		
+		datos = archivo.readlines()
 
-	for i in range(len(datos)):
-		datos[i] = datos[i].rstrip('\n')
+		for i in range(len(datos)):
+			datos[i] = datos[i].rstrip('\n')
 
-	print("Nombre: " + str(datos[1]))
-	nombre = datos[1]
-	filas = int(datos[3])
-	columnas = int(datos[5])
-	tablero = eval(datos[7])
-	print("Dificultad: " + str(datos[9]))
-	dificultad = int(datos[9])
-	ultimoGanador = int(datos[11])
-	jugador = int(datos[13])
-	numPartidas = int(datos[15])
-	ultimaJugada = eval(datos[17])
-	numJugadas = int(datos[19])
-	numJugadasPC = int(datos[21])
-	print("Número de empates: " + str(datos[23]))
-	numEmpates = int(datos[23])
-	print("Partidas ganadas por " + str(nombre) + " " + str(datos[25]))
-	partidasGanadasPersona = int(datos[25])
-	print("Partidas ganadas por la computadora: " + str(datos[27]))
-	partidasGanadasPC = int(datos[27])
-	estrategia = int(datos[29])
+		print("Nombre: " + str(datos[1]))
+		nombre = datos[1]
+		filas = int(datos[3])
+		columnas = int(datos[5])
+		tablero = eval(datos[7])
+		print("Dificultad: " + str(datos[9]))
+		dificultad = int(datos[9])
+		ultimoGanador = int(datos[11])
+		jugador = int(datos[13])
+		numPartidas = int(datos[15])
+		ultimaJugada = eval(datos[17])
+		numJugadas = int(datos[19])
+		numJugadasPC = int(datos[21])
+		print("Número de empates: " + str(datos[23]))
+		numEmpates = int(datos[23])
+		print("Partidas ganadas por " + str(nombre) + " " + str(datos[25]))
+		partidasGanadasPersona = int(datos[25])
+		print("Partidas ganadas por la computadora: " + str(datos[27]))
+		partidasGanadasPC = int(datos[27])
+		estrategia = int(datos[29])
 
-	cargarTablero(BLANCO, NEGRO, AZUL, ROJO, filas, columnas, tablero)
+		cargarTablero(BLANCO, NEGRO, AZUL, ROJO, filas, columnas, tablero)
+
+	except:
+		print("Verifique que existe el archivo guardarPartida.txt, si no existe, no puede cargar una partida.")
+		sys.exit()
 
 	# Postcondición:
 	assert(
