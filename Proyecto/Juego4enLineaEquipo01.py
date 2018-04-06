@@ -358,6 +358,9 @@ def validarJugada(jugada: int, filas: int, columnas: int, tablero: list) -> bool
 	cota = i + 1
 	assert(cota >= 0)
 
+	# Invariante:
+	assert(any (tablero[k][jugada] == 0 for k in range(i)) == validacion)
+
 	while i != -1:
 		if tablero[i][jugada] == 0:
 			validacion = True
