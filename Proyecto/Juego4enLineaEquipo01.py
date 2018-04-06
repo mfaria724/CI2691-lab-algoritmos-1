@@ -986,10 +986,11 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 			if jugada == -1:		# En caso de que se se salga del ciclo sin haber escogido ninguna estrategia (debido al numero de intentos maximos), se asigna una jugada y estrategia random
 				jugada = randomJugadaPC(columnas)
 				estrategia = randomEstrategia()
-	return jugada, estrategia
 
 	# Postcondición: 
 	assert(0 <= jugada < columnas)
+	
+	return jugada, estrategia
 
 
 def compruebaJugadaVertical(ultimaJugada: list, tablero: list, estrategia: int) -> (int, bool, int):
@@ -1546,10 +1547,13 @@ def escribeArchivo(nombre: str, filas: int, columnas: int, tablero: list, dificu
 		)
 
 def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, int, int, int, int):
+
+	# Precondición:
+	assert(True)
+
 	archivo = open('guardarPartida.txt')
 	
 	datos = archivo.readlines()
-	print(datos)
 
 	for i in range(len(datos)):
 		datos[i] = datos[i].rstrip('\n')
@@ -1586,6 +1590,14 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 	estrategia = int(datos[29])
 
 	cargarTablero(BLANCO, NEGRO, AZUL, ROJO, filas, columnas, tablero)
+
+	# Postcondición:
+	assert(
+			filas >= 4 and columnas >= 4 and all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)) and
+			0 <= dificultad <= 1 and 0 <= ultimoGanador <= 2 and 1 <= jugador <= 2 and numPartidas >= 0 and
+			0 <= ultimaJugada[0] <= filas and 0 <= ultimaJugada[1] <= columnas and numJugadas >= 0 and numJugadasPC >= 0 and 
+			numEmpates >= 0 and partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and 0 <= estrategia <= 6
+		)
 
 	return nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia
 
