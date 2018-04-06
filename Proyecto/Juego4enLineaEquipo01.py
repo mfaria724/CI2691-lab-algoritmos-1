@@ -357,9 +357,11 @@ def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ul
 	#	estrategia: int;							// Variable que almacena la estrategia a utilizar por la computadora en la dificultad media
 	#	jugada: int;								// Variable que almacena la columna donde se desea jugar
 	#	nombre: str;								// Variable que almacena el nombre del jugador
+	#	tranca: 
 	
 	# Devuelve la columna donde se desea jugar
 
+	tranca = False
 	if jugador == 2: # Verifica quien debe ingresar la jugada y la obtiene
 			# Verifica la dificultad
 		if dificultad == 0:
@@ -368,7 +370,7 @@ def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ul
 		
 		elif dificultad == 1:
 			# Busca una jugada con una estrategia
-			jugada, estrategia = jugadaPC(filas, columnas, numJugadasPC, tablero, ultimaJugada, estrategia)
+			jugada, estrategia, tranca = jugadaPC(filas, columnas, numJugadasPC, tablero, ultimaJugada, estrategia)
 	
 	elif jugador == 1: # Turno del jugador
 		jugada = jugadaPersona(columnas, nombre)
@@ -376,7 +378,7 @@ def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ul
 	# Postcondición: 
 	assert(0 <= jugada <= columnas)
 	
-	return jugada, estrategia
+	return jugada, estrategia, tranca
 
 def jugadaPersona(columnas: int, nombre: str) -> int:
 	# VAR:
@@ -448,7 +450,7 @@ def validarJugada(jugada: int, filas: int, columnas: int, tablero: list) -> bool
 
 	return validacion
 
-def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int, tablero: list, ultimaJugada: list, numJugadasPC: int) -> (int, int):
+def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int, tablero: list, ultimaJugada: list, numJugadasPC: int, tranca: bool) -> (int, int):
 	# Precondición: 
 	assert(1 <= jugador <= 2 and 0 <= jugada < columnas and filas >= 4 and columnas >= 4)
 
@@ -478,9 +480,10 @@ def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int, tablero:
 		if tablero[i][jugada] == 0:		# Al encontrarse con la primera casilla con cero, asigna en esta el numero del jugador correspondiente
 			tablero[i][jugada] = jugador
 			if jugador == 2:
-				ultimaJugada = [i,jugada] # Se asigna como ultima jugada la jugada que acabade realizarse
 				numJugadasPC = numJugadasPC + 1
 				dibujarJugada(i, jugada, AZUL)
+				if tranca == False:
+					ultimaJugada = [i,jugada] # Se asigna como ultima jugada la jugada que acabade realizarse
 			else:
 				dibujarJugada(i, jugada, ROJO)
 			continua = False 	# Cambia la variable continuar para evitar seguir modificando la matriz
@@ -922,6 +925,7 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 	intentosMaximos = 50
 	puedeJugar = False
 	i = 0
+	tranca = False
 
 	if numJugadasPC == 0: 	# Si es la primera jugada de la computadora, se asigna una jugada y una estrategia random
 		jugada = randomJugadaPC(columnas)
@@ -935,6 +939,7 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 		 		for j in range(filas - 2):
 		 			if tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == 1 and tablero[j-1][i] == 0:
 		 				jugada = i
+		 				tranca = True
 		# Sigue que con su estrategia
 		else:
 			# Cota:
@@ -986,7 +991,7 @@ def jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJ
 			if jugada == -1:		# En caso de que se se salga del ciclo sin haber escogido ninguna estrategia (debido al numero de intentos maximos), se asigna una jugada y estrategia random
 				jugada = randomJugadaPC(columnas)
 				estrategia = randomEstrategia()
-	return jugada, estrategia
+	return jugada, estrategia, tranca
 
 	# Postcondición: 
 	assert(0 <= jugada < columnas)
@@ -1660,7 +1665,7 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 	print("Estrategia: " + str(datos[29]))
 	estrategia = int(datos[29])
 
-	cargarTablero(BLANCO, NEGRO, AZUL, ROJO, filas, columnas, tablero)
+	cargarTablero(NEGRO, BLANCO, AZUL, ROJO, filas, columnas, tablero)
 
 	return nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia
 
@@ -1674,6 +1679,8 @@ def cargarPartida() -> bool:
 	while True:
 		try:
 			confirmacion = int(input("Por favor, ingrese 1 si desea cargar una partida, en caso contrario ingrese 0: "))
+
+			assert(0 <= confirmacion <= 1)
 
 			if confirmacion == 1:
 				cargar = True
@@ -1745,9 +1752,9 @@ while True:
 						nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia = leeArchivo()
 						print(type(tablero))
 					else:
-						dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO, nombre)
+						dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, NEGRO, BLANCO, nombre)
 				else:
-					dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, BLANCO, NEGRO, nombre)
+					dificultad, jugador, numJugadas, numJugadasPC, nombre = inicializarPartida(numPartidas, ultimoGanador, filas, columnas, tablero, NEGRO, BLANCO, nombre)
 				
 				# Cota: 
 				# assert(filas * columnas - numJugadas)
@@ -1758,13 +1765,13 @@ while True:
 					while ingresaJugada == True:
 						
 						# Obtiene los valores de la jugada y verifica que sea correcto
-						jugada, estrategia = obtenerJugada(filas, columnas, numJugadasPC, tablero, ultimaJugada, jugador, dificultad, estrategia, nombre)
+						jugada, estrategia, tranca = obtenerJugada(filas, columnas, numJugadasPC, tablero, ultimaJugada, jugador, dificultad, estrategia, nombre)
 						validacion = validarJugada(jugada, filas, columnas, tablero)
 
 						if validacion == True:
 
 							# Si la jugada se puede realizar, se almacena en el tablero.
-							ultimaJugada, numJugadasPC = reflejarJugada(jugada, jugador, filas, columnas, tablero, ultimaJugada, numJugadasPC)
+							ultimaJugada, numJugadasPC = reflejarJugada(jugada, jugador, filas, columnas, tablero, ultimaJugada, numJugadasPC, tranca)
 							jugador = cambiarTurno(jugador)
 							numJugadas = numJugadas + 1
 
