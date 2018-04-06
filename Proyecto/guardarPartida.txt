@@ -1,30 +1,30 @@
-Nombre 
-Manuel
-Filas 
+Nombre
+asd
+Filas
 6
-Columnas 
+Columnas
 7
-Tablero 
-[[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 2, 2, 0, 0], [0, 0, 1, 2, 2, 0, 0], [0, 1, 1, 1, 2, 0, 0]]
-Dficultad 
+Tablero
+[[0, 0, 0, 0, 2, 1, 0], [0, 0, 0, 0, 1, 2, 0], [0, 0, 1, 0, 2, 1, 0], [2, 2, 1, 1, 1, 2, 0], [1, 1, 2, 2, 2, 1, 1], [2, 2, 2, 1, 2, 2, 1]]
+Dficultad
 1
-ultimoGanador 
-0
-Jugador 
+ultimoGanador
+2
+Jugador
 1
-numPartidas 
+numPartidas
+1
+ultimaJugada
+[3, 0]
+numJugadas
+27
+numJugadasPC
+14
+numEmpates
 0
-ultimaJugada 
-[3, 3]
-numJugadas 
-10
-numJugadasPC 
-5
-numEmpates 
+partidasGanadasPersona
 0
-partidasGanadasPersona 
-0
-partidasGanadasPC 
-0
-estrategia 
+partidasGanadasPC
+1
+estrategia
 2
