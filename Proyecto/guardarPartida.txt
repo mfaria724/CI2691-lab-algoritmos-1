@@ -5,7 +5,7 @@ Filas
 Columnas
 7
 Tablero
-[[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 2, 0, 0, 0], [0, 0, 0, 1, 2, 0, 0]]
+[[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 2, 1, 0, 0, 0]]
 Dficultad
 1
 ultimoGanador
@@ -15,11 +15,11 @@ Jugador
 numPartidas
 0
 ultimaJugada
-[5, 4]
+[5, 2]
 numJugadas
-4
-numJugadasPC
 2
+numJugadasPC
+1
 numEmpates
 0
 partidasGanadasPersona
@@ -27,4 +27,4 @@ partidasGanadasPersona
 partidasGanadasPC
 0
 estrategia
-3
+1

@@ -74,8 +74,7 @@
 
 		// Inicializa los valores
 		continuar := true
-		; inicializarPartida(numPartidas, ultimoGanador, filas, columnas; tablero; numJugadas, jugador, numJugadasPC, ultimaJugada, dificultad)
-		
+		; inicializarPartida(numPartidas, ultimoGanador, filas, columnas; tablero; numJugadas, jugador, numJugadasPC, ultimaJugada, dificultad, nombre)
 
 		{ Cota: filas * columnas - numJugadas }
 		do continuar == true /\ numJugadas != filas * columnas ->
@@ -165,13 +164,13 @@
 
 func seguirPartida()
 { Precondición: true}
-{ Postcondición: }
+{ Postcondición: validacion == true \/ validacion == false}
 // El jugador ingresa si desea continuar la partida actual o no
 [
 	CONST
-		seguirPartida: boolean     					   // "Input" de jugador
+		validacion: boolean     					   // "Input" de jugador
 
-	>> seguirPartida
+	>> validacion
 ]
 
 proc entregaResultados(in partidasGanadasPersona: int, partidasGanadasPC: int numEmpates: int)
@@ -182,9 +181,9 @@ proc entregaGanadorPartida(in ganador: int)
 { Precondición: 1 <= ganador <= 2 }
 { Postcondición: Se imprime el ganador de la partida en pantalla }
 
-func quiereSeguir() -> boolean
+func quiereSeguir(nombre string) -> boolean
 { Precondición: true }
-{ Postcondición: true }
+{ Postcondición: quiereSeguirJugando == true \/ quiereSeguirJugando == false }
 // El jugador ingresa si desea jugar otra partida
 [
 	CONST 
@@ -193,16 +192,18 @@ func quiereSeguir() -> boolean
 	>> quiereSeguirJugando
 ]
 
-proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, columnas: int, in-out tablero: array,out numJugadas: int, 
-						jugador: int, numJugadasPC: int, ultimaJugada: int, dificultad: int)
+proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, columnas: int, in-out tablero: array, out numJugadas: int, 
+						jugador: int, numJugadasPC: int, ultimaJugada: int, dificultad: int, nombre: string)
 { Precondición: numPartidas >= 0 /\ 0 <= ultimoGanador <= 2 /\ filas >= 0 /\ columnas >= 0}
 { Postcondición: (% forall i,j : int | 0 <= i < filas /\ 0 <= j < columnas | tablero[i][j] == 0 %) /\ 0 <= dificultad <= 1 /\ 
 				 (numPartidas != 0 \/ primerJugador == 1) /\ (numPartidas == 0 \/ primerJugador == ultimoGanador)}
 // Inicializa el tablero y los valores necesarios para poder jugar
 [
 	inicializarTablero(filas, columnas; tablero)
-	dibujarTablero(filas, columnas, verde)
-	dificultad := dificultad()
+	if numPartidas == 0 ->
+		nombre := pedirNombre()
+	dibujarTablero(filas, columnas, verde, partidasGanadasPersona, partidasGanadasPC, numEmpates)
+	dificultad := dificultad(nombre)
 	jugador := definirPrimero(numPartidas, ultimoGanador)
 
 	// Inicializa las variables para la partida
@@ -211,7 +212,6 @@ proc inicializarPartida(in numPartidas: int, ultimoGanador: int, filas: int, col
 	ultimaJugada := [-1,-1]
 
 ]
-
 
 proc dibujarTablero(in filas: int, columnas: int, color: color)
 { Precondición: filas > 0 /\ columnas > 0 }
@@ -251,7 +251,7 @@ proc inicializarTablero(in filas: int, in columnas: int, in-out tablero: array)
 
 ]
 
-func dificultad() -> (int)
+func dificultad(nombre string) -> (int)
 { Precondición: true }
 { Postcondición: 0 <= dificultad <= 1 }
 // Dificultad ingresada por el usuario
@@ -279,17 +279,27 @@ func definirPrimero(numPartidas:int, ultimoGanador: int) -> (int)
 	>> primerJugador
 ]
 
-func obtenerJugada(filas: int, columnas: int, numJugadasPC: int tablero: array, ultimaJugada: array, jugador: int, dificultad: int) -> int
+func jugadaPersona(columnas: int, nombre: string) -> (int)
+{ Precondición: columnas > 4 }
+{ Postcondición: 0 <= jugadaPersona < columnas }
+[
+	CONST 
+		jugadaPersona: int;					// Input del jugador
+
+	>> jugadaPersona
+
+]
+
+func obtenerJugada(filas: int, columnas: int, numJugadasPC: int tablero: array, ultimaJugada: array, jugador: int, dificultad: int, estrategia: int, nombre: string) -> int
 { Precondición: columnas >= 4 /\ 1 <= jugador <= 2 /\ 0 <= dificultad <= 1 }
 { Postcondición: 0 <= jugada <= columnas }
 // Devuelve la columna donde se desea jugar
 [
-	CONST
-		jugadaPersona: int;					// "Input" de jugador
 	VAR
 		jugada: int;						// Variable que almacena la columna donde se desea jugar
+		tranca: boolean;					// Variable que almacena si es una jugada de tranca.
 
-
+	tranca := false
 	if jugador == 2 -> // Turno del computador
 		// Verifica la dificultad
 		if dificultad == 0 ->
@@ -297,10 +307,10 @@ func obtenerJugada(filas: int, columnas: int, numJugadasPC: int tablero: array, 
 			jugada := randomJugadaPC(columnas)
 		[] dificultad == 1 ->
 			// Busca una jugada con una estrategia
-			jugada := jugadaPC(filas, columnas, numJugadasPC, tablero, ultimaJugada)
+			jugadaPC(filas, columnas, numJugadasPC, tablero, ultimaJugada, estrategia)
 		fi
 	[] jugador == 1 -> // Turno del jugador
-		jugada := jugadaPersona
+		jugada := jugadaPersona(columnas, nombre)
 	fi
 
 	>> jugada
@@ -371,7 +381,7 @@ proc dibujarJugada(in fila: int, columna: int, color: color)
 
 func cambiarTurno(jugador: int) -> int
 { Precondición: 1 <= jugador <= 2 }
-{ Postcondición: (jugador != 1 \/ jugador ==2) /\ (jugador != 2 \/ jugador == 1) }
+{ Postcondición: jugador == 1 /\ jugador == 2 }
 // Pasa el turno al siguiente jugador
 [
 	if jugador == 1 ->
@@ -585,7 +595,7 @@ func verificarTablero(numJugadas: int, filas: int, columnas:int) -> boolean
 	>> continuar
 ]
 
-func jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: array, ultimaJugada: array) -> int
+func jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: array, ultimaJugada: array, estrategia: int) -> int
 { Precondición: filas >= 4 /\ columnas >= 4 /\ numJugadas >= 0 /\ (% forall i,j : int | 0 <= i <= filas /\ 0 <= j <= columnas | 0 <= tablero[i][j] <= 2 %) }
 { Postcondición: 0 <= jugada < columnas}
 // Inteligencia Artificial del computador
@@ -605,6 +615,34 @@ func jugadaPC(filas: int, columnas: int, numJugadasPC: int, tablero: array, ulti
 		jugada := randomJugadaPC(columnas)
 		estrategia := randomEstrategia()
 	[] numJugadasPC != 0 ->
+
+		// Verifica antes de jugar que haya una fila vertical de tres fichas de jugador para trancarla
+		if (% forall i,j : int | 0 <= i < columnas /\ 1 <= j < filas - 2 | tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == 1 and tablero[j-1][i] == 0 %) ->
+
+			i := 0
+
+			{ Cota t1: columnas - i }
+			do i != columnas ->
+
+				j := 0
+				{ Cota t2: filas - 2 - i }
+				do j != filas - 2 ->
+		 			if tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == 1 \/ tablero[j-1][i] == 0 ->
+		 				jugada := i
+		 				tranca := True
+		 			[] tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] != 1 /\ tablero[j-1][i] != 0 ->
+		 				skip
+		 			fi
+		 		od
+
+		 	od
+
+		[] not (% forall i,j : int | 0 <= i < columnas /\ 1 <= j < filas - 2 | tablero[j][i] == tablero[j+1][i] == tablero[j+2][i] == 1 and tablero[j-1][i] == 0 %) ->
+			skip
+		fi
+
+
+
 		{ Cota: intentosMaximos - i}
 		do puedeJugar == false /\ i != intentosMaximos ->
 

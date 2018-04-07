@@ -183,7 +183,8 @@ def quiereSeguir(nombre: str) -> bool:
 
 	return validacion
 
-def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columnas: int,tablero: list, BLANCO: list, NEGRO: list, nombre: str, partidasGanadasPersona: int, partidasGanadasPC: int) -> (int, int, int, int, str) :
+def inicializarPartida(numPartidas: int, ultimoGanador: int, filas: int, columnas: int,tablero: list, 
+	BLANCO: list, NEGRO: list, nombre: str, partidasGanadasPersona: int, partidasGanadasPC: int) -> (int, int, int, int, str) :
 	# Precondición: 
 	assert(numPartidas >= 0 and 0 <= ultimoGanador <= 2 and filas >= 0 and columnas >= 0)
 
@@ -341,7 +342,8 @@ def definirPrimero(numPartidas: int, ultimoGanador: int) -> (int):
 
 	return primerJugador
 
-def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJugada: list, jugador: int, dificultad: int, estrategia: int, nombre: str) -> (int, int):
+def obtenerJugada(filas: int, columnas: int, numJugadasPC: int, tablero: int, ultimaJugada: list, 
+	jugador: int, dificultad: int, estrategia: int, nombre: str) -> (int, int, bool):
 	
 	# Precondición: 
 	assert(columnas >= 4 and 1 <= jugador <= 2 and 0 <= dificultad <= 1)
@@ -421,7 +423,7 @@ def validarJugada(jugada: int, filas: int, columnas: int, tablero: list) -> bool
 	#	filas: int;									// Numero de filas del tablero
 	#	columnas: int;								// Numero de columnas del tablero
 	#	tablero: int;								// Matriz del tablero de juego
-	#	validacio: int;								// Variable que determina si la jugada se puede realizar o no
+	#	validacion: int;							// Variable que determina si la jugada se puede realizar o no
 
 	i = filas - 1
 
@@ -455,7 +457,7 @@ def reflejarJugada(jugada: int, jugador: int, filas: int, columnas:int, tablero:
 	assert(1 <= jugador <= 2 and 0 <= jugada < columnas and filas >= 4 and columnas >= 4)
 
 	# Guarda una jugada en el tablero
-	print("Guarda la jugada en el tablero")
+	# print("Guarda la jugada en el tablero")
 
 	# VAR
 	# 	i: int;										// Variable auxiliar para iterar
@@ -727,7 +729,7 @@ def verificarDiagonalDerecha(filas: int, columnas:int, tablero: list) -> int:
 		     all( all(0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
 
 	# Verifica si existe una linea diagonal derecha
-	print("Verifica si existe una linea diagonal derecha")
+	# print("Verifica si existe una linea diagonal derecha")
 
 	# VAR
 	# 	i: int;													// Variable auxiliar para iterar
@@ -801,7 +803,7 @@ def verificarDiagonalIzquierda(filas: int, columnas:int, tablero: list) -> int:
 			 all( all(0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)))
 
 	# Verifica si existe una linea diagonal izquierda
-	print("Verifica si existe una linea diagonal izquierda")
+	# print("Verifica si existe una linea diagonal izquierda")
 
 	# VAR
 	# 	i: int;													// Variable auxiliar para iterar
@@ -875,7 +877,7 @@ def verificarTablero(numJugadas: int, filas: int, columnas:int) -> bool:
 	assert(filas >= 4 and columnas >= 4 and numJugadas <= filas * columnas)
 
 	# Verifica si el tablero está lleno
-	print("Verifica si el tablero está lleno")
+	# print("Verifica si el tablero está lleno")
 
 	# VAR 
 	# 	continuar: boolean;								// Variable que determina si la partida ha finalizado o no
@@ -1684,6 +1686,9 @@ def cargarPartida() -> bool:
 	# VAR
 	# cargar: bool;												// Variable que determina si el jugador desea guardar la partida o no
 
+	# Precondición:
+	assert(True)
+
 	while True:
 		try:
 			confirmacion = int(input("Por favor, ingrese 1 si desea cargar una partida, en caso contrario ingrese 0: "))
@@ -1698,6 +1703,9 @@ def cargarPartida() -> bool:
 			break
 		except:
 			print("Por favor, ingrese una opción válida.")
+
+	# Postcondición:
+	assert(cargar == True or cargar == False)
 
 	return cargar
 
