@@ -654,7 +654,7 @@ def verificarVertical(filas: int, columnas:int, tablero: list) -> int:
 		     all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(filas - 3)))
 
 	# Verifica si  existe una linea vertical
-	print("Verifica si  existe una linea vertical")
+	# print("Verifica si  existe una linea vertical")
 
 	# VAR
 	# 	i: int;													// Variable auxiliar para iterar
@@ -1353,6 +1353,10 @@ def dibujarTablero(colorlineas: list, colorfondo: list, nombre: str, partidasGan
 	# VAR
 	#	colorlineas: list;										// Variable que almacena el color de las lineas del tablero
 	#	colorfondo: list;										// Variable que almacena el color del fondo del tablero
+	#	nombre: str;											// Variable que almacena el nombre del jugador
+	#	partidasGanadasPersona: int;							// Variable que almacena el numero de partidas ganadas por el jugador
+	#	partidasGanadasPC: int;									// Variable que almacena el numero de partidas ganadas por la computadora
+	#	numEmpates: int;										// Variable que almacena el numero de empates de todas las partidas
 
 	# Fondo
 	pantalla.fill(colorfondo)
@@ -1381,7 +1385,7 @@ def dibujarTablero(colorlineas: list, colorfondo: list, nombre: str, partidasGan
 	fuente = pygame.font.Font(None, 75)
 
 	# Variables a printear en pantalla
-	uno = fuente.render("0", True, NEGRO)
+	uno = fuente.render("0", True, NEGRO)	# Se enumeran las columnas en el tablero grafico para facilitar al jugador v=la visualizacion
 	dos = fuente.render("1", True, NEGRO)
 	tres = fuente.render("2", True, NEGRO)
 	cuatro = fuente.render("3", True, NEGRO)
@@ -1389,8 +1393,8 @@ def dibujarTablero(colorlineas: list, colorfondo: list, nombre: str, partidasGan
 	seis = fuente.render("5", True, NEGRO)
 	siete = fuente.render("6", True, NEGRO)
 	printNombre = fuente.render(nombre + ": " + str(partidasGanadasPersona), True, NEGRO)
-	printPC = fuente.render("Computadora: " + str(partidasGanadasPC), True, NEGRO)
-	printEmpates = fuente.render("Empates: " + str(numEmpates), True, NEGRO)
+	printPC = fuente.render("Computadora: " + str(partidasGanadasPC), True, NEGRO)    	# Se muestran en pantalla cuantas partidas ha ganado el jugador,
+	printEmpates = fuente.render("Empates: " + str(numEmpates), True, NEGRO)			# la computadora y el numero de empates
 
 	# Dibuja las variables en la pantalla
 	pantalla.blit(uno, [185, 40])
@@ -1427,6 +1431,10 @@ def cargarTablero(colorlineas: list, colorfondo: list, colorpc: list, colorjugad
 	#	filas: int;												// Numero de filas del tablero
 	#	columnas: int;											// Numero de columnas del tablero
 	#	tablero: list;											// Matriz del tablero de juego
+	#	nombre: str;											// Variable que almacena el nombre del jugador
+	#	partidasGanadasPersona: int;							// Variable que almacena el numero de partidas ganadas por el jugador
+	#	partidasGanadasPC: int;									// Variable que almacena el numero de partidas ganadas por la computadora
+	#	numEmpates: int;										// Variable que almacena el numero de empates de toda
 
 
 	dibujarTablero(colorlineas, colorfondo, nombre, partidasGanadasPersona, partidasGanadasPC, numEmpates)
@@ -1481,8 +1489,16 @@ def pedirNombre() -> str:
 	# VAR
 	#	nombre: str;											// Variable que almacena del nombre del jugador
 
-	nombre = str(input("Por favor, ingrese su nombre: "))
-	print("Hola "+ nombre)
+	while True:
+		try:
+			nombre = str(input("Por favor, ingrese su nombre: "))
+			print("Hola "+ nombre)
+
+			# Precondicion:
+			assert(len(nombre) <= 9)
+			break
+		except:
+			print("Por favor ingrese un nombre de maximo 9 caracteres")
 
 	# Postcondicion:
 	assert(True)
@@ -1521,9 +1537,9 @@ def guardarPartida(nombre: str, filas: int, columnas: int, tablero: list, dificu
 			# Precondición: 
 			assert(
 				filas >= 4 and columnas >= 4 and all ( all ( 0 <= tablero[x][y] <= 2 for x in range(filas)) for y in range(columnas))
-				and 0 <= dificultad <= 1 and 0 <= ultimoGanador <= 2 and 0 <= jugador <= 2 and numPartidas >= 0 and 0 <= ultimaJugada[0] < filas
+				and 0 <= dificultad <= 1 and 0 <= ultimoGanador <= 2 and 1 <= jugador <= 2 and numPartidas >= 0 and 0 <= ultimaJugada[0] < filas
 				and 0 <= ultimaJugada[1] < columnas and 0 <= numJugadas < filas*columnas and 0 <= numJugadasPC < (filas*columnas)/2 and 
-				numEmpates >= 0 and partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and 0 <= estrategia <= 6
+				numEmpates >= 0 and partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and -1 <= estrategia <= 6
 				)
 
 			if confirmacion == 1:
@@ -1551,7 +1567,7 @@ def escribeArchivo(nombre: str, filas: int, columnas: int, tablero: list, dificu
 		filas >= 4 and columnas >= 4 and all ( all ( 0 <= tablero[x][y] <= 2 for x in range(filas)) for y in range(columnas))
 		and 0 <= dificultad <= 1 and 0 <= ultimoGanador <= 2 and 1 <= jugador <= 2 and numPartidas >= 0 and 0 <= ultimaJugada[0] < filas
 		and 0 <= ultimaJugada[1] < columnas and 0 <= numJugadas < filas*columnas and 0 <= numJugadasPC < (filas*columnas)/2 and 
-		numEmpates >= 0 and partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and 0 <= estrategia <= 6
+		numEmpates >= 0 and partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and -1 <= estrategia <= 6
 	)
 
 	# Guarda los datos de la partida actual y los resultados anteriores en un archivo.
@@ -1633,6 +1649,10 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 	#	partidasGanadasPersona: int;							// Variable que almacena las partidas ganadas por el jugadora
 	#	partidasGanadasPC: int;									// Variable que almacena las partidas ganadas por la computadora
 	#	estrategia: int;										// Variable que almacena la estrategia a utilizar por la computadora en la dificultad media
+	#	nombre: str;											// Variable que almacena el nombre del jugador
+	#	partidasGanadasPersona: int;							// Variable que almacena el numero de partidas ganadas por el jugador
+	#	partidasGanadasPC: int;									// Variable que almacena el numero de partidas ganadas por la computadora
+	#	numEmpates: int;										// Variable que almacena el numero de empates de todapr
 
 	try:
 		archivo = open('guardarPartida.txt')
@@ -1674,7 +1694,7 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 			filas >= 4 and columnas >= 4 and all (all (0 <= tablero[i][j] <= 2 for i in range(filas)) for j in range(columnas)) and
 			0 <= dificultad <= 1 and 0 <= ultimoGanador <= 2 and 1 <= jugador <= 2 and numPartidas >= 0 and
 			0 <= ultimaJugada[0] <= filas and 0 <= ultimaJugada[1] <= columnas and numJugadas >= 0 and numJugadasPC >= 0 and 
-			numEmpates >= 0 and partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and 0 <= estrategia <= 6
+			numEmpates >= 0 and partidasGanadasPersona >= 0 and partidasGanadasPC >= 0 and -1 <= estrategia <= 6
 		)
 
 	return nombre, filas, columnas, tablero, dificultad, ultimoGanador, jugador, numPartidas, ultimaJugada, numJugadas, numJugadasPC, numEmpates, partidasGanadasPersona, partidasGanadasPC, estrategia
@@ -1683,6 +1703,10 @@ def leeArchivo() -> (str, int, int, list, int, int, int, int, list, int, int, in
 
 def cargarPartida() -> bool:
 
+	# Pregunta al ususario si desea cargar la partida o no
+
+	# Precondicion:
+	assert(True)
 	# VAR
 	# cargar: bool;												// Variable que determina si el jugador desea guardar la partida o no
 
@@ -1704,8 +1728,8 @@ def cargarPartida() -> bool:
 		except:
 			print("Por favor, ingrese una opción válida.")
 
-	# Postcondición:
-	assert(cargar == True or cargar == False)
+	# Postcondicion:
+	assert((confirmacion == 1 and cargar == True) or (confirmacion == 0 and cargar == False))
 
 	return cargar
 
